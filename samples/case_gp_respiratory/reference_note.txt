@@ -1,0 +1,45 @@
+CLINICAL NOTE
+
+Patient: Sarah
+Date: [Today]
+Clinician: Dr Chen
+Consultation Type: Standard GP consultation (MBS item 23)
+
+PRESENTING COMPLAINT:
+5-day history of URTI symptoms. Left ear pain x1 day.
+
+HISTORY OF PRESENTING COMPLAINT:
+Sore throat onset Monday, progressing to nasal congestion, headache, and dry cough (worse nocturally) by Tuesday. Occasional clear sputum. Subjective fevers days 1-2, now resolved. No dyspnoea, chest pain, or wheeze. Left ear soreness since yesterday. Self-managing with paracetamol and Vicks.
+
+Mother offered leftover amoxicillin — patient appropriately declined due to known penicillin allergy (causes rash).
+
+PAST MEDICAL HISTORY:
+- Tonsillectomy (childhood)
+- Otherwise well
+
+MEDICATIONS:
+- Oral contraceptive pill
+
+ALLERGIES:
+- PENICILLIN — rash (confirmed in records)
+
+EXAMINATION:
+- Temp 37.1°C
+- Oropharynx: Erythematous, no exudate (post-tonsillectomy)
+- Left TM: Dull, retracted — consistent with Eustachian tube dysfunction. Not erythematous or bulging
+- Right TM: Normal
+- Neck: Mildly tender anterior cervical lymphadenopathy
+- Chest: Clear bilaterally, no wheeze/crackles
+
+ASSESSMENT:
+Viral URTI with secondary Eustachian tube dysfunction (left). No clinical features of bacterial infection.
+
+PLAN:
+1. Continue paracetamol PRN for throat/aches
+2. Saline nasal spray for congestion (OTC)
+3. Steam inhalation
+4. Hydration and rest
+5. Safety-net: Return if ear pain worsens, develops fever, breathing difficulties, or not improving by day 10. ED if after hours and acutely unwell
+6. Antibiotics not indicated — viral illness. Discussed with patient (and relevance of penicillin allergy noted)
+
+No follow-up required unless symptoms worsen or fail to resolve.

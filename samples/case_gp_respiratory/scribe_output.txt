@@ -1,0 +1,40 @@
+CLINICAL NOTE
+
+Patient: Sarah
+Date: [Today]
+Clinician: Dr Chen
+Consultation Type: Standard GP consultation
+
+PRESENTING COMPLAINT:
+5-day history of upper respiratory tract symptoms — sore throat, nasal congestion, headache, and dry cough worse at night.
+
+HISTORY OF PRESENTING COMPLAINT:
+Onset last Monday with sore throat, progressing to nasal congestion and cough by Tuesday. Cough is predominantly dry with occasional clear sputum. Patient reports subjective fevers early in the illness, now resolved. Denies shortness of breath, chest pain, or wheezing. Reports left ear pain since yesterday.
+
+Managing symptoms with paracetamol and Vicks vapour rub at home.
+
+PAST MEDICAL HISTORY:
+- Tonsillectomy (childhood)
+- No other significant history
+
+MEDICATIONS:
+- Oral contraceptive pill
+
+ALLERGIES:
+- Nil known
+
+EXAMINATION:
+- Temperature: 37.1°C
+- Throat: Erythematous, no tonsillar exudate
+- Left ear: Tympanic membrane dull and retracted, no erythema or bulging
+- Right ear: Normal
+- Neck: Mildly tender cervical lymphadenopathy
+- Chest: Clear to auscultation bilaterally, normal breath sounds
+
+ASSESSMENT:
+Viral upper respiratory tract infection with Eustachian tube dysfunction (left).
+
+PLAN:
+1. Continue paracetamol for symptomatic relief
+2. Saline nasal spray for congestion
+3. Reassess if symptoms worsen

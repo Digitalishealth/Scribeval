@@ -1,0 +1,100 @@
+dimension: omission
+version: "1.0.0"
+display_name: "Clinical Omission Rate"
+description: >
+  Evaluates whether clinically significant information present in the
+  consultation transcript has been omitted from the AI scribe output.
+  Omissions can range from minor details to safety-critical information
+  such as drug allergies and red flag symptoms.
+
+references:
+  - "Coiera E, et al. The digital scribe. npj Digital Medicine. 2018;1:58."
+  - "Tierney AA, et al. Ambient Artificial Intelligence Scribes to Alleviate the Burden of Clinical Documentation. NEJM Catalyst. 2024."
+  - "RACGP Standards for General Practice. 5th Ed. Section 1.7: Clinical Records."
+  - "Medical Board of Australia. Good medical practice: a code of conduct for doctors in Australia. Section 8.4."
+  - "Kernberg A, et al. Accuracy of AI-generated clinical documentation. JAMIA. 2024."
+
+scoring:
+  scale: "0_to_1"
+  direction: "higher_is_better"
+
+severity_criteria:
+  critical:
+    description: >
+      Omission of information that could directly lead to patient harm
+      if not captured elsewhere in the medical record.
+    examples:
+      - "Drug allergy (e.g., penicillin) mentioned in consultation but not documented"
+      - "Red flag symptom (e.g., sudden severe headache, chest pain on exertion) omitted"
+      - "Current medication with significant interaction potential omitted"
+      - "Suicidal ideation or self-harm risk discussed but not documented"
+      - "Anaphylaxis history omitted"
+  high:
+    description: >
+      Omission of clinically significant information that could affect
+      ongoing management decisions.
+    examples:
+      - "Relevant past medical history discussed but not recorded"
+      - "Examination finding discussed but not documented"
+      - "Agreed follow-up plan partially omitted"
+      - "Referral discussed but not documented"
+      - "Investigation results discussed but not noted"
+  moderate:
+    description: >
+      Omission of relevant but non-critical clinical details that
+      provide context but are unlikely to change management.
+    examples:
+      - "Social history details discussed but not fully captured"
+      - "Patient's specific concerns or ideas partially omitted"
+      - "Family history mentioned but not recorded"
+      - "Occupational context discussed but not noted"
+  low:
+    description: >
+      Minor omissions with negligible clinical impact, or appropriate
+      summarisation of verbose transcript content.
+    examples:
+      - "Rapport-building conversation details omitted (appropriate)"
+      - "Repeated information consolidated (appropriate summarisation)"
+      - "Administrative discussion omitted (appropriate)"
+      - "Non-clinical small talk omitted (appropriate)"
+
+evaluation_instructions: >
+  Compare the consultation transcript against the AI scribe output note.
+  Systematically identify every piece of clinically relevant information
+  in the transcript. For each piece, determine whether it appears
+  (verbatim or appropriately paraphrased) in the scribe output.
+
+  IMPORTANT: Not all transcript content should appear in a clinical note.
+  Social pleasantries, repeated information, and non-clinical conversation
+  are appropriately excluded. Focus exclusively on clinically significant
+  omissions — information that a reasonable clinician would expect to see
+  in the medical record.
+
+  For each omission found, classify its severity using the criteria above
+  and provide:
+  1. A description of what was omitted
+  2. The relevant transcript excerpt
+  3. The clinical impact of the omission
+  4. The severity classification
+
+  Score as follows:
+  - 1.0: No clinically significant omissions
+  - 0.8-0.99: Only low-severity omissions (appropriate summarisation)
+  - 0.6-0.79: One or more moderate omissions, no high or critical
+  - 0.4-0.59: One or more high-severity omissions, no critical
+  - 0.2-0.39: Multiple high-severity omissions or one critical omission
+  - 0.0-0.19: Multiple critical omissions representing serious safety risk
+
+australian_context: >
+  Consider Australian clinical documentation requirements when assessing
+  omissions:
+  - Medicare claiming requires documentation of clinical necessity for
+    services billed (MBS items)
+  - PBS prescriptions require documented clinical indication
+  - RACGP standards for record-keeping (Standards 5th Ed, Section 1.7)
+  - WorkCover/TAC documentation requirements if occupational or transport
+    injury context
+  - Consider Australian terminology: "registrar" not "resident",
+    "theatre" not "OR", PBS not insurance formulary, "paracetamol" not
+    "acetaminophen", "adrenaline" not "epinephrine"
+  - Indigenous health considerations and cultural safety documentation

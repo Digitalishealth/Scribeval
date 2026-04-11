@@ -1,0 +1,108 @@
+dimension: medicolegal
+version: "1.0.0"
+display_name: "Medicolegal Adequacy"
+description: >
+  Evaluates whether the AI scribe output meets Australian medicolegal
+  documentation standards — whether the note would adequately protect
+  the clinician and serve as a reliable medical record in the event of
+  a complaint, coronial inquest, or civil litigation. Based on guidance
+  from Australian medical defence organisations (Avant, MDA National,
+  MIGA) and case law.
+
+references:
+  - "Avant Mutual. Medical records — your obligations. 2023."
+  - "MDA National. Clinical documentation — a medicolegal guide. 2023."
+  - "MIGA. Medical records and documentation. Practice guide."
+  - "Medical Board of Australia. Good medical practice. Section 8.4: Health records."
+  - "RACGP Standards for General Practice. 5th Ed. Section 1.7."
+  - "Lowry v Guilfoyle [2013] — documentation adequacy in negligence claims."
+  - "Health Practitioner Regulation National Law. Section 129: Health records."
+
+scoring:
+  scale: "0_to_1"
+  direction: "higher_is_better"
+
+severity_criteria:
+  critical:
+    description: >
+      Documentation gaps that would critically undermine medicolegal
+      defence in the event of an adverse outcome or complaint.
+    examples:
+      - "No documentation of clinical reasoning for a significant management decision"
+      - "Informed consent discussion for a procedure not documented"
+      - "Red flag assessment or safety-netting advice not recorded when clinically indicated"
+      - "Medication prescription without documented indication or allergy check"
+      - "No documentation of risk discussion for a high-risk presentation"
+  high:
+    description: >
+      Documentation gaps that would significantly weaken the medical record
+      as evidence of reasonable clinical practice.
+    examples:
+      - "Differential diagnosis not documented for ambiguous presentations"
+      - "Follow-up plan or safety-net instructions incomplete"
+      - "Patient's refusal of recommended treatment not documented"
+      - "Incomplete documentation of examination relevant to presenting complaint"
+      - "Telephone or telehealth consultation identity verification not noted"
+  moderate:
+    description: >
+      Documentation that is adequate but could be strengthened for
+      medicolegal robustness.
+    examples:
+      - "Clinical reasoning present but could be more explicit"
+      - "Time of consultation or clinician identity not clearly stated"
+      - "Patient's understanding of plan not documented"
+      - "Interpreter use or language barriers not noted when relevant"
+  low:
+    description: >
+      Minor documentation improvements that would enhance the record
+      but whose absence poses minimal medicolegal risk.
+    examples:
+      - "Consultation duration not recorded (may affect MBS item accuracy)"
+      - "Chaperone presence not documented for intimate examination"
+      - "Patient's support person presence not noted"
+
+evaluation_instructions: >
+  Assess the AI scribe output against Australian medicolegal documentation
+  standards. The clinical note should demonstrate that the clinician
+  provided a reasonable standard of care and made defensible clinical
+  decisions.
+
+  Evaluate the following elements:
+  1. CLINICAL REASONING: Is the thought process behind diagnosis and
+     management decisions documented or inferable?
+  2. INFORMED CONSENT: Are relevant consent discussions documented,
+     particularly for procedures, off-label prescriptions, or referrals?
+  3. RISK ASSESSMENT: For presentations with potential serious pathology,
+     is the assessment of risk documented?
+  4. SAFETY-NETTING: Are instructions for the patient to return or seek
+     further care documented?
+  5. EXAMINATION DOCUMENTATION: Are relevant positive and negative
+     findings documented to support the clinical reasoning?
+  6. MANAGEMENT PLAN: Is the plan clearly documented with rationale?
+
+  IMPORTANT: Assess based on what is present in the transcript. If the
+  clinician did not discuss informed consent, the scribe cannot document it.
+  Score the note's medicolegal adequacy given the content of the consultation.
+
+  Score as follows:
+  - 1.0: Comprehensive medicolegal documentation, would strongly support defence
+  - 0.8-0.99: Good documentation with only minor improvements possible
+  - 0.6-0.79: Adequate but with notable gaps in documentation
+  - 0.4-0.59: Significant medicolegal vulnerabilities in the documentation
+  - 0.2-0.39: Seriously deficient documentation that would poorly serve defence
+  - 0.0-0.19: Documentation would be actively harmful to medicolegal defence
+
+australian_context: >
+  Australian medicolegal considerations:
+  - Avant, MDA National, and MIGA guidance on documentation standards
+  - Medical negligence law in Australia (Bolam/Rogers v Whitaker standard):
+    documentation should demonstrate reasonable care and adequate disclosure
+  - Coronial investigation requirements: documentation must support
+    reconstruction of clinical decision-making
+  - State health complaints commission expectations (AHPRA, HCCC, OHO)
+  - Medicare compliance: documentation must support the MBS item billed
+  - PBS compliance: clinical indication must be documented for authority
+    prescriptions
+  - WorkCover/TAC: specific documentation requirements for workplace
+    and transport injury claims
+  - Mandatory reporting obligations under the National Law

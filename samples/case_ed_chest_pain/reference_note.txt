@@ -1,0 +1,64 @@
+EMERGENCY DEPARTMENT CLINICAL NOTE
+
+Patient: Mr Thompson, 58M
+Date: [Today]
+Clinician: Dr Patel (Emergency Registrar)
+Triage Category: 2
+Time of assessment: [Time]
+
+PRESENTING COMPLAINT:
+Acute central chest pain x2 hours.
+
+HISTORY OF PRESENTING COMPLAINT:
+58yo male, onset of central chest pain at rest while watching television. Pain described as "tight" / "pressure" — "like someone sitting on my chest." Radiates to left arm and jaw. Severity 8/10 at onset, improved to 5/10 following pre-hospital GTN and aspirin (administered by paramedics). Associated with diaphoresis (wife reports patient appeared grey) and nausea (no vomiting). No SOB reported. First episode — no prior history of chest pain.
+
+CARDIOVASCULAR RISK FACTORS:
+- Age 58, male
+- Hypertension
+- Dyslipidaemia
+- Type 2 diabetes mellitus
+- Positive family history (father MI age 55, CABG)
+- Ex-smoker: 25 pack-year history, quit 3 years ago
+
+PAST MEDICAL HISTORY:
+- Hypertension
+- Hypercholesterolaemia
+- Type 2 diabetes mellitus
+
+MEDICATIONS:
+1. Amlodipine (dose not specified)
+2. Atorvastatin (commenced ~6 months ago, dose not specified)
+3. Metformin (dose not specified)
+
+ALLERGIES:
+NKDA
+
+EXAMINATION:
+- BP: 155/95 mmHg
+- HR: 92 bpm, regular
+- SpO2: 97% RA
+- Temp: 36.8°C
+- CVS: Dual heart sounds, no murmurs. No displaced apex.
+- Resp: Clear bilaterally, no crackles
+- Peripheral: No oedema. Calves soft, non-tender (DVT screen negative clinically)
+- General: Patient appears uncomfortable but not in extremis
+
+INVESTIGATIONS ORDERED:
+- ECG (urgent)
+- Bloods: FBC, UEC, troponin (high-sensitivity, serial), lipids, HbA1c, coag
+- CXR if indicated
+
+ASSESSMENT:
+Suspected acute coronary syndrome. High pre-test probability given risk factor profile and classical presentation (central crushing chest pain with radiation, diaphoresis, onset at rest). Differential includes: NSTEMI/STEMI (awaiting ECG and troponin), aortic dissection (lower probability — no tearing pain, no BP differential noted), PE (low probability — no dyspnoea, no leg signs).
+
+PLAN:
+1. Urgent ECG — pending
+2. Serial high-sensitivity troponin (0h, 3h)
+3. Continuous cardiac monitoring and telemetry
+4. Cardiology registrar referral for early review
+5. NBM pending investigation results and cardiology input
+6. Ongoing pain management — reassess if pain escalates
+7. Risk stratification once ECG and initial troponin available
+8. Patient informed of working diagnosis and investigation plan. Understands seriousness. Questions answered. Wife to be contacted.
+
+DISPOSITION: Under investigation. Await ECG and troponin.

@@ -1,0 +1,57 @@
+Dr Patel: Good evening, I'm Dr Patel, one of the emergency registrars. You've been brought in by ambulance with chest pain?
+
+Patient: Yes, it came on about two hours ago. I was just watching telly and suddenly got this really tight pain across my chest.
+
+Dr Patel: Can you show me where exactly?
+
+Patient: Right across here [gestures across central chest]. Like someone sitting on my chest.
+
+Dr Patel: And does it go anywhere else? Into your arm, jaw, back?
+
+Patient: It goes into my left arm a bit. And my jaw feels tight.
+
+Dr Patel: On a scale of zero to ten, how bad is the pain right now?
+
+Patient: It was about eight out of ten when it started. The ambos gave me GTN spray and aspirin, and it's come down to about a five now.
+
+Dr Patel: Okay. Any shortness of breath, nausea, sweating?
+
+Patient: Yeah, I was sweating a lot when it first happened. My wife said I looked grey. I felt a bit nauseous too but I haven't vomited.
+
+Dr Patel: Have you ever had chest pain like this before?
+
+Patient: No, never. This is the first time.
+
+Dr Patel: Tell me about your general health. Any medical conditions?
+
+Patient: I've got high blood pressure — I take amlodipine for that. And my cholesterol's been a bit high. The GP started me on atorvastatin about six months ago. I'm also type 2 diabetic — on metformin.
+
+Dr Patel: Any family history of heart disease?
+
+Patient: My dad had a heart attack at 55. He survived but had bypass surgery. I'm 58 myself.
+
+Dr Patel: Do you smoke?
+
+Patient: I used to — about 20 a day for 25 years. I quit three years ago.
+
+Dr Patel: Good on you for quitting. Any drug allergies?
+
+Patient: No allergies that I know of.
+
+Dr Patel: Right, let me examine you.
+
+[Examination]
+
+Dr Patel: Okay Mr Thompson, your blood pressure is 155/95, heart rate is 92 and regular, oxygen sats are 97% on room air. Temperature is 36.8. On examination, your heart sounds are dual with no murmurs. I can't hear any lung crackles. No peripheral oedema. Your calves are soft and non-tender. I'm going to organise some urgent bloods including a troponin, and we need to get an ECG done.
+
+Patient: What do you think is going on, doc?
+
+Dr Patel: With your risk factors and this presentation — central chest pain with radiation, diaphoresis, your age, diabetes, family history, smoking history — I'm concerned this could be a cardiac event. We need to rule out an acute coronary syndrome. The ECG and bloods will help us work that out. In the meantime, we'll keep you on monitoring and make sure your pain is controlled.
+
+Patient: That sounds serious.
+
+Dr Patel: It's certainly something we take very seriously and we'll be watching you closely. I'll escalate to the cardiology registrar once we have the initial results. Is there anything you're not clear on?
+
+Patient: No, I understand. Thank you.
+
+Dr Patel: We'll also need to keep you nil by mouth for now in case you need any procedures. I'll get the nurse to come and do the ECG right away and we'll chase those bloods as urgent.

@@ -1,0 +1,67 @@
+Dr Chen: Good morning, Sarah. Come in, take a seat. How are you going today?
+
+Patient: Morning, Dr Chen. Not great actually. I've had this terrible cold for about five days now and it's just not getting better.
+
+Dr Chen: I'm sorry to hear that. Tell me more about what's been happening.
+
+Patient: It started with a really sore throat last Monday. Then by Tuesday I had a blocked nose, headache, and I started coughing. The cough is driving me mad — it's worse at night and keeps waking me up.
+
+Dr Chen: Is the cough producing anything or is it dry?
+
+Patient: It's mostly dry but sometimes there's a bit of clear mucus. Nothing coloured though.
+
+Dr Chen: Okay. Any fevers or chills?
+
+Patient: I felt a bit warm on Tuesday and Wednesday but I didn't take my temperature. I've felt okay temperature-wise since then.
+
+Dr Chen: Any shortness of breath, chest pain, or wheezing?
+
+Patient: No, nothing like that. Just the cough and the congestion.
+
+Dr Chen: Any ear pain?
+
+Patient: Actually yes, my left ear has been a bit sore since yesterday.
+
+Dr Chen: Right. And how are you managing it at home? Taking anything for it?
+
+Patient: I've been taking paracetamol and using some Vicks. My mum suggested I try some antibiotics — she's got some leftover amoxicillin. I didn't take them though because I'm allergic to penicillin. I get a rash from it.
+
+Dr Chen: Good that you didn't take those. That's really important — penicillin allergy with a rash is significant. We need to avoid all penicillin-type antibiotics for you. Is that allergy documented in your records?
+
+Patient: I think so. I told the last doctor about it.
+
+Dr Chen: Let me check... yes, I can see it here. Good. Any other allergies or regular medications?
+
+Patient: No other allergies. I take the oral contraceptive pill, that's it.
+
+Dr Chen: Okay. Any relevant past medical history I should know about? Asthma, anything like that?
+
+Patient: No, I've been pretty healthy. I had my tonsils out as a kid but that's about it.
+
+Dr Chen: Right. Let me have a look at you. I'll check your temperature, have a look at your throat and ears.
+
+[Examination]
+
+Dr Chen: Okay, so your temperature is 37.1, which is normal. Your throat is red and inflamed but I can't see any exudate or pus on your tonsils — well, you don't have tonsils. Your left ear drum is a bit dull and retracted which suggests some fluid behind it, but it's not red or bulging. Your right ear looks fine. Lymph nodes in your neck are slightly tender. Chest is clear on auscultation — no wheeze, no crackles.
+
+Patient: So what do you think it is?
+
+Dr Chen: This looks like a straightforward viral upper respiratory tract infection — a common cold essentially — with some Eustachian tube dysfunction on the left side. That's what's causing the ear discomfort. It's all very consistent with a viral illness.
+
+Patient: Do I need antibiotics?
+
+Dr Chen: No, I wouldn't recommend antibiotics for this. It's viral, so antibiotics won't help and they come with side effects. Given your penicillin allergy, we'd also have limited options anyway, but the main point is this doesn't need them.
+
+Patient: Okay, that makes sense. Mum won't be happy but I trust you.
+
+Dr Chen: I understand. So my plan is: continue with the paracetamol for the sore throat and any aches. You can also try a saline nasal spray to help with the congestion — you can get that from the chemist without a script. Steam inhalation can help too. For the ear, it should settle on its own as the cold resolves, but if the ear pain gets significantly worse or you develop a fever, come back and we'll reassess.
+
+Patient: How long should this last?
+
+Dr Chen: Most viral URTIs last seven to ten days. You're five days in, so you should start turning the corner soon. If you're not improving by day ten, or if you get worse at any point — high fevers, worsening ear pain, any breathing difficulties — please come back or go to the emergency department if it's after hours.
+
+Patient: Great, thank you Dr Chen.
+
+Dr Chen: You're welcome, Sarah. Take care of yourself. I'll also note — make sure you're staying hydrated and getting rest. That really does make a difference.
+
+Patient: Will do. Thanks again.

@@ -1,0 +1,51 @@
+EMERGENCY DEPARTMENT CLINICAL NOTE
+
+Patient: Mr Thompson
+Date: [Today]
+Clinician: Dr Patel (Emergency Registrar)
+Triage Category: 2
+
+PRESENTING COMPLAINT:
+Central chest pain, 2-hour duration.
+
+HISTORY OF PRESENTING COMPLAINT:
+58-year-old male presenting with acute onset central chest pain while at rest, radiating to left arm and jaw. Pain rated 8/10 at onset, improved to 5/10 post GTN spray and aspirin administered by paramedics. Associated diaphoresis and nausea (no vomiting). No prior episodes of chest pain.
+
+PAST MEDICAL HISTORY:
+- Hypertension (on amlodipine)
+- Hypercholesterolaemia (on atorvastatin — commenced 6 months ago)
+- Type 2 diabetes mellitus (on metformin)
+
+FAMILY HISTORY:
+Father — myocardial infarction age 55, required CABG.
+
+SOCIAL HISTORY:
+Ex-smoker (quit 3 years ago, 25 pack-year history).
+
+ALLERGIES:
+Nil known.
+
+MEDICATIONS:
+1. Amlodipine (dose not specified)
+2. Atorvastatin (dose not specified)
+3. Metformin (dose not specified)
+
+EXAMINATION:
+- BP: 155/95 mmHg
+- HR: 92 bpm, regular
+- SpO2: 97% on room air
+- Temp: 36.8°C
+- CVS: Dual heart sounds, no murmurs
+- Resp: Clear to auscultation, no crackles
+- ECG: Normal sinus rhythm, no acute ST changes
+- Periphery: No oedema, calves soft and non-tender
+
+ASSESSMENT:
+Acute coronary syndrome — to be investigated. Multiple cardiovascular risk factors (age, male, T2DM, hypertension, dyslipidaemia, family history, ex-smoker).
+
+PLAN:
+1. Serial troponins
+2. Continuous cardiac monitoring
+3. Cardiology registrar referral
+4. Nil by mouth
+5. Pain management

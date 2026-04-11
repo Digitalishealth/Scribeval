@@ -1,0 +1,119 @@
+dimension: ahpra
+version: "1.0.0"
+display_name: "AHPRA Compliance"
+description: >
+  Evaluates the AI scribe output against the Australian Health Practitioner
+  Regulation Agency (AHPRA) and Medical Board of Australia standards for
+  clinical documentation. Based on the Good Medical Practice code of conduct,
+  the Health Practitioner Regulation National Law, and Medical Board guidelines
+  on record-keeping obligations.
+
+references:
+  - "Medical Board of Australia. Good medical practice: a code of conduct for doctors in Australia. 2020. Sections 3, 4, 8."
+  - "Health Practitioner Regulation National Law Act 2009. Section 129."
+  - "AHPRA. Guidelines for advertising of regulated health services. 2022."
+  - "Medical Board of Australia. Guidelines: Mandatory notifications. 2020."
+  - "Medical Board of Australia. Guidelines: Sexual boundaries. 2020."
+  - "RACGP Standards for General Practice. 5th Ed. Section 1.7: Clinical Records."
+  - "National Safety and Quality Health Service Standards. 2nd Ed. Standard 1: Clinical Governance."
+
+scoring:
+  scale: "0_to_1"
+  direction: "higher_is_better"
+
+severity_criteria:
+  critical:
+    description: >
+      Documentation that could constitute a breach of AHPRA professional
+      standards or the National Law, potentially exposing the practitioner
+      to regulatory action.
+    examples:
+      - "Mandatory reporting trigger discussed but not flagged or documented"
+      - "Documentation suggesting practice outside scope of registration"
+      - "Cultural safety concerns raised but not addressed in documentation"
+      - "Patient consent for a notifiable procedure not documented"
+      - "Documentation inconsistent with professional boundaries standards"
+  high:
+    description: >
+      Documentation gaps that represent non-compliance with Good Medical
+      Practice standards but may not constitute a direct breach.
+    examples:
+      - "Clinical records do not meet minimum content standards per Good Medical Practice 8.4"
+      - "Continuity of care information inadequate for handover"
+      - "Documentation does not reflect shared decision-making where discussed"
+      - "Privacy and confidentiality considerations not reflected"
+      - "Practitioner identification not clear in the record"
+  moderate:
+    description: >
+      Documentation that partially meets AHPRA standards but could be
+      improved for full compliance.
+    examples:
+      - "Cultural and linguistic needs acknowledged but not fully documented"
+      - "Patient's right to information partially addressed"
+      - "Collaborative care arrangements mentioned but not fully documented"
+      - "Record legibility and clarity could be improved"
+  low:
+    description: >
+      Minor areas where documentation could better align with best practice
+      recommendations but is substantially compliant.
+    examples:
+      - "CPD-relevant reflection opportunity not captured (minor)"
+      - "Supervisory arrangement details could be more explicit"
+      - "Minor formatting improvements would aid record navigation"
+
+evaluation_instructions: >
+  Assess the AI scribe output against the Medical Board of Australia's
+  Good Medical Practice code and related AHPRA standards. Focus on whether
+  the documentation meets professional obligations for clinical records.
+
+  Evaluate the following areas:
+
+  1. RECORD-KEEPING (Good Medical Practice 8.4):
+     - Are records clear, accurate, and contemporaneous?
+     - Do they include relevant clinical findings, decisions, and actions?
+     - Is the information sufficient for another practitioner to continue care?
+
+  2. COMMUNICATION AND CONSENT (Good Medical Practice 3.3-3.5):
+     - Is shared decision-making reflected where relevant?
+     - Are patient preferences and concerns documented?
+     - Is informed consent documented for relevant decisions?
+
+  3. CULTURAL SAFETY (Good Medical Practice 4.5):
+     - Are cultural considerations documented where relevant?
+     - Is respectful, person-centred language used?
+     - Are Aboriginal and Torres Strait Islander health considerations
+       addressed where relevant?
+
+  4. MANDATORY REPORTING (National Law Section 141):
+     - If mandatory reporting triggers are discussed in the consultation,
+       are they appropriately flagged in the documentation?
+
+  5. PRIVACY AND CONFIDENTIALITY (Good Medical Practice 4.10):
+     - Does the note appropriately handle sensitive information?
+     - Are third-party disclosures handled appropriately?
+
+  IMPORTANT: Only assess elements that are relevant to the consultation
+  content. Not every consultation will trigger cultural safety or mandatory
+  reporting considerations.
+
+  Score as follows:
+  - 1.0: Fully compliant with all relevant AHPRA documentation standards
+  - 0.8-0.99: Substantially compliant with only minor improvements needed
+  - 0.6-0.79: Mostly compliant but with notable gaps
+  - 0.4-0.59: Significant non-compliance with professional documentation standards
+  - 0.2-0.39: Seriously deficient relative to AHPRA expectations
+  - 0.0-0.19: Documentation could expose practitioner to regulatory action
+
+australian_context: >
+  This dimension is inherently Australian-specific:
+  - AHPRA is the national regulator for all registered health practitioners
+  - The Medical Board of Australia sets standards under the National Law
+  - Good Medical Practice (the code of conduct) is the primary reference
+  - Registration standards vary by practitioner type (GP, specialist, etc.)
+  - State and territory health complaints bodies (HCCC in NSW, OHO in QLD,
+    etc.) may have additional expectations
+  - National Safety and Quality Health Service (NSQHS) Standards apply to
+    healthcare organisations
+  - Cultural safety is an AHPRA registration standard, not optional
+  - Mandatory reporting obligations are defined in Part 8, Division 2 of
+    the National Law
