@@ -1,0 +1,180 @@
+dimension: qnote
+version: "1.0.0"
+display_name: "QNOTE (Quality of Clinical Notes)"
+description: >
+  QNOTE is a validated instrument for measuring the quality of clinical
+  notes, developed by Burke et al. (2014). It evaluates notes across
+  structured clinical documentation domains — assessing both the
+  completeness and quality of information in each section. This evaluator
+  adapts QNOTE for AI scribe output assessment in the Australian context,
+  scoring each domain and producing a normalised composite score.
+
+  Domains assessed: (1) Reason for visit/presenting complaint,
+  (2) History of presenting illness, (3) Past medical/surgical history,
+  (4) Medications and allergies, (5) Review of systems, (6) Physical
+  examination, (7) Assessment and plan, (8) Overall note quality.
+
+references:
+  - "Burke HB, Sessums LL, Hoang A, et al. QNOTE: An instrument for measuring the quality of EHR clinical notes. JAMIA. 2014;21(5):910-916."
+  - "Burke HB, et al. Electronic health records improve clinical note quality. JAMIA. 2015;22(1):199-205."
+  - "Stetson PD, et al. Assessing Electronic Note Quality Using the PDQI-9. Applied Clinical Informatics. 2012;3(2):164-174."
+  - "Coiera E, et al. The digital scribe. npj Digital Medicine. 2018;1:58."
+  - "RACGP Standards for General Practice. 5th Ed. Section 1.7: Clinical Records."
+  - "Medical Board of Australia. Good medical practice: a code of conduct for doctors in Australia. Section 8.4."
+
+scoring:
+  scale: "0_to_1"
+  direction: "higher_is_better"
+
+severity_criteria:
+  critical:
+    description: >
+      Multiple core domains are absent or contain dangerous errors.
+      The note cannot safely support clinical decision-making. Key domains
+      like medications/allergies or assessment/plan are missing or fabricated.
+    examples:
+      - "Assessment and plan section entirely absent"
+      - "Medications listed that were never discussed (fabricated)"
+      - "Presenting complaint does not match the consultation transcript"
+      - "Allergies section missing when allergies were discussed"
+  high:
+    description: >
+      One or more core domains are substantially incomplete or contain
+      clinically significant errors. The note would impair continuity of
+      care or clinical decision-making.
+    examples:
+      - "History of presenting illness captures onset but omits all associated symptoms"
+      - "Physical examination findings only partially documented"
+      - "Assessment present but plan is vague or incomplete"
+      - "Past medical history section absent when relevant PMHx discussed"
+  moderate:
+    description: >
+      Most domains are present but some lack sufficient detail or quality.
+      The note is functional but falls short of best-practice documentation.
+    examples:
+      - "Reason for visit is generic rather than specific"
+      - "Review of systems mentioned but not systematically documented"
+      - "Plan lacks specific follow-up timeframes"
+      - "Physical examination documented but lacks detail on pertinent negatives"
+  low:
+    description: >
+      All domains are well-documented with only minor quality issues.
+      The note meets or approaches best-practice documentation standards.
+    examples:
+      - "Minor phrasing improvements possible in assessment"
+      - "Medication list complete but could include PBS item numbers"
+      - "Slight redundancy between HPI and assessment sections"
+
+evaluation_instructions: >
+  Evaluate the AI scribe output note across 8 QNOTE domains. Use the
+  consultation transcript as ground truth. If a reference note is provided,
+  use it as an additional quality benchmark.
+
+  Score each domain on a 1-5 scale:
+
+  DOMAIN 1 — REASON FOR VISIT / PRESENTING COMPLAINT:
+  Is the reason for the consultation clearly stated? Does it match what
+  the patient described in the transcript? Is it specific (e.g., "3-day
+  history of productive cough" rather than just "cough")?
+  (1=absent/wrong, 2=vague, 3=present but generic, 4=clear and specific,
+  5=exemplary — precise, contextualised)
+
+  DOMAIN 2 — HISTORY OF PRESENTING ILLNESS (HPI):
+  Does the note capture the full narrative of the presenting illness?
+  Onset, duration, severity, character, associated symptoms, exacerbating/
+  relieving factors, relevant context?
+  (1=absent/wrong, 2=minimal, 3=partial, 4=comprehensive,
+  5=exemplary — complete clinical narrative)
+
+  DOMAIN 3 — PAST MEDICAL/SURGICAL HISTORY:
+  Are relevant past conditions and procedures documented? This includes
+  only PMHx that was actually discussed or is relevant to the presentation.
+  (1=absent when relevant, 2=minimal, 3=partially captured,
+  4=well-documented, 5=exemplary — relevant and contextualised)
+  NOTE: Score N/A if not discussed and not relevant to presentation.
+
+  DOMAIN 4 — MEDICATIONS AND ALLERGIES:
+  Are current medications accurately listed with doses where discussed?
+  Are allergies and adverse reactions documented? Are new prescriptions
+  documented with indication?
+  (1=absent/wrong, 2=incomplete with errors, 3=partially captured,
+  4=comprehensive, 5=exemplary — complete with doses, indications)
+  NOTE: This domain is SAFETY-CRITICAL. Errors here receive higher weight.
+
+  DOMAIN 5 — REVIEW OF SYSTEMS:
+  If a review of systems was conducted, is it documented? Are pertinent
+  positives and negatives captured?
+  (1=absent when conducted, 2=minimal, 3=partial,
+  4=well-documented, 5=exemplary)
+  NOTE: Score N/A if no ROS was performed in the consultation.
+
+  DOMAIN 6 — PHYSICAL EXAMINATION:
+  Are examination findings accurately documented? Does it include
+  pertinent positives AND pertinent negatives? Are findings specific
+  (e.g., "bilateral clear air entry" not just "chest clear")?
+  (1=absent/wrong, 2=minimal, 3=partial, 4=comprehensive,
+  5=exemplary — detailed, specific, pertinent negatives included)
+  NOTE: Score N/A if no examination was performed (e.g., telehealth).
+
+  DOMAIN 7 — ASSESSMENT AND PLAN:
+  Does the assessment reflect clinical reasoning connecting findings to
+  diagnosis/differential? Is the plan specific, actionable, and complete?
+  Does it include follow-up, safety-netting, and return precautions
+  where appropriate?
+  (1=absent/wrong, 2=vague, 3=present but incomplete,
+  4=clear and comprehensive, 5=exemplary — reasoned assessment,
+  specific actionable plan with safety-netting)
+  NOTE: This domain is SAFETY-CRITICAL.
+
+  DOMAIN 8 — OVERALL NOTE QUALITY:
+  Holistic assessment of the note as a clinical document. Consider
+  coherence, readability, fitness for purpose, and whether the note would
+  adequately support another clinician reviewing this patient.
+  (1=clinically unsafe, 2=poor, 3=adequate, 4=good, 5=excellent)
+
+  SCORING:
+  - For domains scored N/A, exclude from the mean calculation.
+  - Calculate mean of all scored domains (1-5 scale).
+  - Convert to 0-1: normalised_score = (mean - 1) / 4
+  - Map: 1.0 = all 5/5, 0.75 = mean 4/5, 0.50 = mean 3/5, 0.25 = mean 2/5
+
+  Report each domain as a separate finding with:
+  - Domain name and number
+  - Score (1-5)
+  - Whether it was scored or N/A
+  - Specific observations and evidence from transcript/note
+  - Clinical impact of any deficiencies
+
+  IMPORTANT: Domains 4 (Medications/Allergies) and 7 (Assessment/Plan) are
+  safety-critical. Flag any deficiencies in these domains at HIGH or CRITICAL
+  severity regardless of the score.
+
+australian_context: >
+  When applying QNOTE in the Australian clinical context:
+
+  PRESENTING COMPLAINT: Australian GP notes typically begin with the
+  presenting complaint. ED notes use "Presenting complaint" and "Triage
+  category" as standard headers.
+
+  HPI: Australian notes commonly use "Hx" or "History" as the header.
+  Document relevant social determinants including Aboriginal and Torres
+  Strait Islander status where clinically relevant and discussed.
+
+  PMHx: Consider Australian-specific conditions prevalence. Document
+  relevant screening history (e.g., BreastScreen, bowel cancer screening).
+
+  MEDICATIONS: Use Australian approved names (paracetamol not acetaminophen,
+  salbutamol not albuterol). Reference PBS listings where relevant.
+  Document S8 (controlled substance) prescriptions with appropriate detail.
+
+  EXAMINATION: Use standard Australian examination documentation
+  conventions (e.g., "O/E" header, "NAD" for no abnormality detected).
+
+  ASSESSMENT/PLAN: Plans should reference Australian care pathways —
+  HealthPathways, referral to public vs private, Medicare item numbers
+  if relevant, PBS authority prescriptions, recall/reminder systems.
+  Safety-netting advice should be documented.
+
+  OVERALL: Australian clinical notes should comply with the RACGP
+  Standards for General Practice (5th Ed) and relevant college standards
+  for the practice setting.

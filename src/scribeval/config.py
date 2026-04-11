@@ -23,6 +23,8 @@ class ScribevalSettings(BaseSettings):
         "hallucination",
         "medicolegal",
         "ahpra",
+        "pdqi9",
+        "qnote",
     ]
     rubric_dir: Path = Path("rubrics")
     output_dir: Path = Path("output")

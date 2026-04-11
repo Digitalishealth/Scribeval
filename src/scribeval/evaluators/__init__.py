@@ -7,6 +7,8 @@ from scribeval.evaluators.base import BaseEvaluator
 from scribeval.evaluators.hallucination import HallucinationEvaluator
 from scribeval.evaluators.medicolegal import MedicolegalEvaluator
 from scribeval.evaluators.omission import OmissionEvaluator
+from scribeval.evaluators.pdqi9 import PDQI9Evaluator
+from scribeval.evaluators.qnote import QNoteEvaluator
 from scribeval.judges.base import BaseJudge
 from scribeval.rubrics.loader import RubricSchema
 
@@ -15,6 +17,8 @@ EVALUATOR_REGISTRY: dict[str, type[BaseEvaluator]] = {
     "hallucination": HallucinationEvaluator,
     "medicolegal": MedicolegalEvaluator,
     "ahpra": AHPRAComplianceEvaluator,
+    "pdqi9": PDQI9Evaluator,
+    "qnote": QNoteEvaluator,
 }
 
 DIMENSION_DESCRIPTIONS: dict[str, str] = {
@@ -22,6 +26,8 @@ DIMENSION_DESCRIPTIONS: dict[str, str] = {
     "hallucination": "Fabricated or incorrect clinical information in the note",
     "medicolegal": "Whether documentation meets medicolegal protection standards",
     "ahpra": "Alignment with Medical Board of Australia / AHPRA standards",
+    "pdqi9": "PDQI-9: 9-item validated note quality instrument (Stetson et al. 2012)",
+    "qnote": "QNOTE: Domain-based clinical note quality instrument (Burke et al. 2014)",
 }
 
 
@@ -44,5 +50,7 @@ __all__ = [
     "HallucinationEvaluator",
     "MedicolegalEvaluator",
     "AHPRAComplianceEvaluator",
+    "PDQI9Evaluator",
+    "QNoteEvaluator",
     "get_evaluator",
 ]
