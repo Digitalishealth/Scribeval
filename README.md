@@ -10,14 +10,32 @@ AI medical scribes (Heidi Health, Lyrebird, Nabla, etc.) generate clinical notes
 
 ## Evaluation Dimensions
 
+### Default dimensions (always run)
+
 | Dimension | What it measures |
 |-----------|-----------------|
 | **Omission** | Clinically significant information dropped from the note |
 | **Hallucination** | Fabricated or incorrect clinical information added to the note |
 | **Medicolegal Adequacy** | Whether documentation meets medicolegal protection standards |
 | **AHPRA Compliance** | Alignment with Medical Board of Australia standards |
+| **PDQI-9** | 9-item validated note quality instrument (Stetson et al. 2012) |
+| **QNOTE** | 8-domain clinical note quality instrument (Burke et al. 2014) |
 
-Additional dimensions (semantic accuracy, structural completeness, medication safety, clinical reasoning fidelity, patient safety signals, privacy handling) are planned for future releases.
+### Opt-in dimensions
+
+| Dimension | What it measures | Why opt-in |
+|-----------|-----------------|------------|
+| **Medication Terminology** | Validates medication names against the Australian Medicines Terminology (AMT) via a configurable FHIR R4 server | Adds a second external service (FHIR endpoint), only relevant for Australian medication coding, narrow safety-net scope |
+
+To enable an opt-in dimension, request it explicitly:
+
+```bash
+scribeval evaluate \
+    --dimensions omission,hallucination,medication_terminology \
+    ...
+```
+
+See [METHODOLOGY.md](METHODOLOGY.md) for the design rationale, including dimensions that were considered and rejected.
 
 ## How It Works
 

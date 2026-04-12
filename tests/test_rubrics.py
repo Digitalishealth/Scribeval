@@ -37,13 +37,14 @@ class TestRubricLoading:
 
     def test_load_all_rubrics(self, rubrics_dir: Path):
         rubrics = load_all_rubrics(rubrics_dir)
-        assert len(rubrics) == 6
+        assert len(rubrics) == 7
         assert "omission" in rubrics
         assert "hallucination" in rubrics
         assert "medicolegal" in rubrics
         assert "ahpra" in rubrics
         assert "pdqi9" in rubrics
         assert "qnote" in rubrics
+        assert "medication_terminology" in rubrics
 
     def test_all_rubrics_have_required_fields(self, rubrics_dir: Path):
         rubrics = load_all_rubrics(rubrics_dir)

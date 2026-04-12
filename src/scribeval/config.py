@@ -26,6 +26,11 @@ class ScribevalSettings(BaseSettings):
         "pdqi9",
         "qnote",
     ]
+    # FHIR R4 terminology server for the opt-in medication_terminology
+    # evaluator. Defaults to the CSIRO public Ontoserver sandbox. For
+    # production use with sensitive data, run your own Ontoserver instance.
+    fhir_terminology_url: str = "https://r4.ontoserver.csiro.au/fhir"
+    fhir_timeout_seconds: float = 5.0
     rubric_dir: Path = Path("rubrics")
     output_dir: Path = Path("output")
     max_retries: int = 2

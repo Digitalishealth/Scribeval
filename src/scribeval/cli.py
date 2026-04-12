@@ -9,8 +9,13 @@ from rich.console import Console
 from rich.table import Table
 
 from scribeval import __version__
+from scribeval.clients.fhir import FHIRTerminologyClient
 from scribeval.config import get_settings
-from scribeval.evaluators import DIMENSION_DESCRIPTIONS, EVALUATOR_REGISTRY
+from scribeval.evaluators import (
+    DIMENSION_DESCRIPTIONS,
+    EVALUATOR_REGISTRY,
+    OPT_IN_DIMENSIONS,
+)
 from scribeval.judges.llm import LLMJudge
 from scribeval.models.case import (
     ConsultationType,
@@ -143,6 +148,16 @@ def evaluate(
     judge_model = model or settings.default_model
     judge = LLMJudge(model=judge_model, api_key=api_key)
 
+    # Build FHIR terminology client only if a dimension that needs it was requested.
+    # Keeping construction conditional avoids surprising network dependencies for
+    # users who only run the default dimensions.
+    fhir_client: FHIRTerminologyClient | None = None
+    if "medication_terminology" in dim_list:
+        fhir_client = FHIRTerminologyClient(
+            endpoint=settings.fhir_terminology_url,
+            timeout_seconds=settings.fhir_timeout_seconds,
+        )
+
     # Show data flow before evaluation
     console.print("\n[bold]Data Flow Disclosure[/bold]")
     console.print(
@@ -150,6 +165,11 @@ def evaluate(
     )
     if reference_note:
         console.print("  Reference note will also be sent for comparison.")
+    if fhir_client is not None:
+        console.print(
+            f"  Extracted medication names (no transcript, no PHI) will be "
+            f"sent to FHIR terminology server: {fhir_client.endpoint}"
+        )
     console.print()
 
     # Run evaluation
@@ -158,6 +178,7 @@ def evaluate(
         dimensions=dim_list,
         judge=judge,
         rubric_dir=rubric_dir or settings.rubric_dir,
+        fhir_client=fhir_client,
     )
 
     with console.status("Running evaluation..."):
@@ -240,15 +261,32 @@ def _write_output(
 @main.command("list-dimensions")
 def list_dimensions() -> None:
     """List all available evaluation dimensions."""
+    settings = get_settings()
+    default_set = set(settings.default_dimensions)
+
     table = Table(title="Available Evaluation Dimensions")
     table.add_column("Dimension", style="bold")
+    table.add_column("Default", justify="center")
     table.add_column("Description")
 
     for dim in sorted(EVALUATOR_REGISTRY.keys()):
         desc = DIMENSION_DESCRIPTIONS.get(dim, "")
-        table.add_row(dim, desc)
+        if dim in OPT_IN_DIMENSIONS:
+            default_marker = "[yellow]opt-in[/yellow]"
+        elif dim in default_set:
+            default_marker = "[green]yes[/green]"
+        else:
+            default_marker = "no"
+        table.add_row(dim, default_marker, desc)
 
     console.print(table)
+    if OPT_IN_DIMENSIONS:
+        console.print()
+        console.print(
+            "[dim]Opt-in dimensions are not enabled by default. Pass them "
+            "explicitly via --dimensions, e.g. "
+            "--dimensions omission,hallucination,medication_terminology[/dim]"
+        )
 
 
 @main.command("validate-rubric")
@@ -268,13 +306,25 @@ def validate_rubric(rubric_path: Path) -> None:
 
 @main.command("show-data-flow")
 @click.option("--model", default=None, help="Model that would be used.")
-def show_data_flow(model: str | None) -> None:
+@click.option(
+    "--dimensions",
+    default=None,
+    help="Comma-separated list of dimensions to disclose (default: defaults).",
+)
+def show_data_flow(model: str | None, dimensions: str | None) -> None:
     """Show what data would be sent where during evaluation."""
     settings = get_settings()
     judge_model = model or settings.default_model
+    dim_list = (
+        [d.strip() for d in dimensions.split(",")]
+        if dimensions
+        else settings.default_dimensions
+    )
+    will_use_fhir = "medication_terminology" in dim_list
 
     console.print("[bold]Scribeval Data Flow Disclosure[/bold]\n")
 
+    console.print("[bold]Service 1: Anthropic API (always used)[/bold]")
     console.print("[bold]What is sent to the Anthropic API:[/bold]")
     console.print("  1. The consultation transcript (full text)")
     console.print("  2. The AI scribe output note (full text)")
@@ -283,7 +333,31 @@ def show_data_flow(model: str | None) -> None:
     console.print(f"  5. Model: {judge_model}")
     console.print()
 
-    console.print("[bold]What is NOT sent:[/bold]")
+    if will_use_fhir:
+        console.print(
+            "[bold]Service 2: FHIR Terminology Server "
+            "(used by medication_terminology)[/bold]"
+        )
+        console.print(f"  Endpoint: {settings.fhir_terminology_url}")
+        console.print("[bold]What is sent to the FHIR server:[/bold]")
+        console.print("  - Extracted medication name strings only (e.g. 'amoxicillin')")
+        console.print("[bold]What is NOT sent to the FHIR server:[/bold]")
+        console.print("  - The consultation transcript")
+        console.print("  - The full scribe note")
+        console.print("  - Patient identifiers or other clinical context")
+        console.print(
+            "  - The default endpoint is the CSIRO public Ontoserver sandbox. "
+            "For sensitive data, run your own Ontoserver and set "
+            "SCRIBEVAL_FHIR_TERMINOLOGY_URL."
+        )
+        console.print()
+    else:
+        console.print(
+            "[dim]Service 2: FHIR Terminology Server — NOT used "
+            "(medication_terminology not in selected dimensions).[/dim]\n"
+        )
+
+    console.print("[bold]What is NOT sent (any service):[/bold]")
     console.print("  - Patient identifiers (unless present in your input files)")
     console.print("  - Your API key is used for authentication only")
     console.print("  - No data is stored by Scribeval beyond local report files")
@@ -293,6 +367,10 @@ def show_data_flow(model: str | None) -> None:
     console.print("  - De-identify clinical data BEFORE running evaluation")
     console.print("  - Ensure you have appropriate consent/authority to process the data")
     console.print("  - Review Anthropic's data retention policy")
+    if will_use_fhir:
+        console.print(
+            "  - Review your FHIR terminology server's data handling policy"
+        )
     console.print()
 
     console.print("[bold]Anthropic API data handling:[/bold]")

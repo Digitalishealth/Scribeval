@@ -7,7 +7,12 @@ import uuid
 from pathlib import Path
 
 from scribeval import __version__
-from scribeval.evaluators import EVALUATOR_REGISTRY, get_evaluator
+from scribeval.clients.fhir import FHIRTerminologyClient
+from scribeval.evaluators import (
+    EVALUATOR_REGISTRY,
+    OPT_IN_DIMENSIONS,
+    get_evaluator,
+)
 from scribeval.judges.base import BaseJudge
 from scribeval.judges.llm import LLMJudge
 from scribeval.models.case import EvaluationCase
@@ -45,6 +50,7 @@ from scribeval.rubrics.loader import load_all_rubrics
 DIMENSION_WEIGHTS: dict[str, float] = {
     "hallucination": 2.0,
     "omission": 1.5,
+    "medication_terminology": 1.5,
     "qnote": 1.2,
     "medicolegal": 1.0,
     "ahpra": 1.0,
@@ -195,10 +201,21 @@ def _generate_summary(scores: list[DimensionScore]) -> str:
     return "\n".join(lines)
 
 
-def _data_flow_statement(judge: BaseJudge) -> str:
-    """Generate explicit disclosure of data handling."""
+def _data_flow_statement(
+    judge: BaseJudge,
+    dimensions: list[str] | None = None,
+    fhir_client: FHIRTerminologyClient | None = None,
+) -> str:
+    """Generate explicit disclosure of data handling.
+
+    Discloses every external service that received data during this
+    evaluation. The medication_terminology dimension introduces a second
+    external service (FHIR terminology server) that receives only extracted
+    medication strings — never the transcript or patient identifiers.
+    """
+    parts: list[str] = []
     if isinstance(judge, LLMJudge):
-        return (
+        parts.append(
             f"Evaluation performed using {judge.judge_model} via the Anthropic API. "
             "The consultation transcript and AI scribe output were sent to "
             "Anthropic's API for evaluation. Anthropic's data retention policy "
@@ -206,10 +223,30 @@ def _data_flow_statement(judge: BaseJudge) -> str:
             "by Scribeval beyond local report files. If a reference note was "
             "provided, it was also sent to the API for comparison."
         )
-    return (
-        f"Evaluation performed locally using {judge.judge_type} scoring. "
-        "No clinical data was transmitted to external services."
+    else:
+        parts.append(
+            f"Evaluation performed locally using {judge.judge_type} scoring. "
+            "No clinical data was transmitted to the judge."
+        )
+
+    used_fhir = (
+        fhir_client is not None
+        and dimensions is not None
+        and "medication_terminology" in dimensions
     )
+    if used_fhir:
+        assert fhir_client is not None
+        parts.append(
+            f"Medication terminology validation sent extracted medication "
+            f"name strings to the FHIR terminology server at "
+            f"{fhir_client.endpoint}. Only medication names (e.g., "
+            f"'amoxicillin') were transmitted — the consultation transcript, "
+            f"patient identifiers, and other clinical context were NOT sent "
+            f"to the FHIR server. For sensitive data, run your own Ontoserver "
+            f"instance and configure SCRIBEVAL_FHIR_TERMINOLOGY_URL."
+        )
+
+    return "\n\n".join(parts)
 
 
 class EvaluationPipeline:
@@ -220,11 +257,17 @@ class EvaluationPipeline:
         dimensions: list[str] | None = None,
         judge: BaseJudge | None = None,
         rubric_dir: Path | None = None,
+        fhir_client: FHIRTerminologyClient | None = None,
     ):
         self.rubric_dir = rubric_dir or DEFAULT_RUBRIC_DIR
         self.rubrics = load_all_rubrics(self.rubric_dir)
         self.judge = judge or LLMJudge()
-        self.dimensions = dimensions or list(EVALUATOR_REGISTRY.keys())
+        # Default to all dimensions EXCEPT opt-in ones (those need explicit
+        # configuration like a FHIR client and may have privacy implications).
+        self.dimensions = dimensions or [
+            d for d in EVALUATOR_REGISTRY if d not in OPT_IN_DIMENSIONS
+        ]
+        self.fhir_client = fhir_client
 
         # Validate requested dimensions
         for dim in self.dimensions:
@@ -242,7 +285,12 @@ class EvaluationPipeline:
         """Run all configured evaluators against a single case."""
         scores: list[DimensionScore] = []
         for dim in self.dimensions:
-            evaluator = get_evaluator(dim, self.rubrics[dim], self.judge)
+            evaluator = get_evaluator(
+                dim,
+                self.rubrics[dim],
+                self.judge,
+                fhir_client=self.fhir_client,
+            )
             score = evaluator.evaluate(case)
             scores.append(score)
 
@@ -255,7 +303,9 @@ class EvaluationPipeline:
             overall_score=_compute_overall_score(scores),
             overall_severity=_compute_overall_severity(scores),
             summary=_generate_summary(scores),
-            data_flow_disclosure=_data_flow_statement(self.judge),
+            data_flow_disclosure=_data_flow_statement(
+                self.judge, self.dimensions, self.fhir_client
+            ),
             scribeval_version=__version__,
         )
 
