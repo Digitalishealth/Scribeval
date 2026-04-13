@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import statistics
 import uuid
 from pathlib import Path
@@ -18,11 +19,13 @@ from scribeval.judges.llm import LLMJudge
 from scribeval.models.case import EvaluationCase
 from scribeval.models.report import (
     AggregateReport,
+    DimensionRunStatistics,
     DimensionStatistics,
     EvaluationReport,
 )
 from scribeval.models.score import DimensionScore, SeverityLevel
-from scribeval.rubrics.loader import load_all_rubrics
+from scribeval.reproducibility import ReproducibilityMetadata, content_hash
+from scribeval.rubrics.loader import RubricSchema, load_all_rubrics
 
 # Dimension weights in overall score, informed by clinical safety literature.
 #
@@ -113,7 +116,10 @@ def compute_severity_penalty(scores: list[DimensionScore]) -> float:
     return round(normalised, 4)
 
 
-def _compute_overall_score(scores: list[DimensionScore]) -> float:
+def _compute_overall_score(
+    scores: list[DimensionScore],
+    specialty_multipliers: dict[str, float] | None = None,
+) -> float:
     """Compute weighted average score across dimensions, adjusted by severity penalty.
 
     The score combines two signals:
@@ -122,13 +128,19 @@ def _compute_overall_score(scores: list[DimensionScore]) -> float:
 
     This dual approach ensures that a note cannot achieve a high overall score
     if it contains critical safety errors, even if other dimensions score well.
+
+    ``specialty_multipliers`` is an optional per-dimension weight multiplier
+    supplied by rubric specialty overlays. For example, an ED overlay may set
+    hallucination's multiplier to 1.3, boosting its contribution.
     """
     if not scores:
         return 0.0
+    multipliers = specialty_multipliers or {}
     total_weight = 0.0
     weighted_sum = 0.0
     for s in scores:
-        weight = DIMENSION_WEIGHTS.get(s.dimension, 1.0)
+        base = DIMENSION_WEIGHTS.get(s.dimension, 1.0)
+        weight = base * multipliers.get(s.dimension, 1.0)
         weighted_sum += s.score * weight
         total_weight += weight
     base_score = weighted_sum / total_weight if total_weight > 0 else 0.0
@@ -249,6 +261,121 @@ def _data_flow_statement(
     return "\n\n".join(parts)
 
 
+def _rubric_hashes(rubrics: dict[str, RubricSchema], dimensions: list[str]) -> dict[str, str]:
+    """Hash each rubric used in an evaluation for provenance."""
+    return {
+        dim: content_hash(rubrics[dim].model_dump_json())
+        for dim in dimensions
+        if dim in rubrics
+    }
+
+
+def _reproducibility_metadata(
+    case: EvaluationCase,
+    judge: BaseJudge,
+    rubrics: dict[str, RubricSchema],
+    dimensions: list[str],
+) -> ReproducibilityMetadata:
+    """Build the reproducibility metadata for a single evaluation run."""
+    ref_hash: str | None = None
+    if case.reference_note is not None:
+        ref_hash = content_hash(case.reference_note.content)
+    temperature: float | None = None
+    seed: int | None = None
+    if isinstance(judge, LLMJudge):
+        temperature = judge.temperature
+        seed = judge.seed
+    return ReproducibilityMetadata(
+        scribeval_version=__version__,
+        judge_type=judge.judge_type,
+        judge_model=judge.judge_model,
+        judge_temperature=temperature,
+        judge_seed=seed,
+        transcript_hash=content_hash(case.transcript.content),
+        scribe_note_hash=content_hash(case.scribe_note.content),
+        reference_note_hash=ref_hash,
+        rubric_hashes=_rubric_hashes(rubrics, dimensions),
+        dimensions=list(dimensions),
+    )
+
+
+def _aggregate_run_scores(
+    dimension: str, runs: list[DimensionScore]
+) -> tuple[DimensionScore, DimensionRunStatistics]:
+    """Combine N runs of the same dimension into an averaged score + variance stats.
+
+    The canonical DimensionScore returned uses the MEAN score across runs and
+    the UNION of all findings (deduplicated by description). Confidence is
+    lowered when the per-run variance is high.
+    """
+    per_run_scores = [r.score for r in runs]
+    mean_score = statistics.mean(per_run_scores)
+    std_score = statistics.stdev(per_run_scores) if len(per_run_scores) > 1 else 0.0
+
+    # 95% CI using normal approximation — fine for our small-N variance
+    # reporting, which is descriptive not inferential.
+    se = std_score / math.sqrt(len(per_run_scores)) if per_run_scores else 0.0
+    ci95_low = max(0.0, mean_score - 1.96 * se)
+    ci95_high = min(1.0, mean_score + 1.96 * se)
+
+    stats = DimensionRunStatistics(
+        dimension=dimension,
+        run_count=len(runs),
+        mean_score=round(mean_score, 4),
+        std_score=round(std_score, 4),
+        ci95_low=round(ci95_low, 4),
+        ci95_high=round(ci95_high, 4),
+        per_run_scores=[round(s, 4) for s in per_run_scores],
+    )
+
+    # Findings union across runs — deduplicate by description to avoid
+    # exploding the report with duplicate issues from a stable judge.
+    seen: set[str] = set()
+    merged_findings = []
+    for run in runs:
+        for finding in run.findings:
+            key = finding.description.strip().lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            merged_findings.append(finding)
+
+    # Confidence: mean of per-run confidences, penalised by variance. A high
+    # std across runs indicates the judge is uncertain in ways it did not
+    # self-report, so we reduce confidence proportionally.
+    raw_confidence = statistics.mean(r.confidence for r in runs)
+    variance_penalty = min(std_score * 2.0, 0.5)
+    effective_confidence = max(0.0, raw_confidence - variance_penalty)
+
+    # Severity: worst severity observed across runs (conservative)
+    severity_order = list(SeverityLevel)
+    worst_severity = SeverityLevel.NONE
+    for run in runs:
+        if severity_order.index(run.severity_summary) > severity_order.index(worst_severity):
+            worst_severity = run.severity_summary
+
+    template = runs[0]
+    merged_reasoning = (
+        f"{template.reasoning}\n\n"
+        f"[Multi-run: mean={mean_score:.3f}, std={std_score:.3f}, "
+        f"95% CI [{ci95_low:.3f}, {ci95_high:.3f}], N={len(runs)}]"
+    )
+
+    averaged = DimensionScore(
+        dimension=dimension,
+        score=round(mean_score, 4),
+        confidence=round(effective_confidence, 4),
+        severity_summary=worst_severity,
+        findings=merged_findings,
+        reasoning=merged_reasoning,
+        rubric_version=template.rubric_version,
+        judge_type=template.judge_type,
+        judge_model=template.judge_model,
+        raw_judge_response=template.raw_judge_response,
+    )
+    return averaged, stats
+
+
 class EvaluationPipeline:
     """Orchestrates evaluation of AI scribe outputs across multiple dimensions."""
 
@@ -258,6 +385,7 @@ class EvaluationPipeline:
         judge: BaseJudge | None = None,
         rubric_dir: Path | None = None,
         fhir_client: FHIRTerminologyClient | None = None,
+        runs: int = 1,
     ):
         self.rubric_dir = rubric_dir or DEFAULT_RUBRIC_DIR
         self.rubrics = load_all_rubrics(self.rubric_dir)
@@ -268,6 +396,9 @@ class EvaluationPipeline:
             d for d in EVALUATOR_REGISTRY if d not in OPT_IN_DIMENSIONS
         ]
         self.fhir_client = fhir_client
+        if runs < 1:
+            raise ValueError("runs must be >= 1")
+        self.runs = runs
 
         # Validate requested dimensions
         for dim in self.dimensions:
@@ -282,31 +413,64 @@ class EvaluationPipeline:
                 )
 
     def evaluate_case(self, case: EvaluationCase) -> EvaluationReport:
-        """Run all configured evaluators against a single case."""
+        """Run all configured evaluators against a single case.
+
+        When runs > 1, each dimension is evaluated N times and the per-run
+        variance is captured in `run_statistics`. The canonical
+        `dimension_scores` list reports the mean across runs.
+
+        If a rubric defines a specialty_overlay for the case's consultation
+        type, the overlay is applied BEFORE the evaluator runs (additional
+        criteria prepended to instructions) and the overlay's
+        weight_multiplier is applied when computing the overall score.
+        """
         scores: list[DimensionScore] = []
+        run_stats: list[DimensionRunStatistics] = []
+        consultation_type = case.consultation_type.value
+
+        # Build the specialty weight multipliers map once — used by the
+        # overall-score computation to boost dimensions that matter more in
+        # this specialty (e.g., hallucination × 1.3 in ED).
+        specialty_multipliers: dict[str, float] = {
+            dim: self.rubrics[dim].specialty_weight_multiplier(consultation_type)
+            for dim in self.dimensions
+        }
+
         for dim in self.dimensions:
+            specialty_rubric = self.rubrics[dim].for_specialty(consultation_type)
             evaluator = get_evaluator(
                 dim,
-                self.rubrics[dim],
+                specialty_rubric,
                 self.judge,
                 fhir_client=self.fhir_client,
             )
-            score = evaluator.evaluate(case)
-            scores.append(score)
+            if self.runs == 1:
+                scores.append(evaluator.evaluate(case))
+                continue
+
+            per_run = [evaluator.evaluate(case) for _ in range(self.runs)]
+            averaged, stats = _aggregate_run_scores(dim, per_run)
+            scores.append(averaged)
+            run_stats.append(stats)
 
         return EvaluationReport(
             report_id=_generate_id(),
             case_id=case.case_id,
             scribe_product=case.scribe_note.scribe_product,
-            consultation_type=case.consultation_type.value,
+            consultation_type=consultation_type,
             dimension_scores=scores,
-            overall_score=_compute_overall_score(scores),
+            overall_score=_compute_overall_score(scores, specialty_multipliers),
             overall_severity=_compute_overall_severity(scores),
             summary=_generate_summary(scores),
             data_flow_disclosure=_data_flow_statement(
                 self.judge, self.dimensions, self.fhir_client
             ),
             scribeval_version=__version__,
+            reproducibility=_reproducibility_metadata(
+                case, self.judge, self.rubrics, self.dimensions
+            ),
+            run_statistics=run_stats,
+            specialty_weight_multipliers=specialty_multipliers,
         )
 
     def evaluate_batch(self, cases: list[EvaluationCase]) -> AggregateReport:
