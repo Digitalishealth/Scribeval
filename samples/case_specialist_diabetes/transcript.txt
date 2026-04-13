@@ -1,0 +1,87 @@
+Dr Nguyen: Good afternoon, Mr Thompson. I'm Dr Nguyen, one of the endocrinology registrars. I understand Dr Ali referred you to us for review of your diabetes. How have you been?
+
+Patient: Afternoon doctor. Yeah, been struggling a bit to be honest. The sugar's been all over the place.
+
+Dr Nguyen: Let me get a picture. How long have you had type 2 diabetes?
+
+Patient: About twelve years now. Started on metformin, then they added something else a few years back — I think it's gliclazide.
+
+Dr Nguyen: And are you on anything else currently?
+
+Patient: Metformin 1000 twice a day, gliclazide 80 twice a day, and a statin — atorvastatin 40. And ramipril 10 for the blood pressure. I was also put on Ozempic about six months ago but I stopped it — it was making me really nauseous and I couldn't tolerate it.
+
+Dr Nguyen: How are your sugars running now?
+
+Patient: All over the place. Fasting are usually in the tens, sometimes up to 14. After meals it's even higher, I've seen 18 on the meter. I've got an HbA1c from last week — 9.8.
+
+Dr Nguyen: That's higher than we'd like. Any hypos?
+
+Patient: Yeah I've had a few on the gliclazide. Two or three times in the last month where I've gone shaky and sweaty and had to have something sweet. Not bad enough to need help.
+
+Dr Nguyen: Any complications of the diabetes that you know of? Kidney, eyes, nerves?
+
+Patient: The eye doctor says there's some background retinopathy but nothing needing treatment. My kidneys — I think the last check said I had some protein in my urine. My feet — I get some tingling and burning at night, worse in summer.
+
+Dr Nguyen: Any chest pain, shortness of breath?
+
+Patient: I get a bit puffed walking up hills now, not like I used to. No chest pain.
+
+Dr Nguyen: Smoker?
+
+Patient: I quit eight years ago. Smoked a pack a day for twenty years before that.
+
+Dr Nguyen: Alcohol?
+
+Patient: A few beers on weekends. Maybe four or five beers on a Saturday.
+
+Dr Nguyen: Diet and exercise?
+
+Patient: Could be better honestly. I know I should be walking more. My wife cooks healthy most nights but I'll still have chips or a pie for lunch sometimes.
+
+Dr Nguyen: Family history of diabetes or heart disease?
+
+Patient: My dad had diabetes and had a heart attack at 62. My brother's got diabetes too.
+
+Dr Nguyen: Let me examine you. I'll check your blood pressure, have a look at your feet, listen to your heart and chest.
+
+[Examination]
+
+Dr Nguyen: Blood pressure 148 over 92, pulse 78 regular. BMI 33. Foot examination — monofilament testing shows reduced sensation in both feet, pulses are present but reduced on the right. No ulcers, no deformity. Heart sounds dual, no murmurs. Chest clear. Abdomen unremarkable.
+
+Patient: So what do we do?
+
+Dr Nguyen: A few things going on. Your HbA1c at 9.8 is well above our target of under 7 for someone like you — and we need to bring that down carefully, because we've also got some hypoglycaemia on the gliclazide, which worries me more than the average sugar in isolation. Your blood pressure is not at target either; we want under 130/80 given your diabetes and proteinuria. You've got early peripheral neuropathy, background retinopathy, and likely diabetic nephropathy. Plus a strong cardiovascular family history and previous smoking.
+
+Patient: That's a lot.
+
+Dr Nguyen: It is, but let's take it one step at a time. First, the diabetes. I'd like to stop the gliclazide — the hypos make it unsafe for you and it's not doing the job. Instead, I'd like to restart a GLP-1 agonist. The nausea usually settles, and I want to start much lower this time — a very small dose and titrate up slowly. We can also consider a SGLT2 inhibitor like empagliflozin, which would help your kidneys and your cardiovascular risk at the same time. It can cause thrush and urinary infections so we'll need to watch for that.
+
+Patient: What about the insulin — will I need that?
+
+Dr Nguyen: Eventually maybe, but let's try optimising the tablets and the injectable first. If we can't get your HbA1c under 8 in the next three to six months we'll need to talk about basal insulin.
+
+Patient: Okay.
+
+Dr Nguyen: Second, blood pressure. Ramipril 10 is already a good dose. I'd like to add a second agent — amlodipine 5 mg to start. Monitor for ankle swelling.
+
+Third, I want to check a few things. I'll order a repeat HbA1c in three months, urine ACR to quantify the proteinuria, eGFR, fasting lipids, and we'll book you in with the diabetic foot clinic for a more detailed assessment and education.
+
+Patient: Alright.
+
+Dr Nguyen: I'd also strongly recommend a cardiology referral — given your family history, the proteinuria, and the exertional shortness of breath, I want to rule out ischaemic heart disease. I'll write to Dr Ali to arrange that, or we can do it from here if you prefer.
+
+Patient: Whatever's easier.
+
+Dr Nguyen: I'll organise it from here. And I want to see you back in six weeks to check how you're tolerating the new medications and to adjust things if needed. Any questions?
+
+Patient: If I get a hypo before I stop the gliclazide?
+
+Dr Nguyen: Good question — take your next dose of gliclazide as usual today, and stop it from tomorrow morning. That avoids a rebound. If you have a hypo symptoms — shaky, sweaty, confused — have 15 grams of fast-acting sugar: half a cup of juice, or glucose tablets if you have them. Wait 15 minutes, re-check, and if still low repeat. If you can't get on top of it or you feel very unwell, call an ambulance.
+
+Patient: Got it. Thanks doctor.
+
+Dr Nguyen: One more thing — do you have anyone at home who knows what to do if you have a severe hypo?
+
+Patient: My wife knows roughly.
+
+Dr Nguyen: I'd suggest you both watch a short video on it — I'll send you a link. And please take your glucometer everywhere until we're settled.

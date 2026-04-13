@@ -1,0 +1,25 @@
+Endocrinology Registrar Review
+
+Patient: Mr Thompson
+Presenting complaint: Review of type 2 diabetes
+
+History:
+Twelve years of type 2 diabetes, currently on metformin 1000 BD, gliclazide 80 BD, atorvastatin 40, and ramipril 10. Previously trialled semaglutide (Ozempic) for six months but stopped due to intolerance. HbA1c last week was 9.8, with fasting glucose in the 10-14 range and postprandial up to 18. No recent hypoglycaemia.
+
+Known background retinopathy, no active treatment needed. Early peripheral neuropathy with nocturnal paraesthesia in both feet. Proteinuria reported on previous urine testing. Exertional dyspnoea on hills, denies chest pain. Ex-smoker (quit 8 years ago, 20 pack-years). Social alcohol use.
+
+Family history: father with diabetes and myocardial infarction, brother with diabetes.
+
+Examination:
+BP 148/92. Pulse 78 regular. BMI 33. Feet: reduced monofilament sensation bilaterally, pulses present but reduced on right. No ulcers. Heart sounds dual, chest clear, abdomen unremarkable.
+
+Assessment:
+Poorly controlled type 2 diabetes with evidence of microvascular complications (retinopathy, early neuropathy, likely nephropathy). Suboptimal blood pressure control. High cardiovascular risk.
+
+Plan:
+1. Increase metformin to maximum tolerated dose.
+2. Commence empagliflozin 10 mg daily for renal protection and glycaemic control.
+3. Add amlodipine 5 mg for blood pressure.
+4. Repeat HbA1c in 3 months.
+5. Urine ACR, eGFR, fasting lipids.
+6. Review in 6 weeks.

@@ -1,0 +1,62 @@
+Endocrinology Outpatient Review
+Patient: Mr Thompson
+Referring GP: Dr Ali
+Attending: Dr Nguyen (Endocrinology Registrar)
+
+History of presenting complaint:
+12-year history of type 2 diabetes, suboptimal glycaemic control. HbA1c 9.8% (last week). Home capillary glucose: fasting 10–14 mmol/L, post-prandial up to 18 mmol/L. Reports 2–3 symptomatic hypoglycaemic episodes in the past month on gliclazide (shaky, sweaty, self-treated, no third-party assistance).
+
+Previously trialled semaglutide for ~6 months, stopped due to intractable nausea. Otherwise adherent.
+
+Complications:
+- Retinopathy — background, no treatment indicated at last review.
+- Neuropathy — bilateral nocturnal paraesthesia and burning in feet.
+- Nephropathy — prior documentation of proteinuria (quantification pending).
+- Exertional dyspnoea, no chest pain. Cardiovascular risk high.
+
+Medications:
+Metformin 1 g BD, gliclazide 80 mg BD, atorvastatin 40 mg, ramipril 10 mg.
+
+Social/Risk:
+Ex-smoker (quit 8 years ago, 20 pack-years). 4–5 standard drinks on Saturdays. BMI 33. Diet and exercise self-reported suboptimal.
+
+Family history:
+Father: T2DM, MI aged 62. Brother: T2DM.
+
+Examination:
+BP 148/92 mmHg, HR 78 regular. BMI 33.
+Feet: Reduced 10g monofilament sensation bilaterally. Pedal pulses present, reduced on right. No ulceration, no deformity.
+CVS: HS dual, no murmurs. Chest clear. Abdomen unremarkable.
+
+Assessment:
+1. Poorly controlled T2DM (HbA1c 9.8%) with recurrent sulfonylurea-related hypoglycaemia.
+2. Microvascular complications: retinopathy, peripheral neuropathy, likely diabetic nephropathy.
+3. Suboptimal BP control (target <130/80 given diabetes + proteinuria).
+4. High cardiovascular risk — family history of premature IHD, proteinuria, exertional dyspnoea, ex-smoker.
+
+Plan:
+Diabetes:
+1. STOP gliclazide — unsafe given recurrent hypoglycaemia. Take today's dose as usual, cease from tomorrow morning to avoid rebound hyperglycaemia.
+2. RESTART GLP-1 agonist (semaglutide) at low dose with slow titration. Counselled on nausea management and gradual dose escalation.
+3. COMMENCE empagliflozin 10 mg daily — dual benefit for glycaemic and renal / cardiovascular outcomes. Counselled on genital mycotic infection and UTI risk.
+4. If HbA1c remains >8% at 3 months, discuss basal insulin initiation.
+
+Blood pressure:
+5. ADD amlodipine 5 mg daily. Monitor for peripheral oedema. Target <130/80.
+
+Investigations:
+6. Repeat HbA1c in 3 months.
+7. Urine ACR to quantify proteinuria.
+8. eGFR, fasting lipids.
+
+Referrals:
+9. Diabetic foot clinic — education and detailed assessment.
+10. Cardiology — given strong family history of premature IHD, proteinuria, and exertional dyspnoea. Letter to be sent from this clinic. To rule out ischaemic heart disease.
+
+Safety-netting / Patient education:
+11. Hypoglycaemia education: Symptoms (shakiness, sweating, confusion); treatment with 15g fast-acting carbohydrate; retest in 15 min and repeat if required; call ambulance if severe or unable to self-treat.
+12. Household support: Wife to be educated on severe hypo recognition and management; educational video link to be shared.
+13. Always carry glucometer.
+14. Review in 6 weeks for medication tolerance and titration.
+
+Discussion: The rationale for each medication change, expected benefits and side effects, and the plan were explained to the patient and his questions answered. He verbalised understanding and agreement.

@@ -9,6 +9,8 @@ Each case contains deliberately planted errors in the `scribe_output.txt` to tes
 | `case_gp_respiratory` | GP consultation for URTI | Penicillin allergy omitted; follow-up plan incomplete |
 | `case_ed_chest_pain` | ED presentation with chest pain | ECG finding fabricated; red flag documentation missing |
 | `case_psych_review` | Psychiatric review | Risk assessment incompletely captured; clinical reasoning simplified |
+| `case_paeds_fever` | Paediatric febrile illness with otitis media | Weight-based dosing omitted; safety-netting red flags missing; allergy status not documented; review plan incomplete |
+| `case_specialist_diabetes` | Endocrinology review of poorly controlled T2DM | Hypoglycaemia history hallucinated as absent; sulfonylurea cessation omitted; cardiology referral omitted; GLP-1 restart plan omitted; unwarranted metformin dose change fabricated |
 
 ## File Structure
 
@@ -16,3 +18,9 @@ Each case directory contains:
 - `transcript.txt` — Simulated consultation transcript
 - `scribe_output.txt` — AI scribe output with deliberate errors
 - `reference_note.txt` — Gold-standard clinician note for comparison
+
+## Ground-Truth Errors as a Benchmark
+
+These cases are designed so that a competent evaluator **should** find the planted errors. They act as a minimal regression benchmark: if Scribeval (or any scribe evaluator) fails to flag the hallucinated hypoglycaemia status in `case_specialist_diabetes`, that is a concrete failure to investigate.
+
+For a programmatic benchmark that doesn't rely on human-curated cases, see the `scribeval verify-detection` command, which injects deterministic errors into any clean note and measures recall.
