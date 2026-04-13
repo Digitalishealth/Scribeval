@@ -2,6 +2,13 @@
 
 **An open evaluation framework for AI medical scribes in Australian healthcare.**
 
+> ⚠️ **NOT A MEDICAL DEVICE.** Scribeval is a research and quality-assurance
+> tool. It is **not** TGA-registered, **not** clinically validated, and must
+> **not** be used as the sole basis for clinical, procurement, or regulatory
+> decisions. Results are indicative quality and safety signals only.
+> See [`LICENSE`](LICENSE), [`SECURITY.md`](SECURITY.md), and
+> [`METHODOLOGY.md`](METHODOLOGY.md) for the full disclaimer and limitations.
+
 Scribeval provides a structured, evidence-based harness for scoring any AI medical scribe against clinical safety dimensions. It is grounded in Australian regulatory requirements (AHPRA, RACGP, Medicare/PBS) and current medical literature on clinical documentation quality.
 
 ## Why Scribeval?
@@ -82,6 +89,29 @@ scribeval validate-rubric rubrics/omission.yaml
 # See what data would be sent where
 scribeval show-data-flow
 ```
+
+## Critique-defence capabilities
+
+Scribeval ships with a suite of features designed to answer the critiques
+a serious clinician or scribe vendor will raise:
+
+| Capability | Critique it answers |
+|-----------|---------------------|
+| `--runs N` multi-run variance with 95% CI | "LLM judges are stochastic, you got lucky" |
+| Content hashing and temperature=0 by default | "This isn't reproducible" |
+| `scribeval compare` (blinded head-to-head) | "You favoured your vendor" |
+| `scribeval verify-detection` (error injection) | "How do we know the evaluator actually finds errors?" |
+| `scribeval calibrate` (Cohen's κ, ICC(2,1)) | "How does this agree with clinicians?" |
+| `EnsembleJudge` (multi-model) | "A single LLM is biased" |
+| `HumanJudge` (TTY) | "Run it fully offline with real clinicians" |
+| Specialty rubric overlays | "ED isn't the same as GP" |
+| `scribeval sensitivity` | "The weights are arbitrary" |
+| ASR-noise simulator | "Your transcripts are too clean" |
+| `ProfilingJudge` cost and latency reporting | "We can't afford to run this regularly" |
+
+See [`ROADMAP.md`](ROADMAP.md) for deferred items, and
+[`CHANGELOG.md`](CHANGELOG.md) for the full list of capabilities in this
+release.
 
 ## Sample Cases
 
