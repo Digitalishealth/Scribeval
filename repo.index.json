@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "repository": "Digitalishealth/Scribeval",
+  "default_branch": "claude/ai-scribe-evaluation-framework-4lfTP",
+  "visibility": "private",
+  "purpose": "AI scribe evaluation framework repository.",
+  "primary_domains": ["ai-scribe", "evaluation", "clinical-documentation"],
+  "self_index": {"machine": "repo.index.json", "human": "REPOSITORY_INDEX.md"},
+  "related_indexes": [],
+  "known_entrypoints": {"docs": [], "skills": [], "agents": []},
+  "discovery_rules": ["Read repo.index.json first.", "Use REPOSITORY_INDEX.md for human context.", "Do not rely on directory enumeration for skill discovery."]
+}
