@@ -30,9 +30,9 @@ class TestTranscript:
 
 class TestScribeNote:
     def test_basic_creation(self):
-        note = ScribeNote(content="Assessment: Viral URTI", scribe_product="heidi")
+        note = ScribeNote(content="Assessment: Viral URTI", scribe_product="ScribeA")
         assert note.content == "Assessment: Viral URTI"
-        assert note.scribe_product == "heidi"
+        assert note.scribe_product == "ScribeA"
 
     def test_optional_fields(self):
         note = ScribeNote(content="Note content")

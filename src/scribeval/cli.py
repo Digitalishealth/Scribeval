@@ -84,7 +84,7 @@ def main() -> None:
     "--scribe-product",
     "candidate_label",
     default=None,
-    help="Label for the candidate note, such as GP, Heidi, or Lyrebird.",
+    help="Label for the candidate note, such as GP, ScribeA, or ScribeB.",
 )
 @click.option(
     "--dimensions",

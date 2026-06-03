@@ -18,10 +18,11 @@ clinical documentation quality.
 
 ## Why Scribeval?
 
-AI medical scribes (Heidi Health, Lyrebird, Nabla, etc.) generate clinical notes
-from consultations, but there is no standardised, open benchmark to measure the
-quality of the final note against the whole transcript — particularly in the
-Australian context. Scribeval fills this gap.
+AI medical scribes generate clinical notes from consultations, but there is no
+standardised, open benchmark to measure the quality of the final note against
+the whole transcript — particularly in the Australian context. Scribeval fills
+this gap. It is product-agnostic: any scribe output can be submitted as a
+candidate note.
 
 Its benchmark role is analogous to public tools such as the SNOMED CT Entity
 Linking Benchmark, but the target is different: Scribeval scores
@@ -98,7 +99,7 @@ scribeval evaluate \
     --transcript consultation.txt \
     --candidate-note final_note.txt \
     --consultation-type gp_standard \
-    --candidate-label Heidi
+    --candidate-label ScribeA
 
 # Backward-compatible aliases still work:
 #   --scribe-note is an alias for --candidate-note
@@ -108,7 +109,7 @@ scribeval evaluate \
 scribeval compare \
     --transcript consultation.txt \
     --candidate-note GP=gp_note.txt \
-    --candidate-note Heidi=heidi_note.txt \
+    --candidate-note ScribeA=scribe_a_note.txt \
     --runs 3 \
     --output comparison_report \
     --format both
@@ -162,8 +163,8 @@ transcript and save the comparison report:
 scribeval compare \
     --transcript consultation.txt \
     --candidate-note GP=gp_note.txt \
-    --candidate-note Heidi=heidi_note.txt \
-    --candidate-note Lyrebird=lyrebird_note.txt \
+    --candidate-note ScribeA=scribe_a_note.txt \
+    --candidate-note ScribeB=scribe_b_note.txt \
     --runs 3 \
     --output product_quality_comparison \
     --format both
@@ -188,8 +189,8 @@ command. The manifest requires every case to include the same submission labels:
       "transcript": "case_001/transcript.txt",
       "candidate_notes": {
         "GP": "case_001/gp_note.txt",
-        "Heidi": "case_001/heidi_note.txt",
-        "Lyrebird": "case_001/lyrebird_note.txt"
+        "ScribeA": "case_001/scribe_a_note.txt",
+        "ScribeB": "case_001/scribe_b_note.txt"
       }
     }
   ]

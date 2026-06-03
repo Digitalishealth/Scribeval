@@ -30,9 +30,9 @@ def test_compare_requires_at_least_two(sample_transcript: str) -> None:
 def test_compare_assigns_anonymous_labels(sample_transcript: str) -> None:
     pipeline = _pipeline(MockJudge())
     submissions = [
-        NoteSubmission("heidi", "note A content for testing"),
-        NoteSubmission("lyrebird", "note B content for testing"),
-        NoteSubmission("nabla", "note C content for testing"),
+        NoteSubmission("ScribeA", "note A content for testing"),
+        NoteSubmission("ScribeB", "note B content for testing"),
+        NoteSubmission("ScribeC", "note C content for testing"),
     ]
     result = run_blinded_comparison(
         transcript_content=sample_transcript,
@@ -41,7 +41,7 @@ def test_compare_assigns_anonymous_labels(sample_transcript: str) -> None:
         rng_seed=1234,
     )
     assert set(result.label_to_product.keys()) == {"S1", "S2", "S3"}
-    assert set(result.label_to_product.values()) == {"heidi", "lyrebird", "nabla"}
+    assert set(result.label_to_product.values()) == {"ScribeA", "ScribeB", "ScribeC"}
     assert result.label_to_submission == result.label_to_product
     assert len(result.per_label_reports) == 3
 
@@ -49,9 +49,9 @@ def test_compare_assigns_anonymous_labels(sample_transcript: str) -> None:
 def test_compare_is_deterministic_with_seed(sample_transcript: str) -> None:
     pipeline = _pipeline(MockJudge())
     subs = [
-        NoteSubmission("heidi", "A"),
-        NoteSubmission("lyrebird", "B"),
-        NoteSubmission("nabla", "C"),
+        NoteSubmission("ScribeA", "A"),
+        NoteSubmission("ScribeB", "B"),
+        NoteSubmission("ScribeC", "C"),
     ]
     r1 = run_blinded_comparison(sample_transcript, subs, pipeline, rng_seed=7)
     r2 = run_blinded_comparison(sample_transcript, subs, pipeline, rng_seed=7)
@@ -63,8 +63,8 @@ def test_compare_strips_product_name(sample_transcript: str) -> None:
     result = run_blinded_comparison(
         sample_transcript,
         [
-            NoteSubmission("heidi", "A"),
-            NoteSubmission("lyrebird", "B"),
+            NoteSubmission("ScribeA", "A"),
+            NoteSubmission("ScribeB", "B"),
         ],
         pipeline=pipeline,
     )
@@ -80,9 +80,9 @@ def test_compare_keeps_legacy_scribe_submission(sample_transcript: str) -> None:
     result = run_blinded_comparison(
         sample_transcript,
         [
-            ScribeSubmission(product_name="heidi", scribe_note_content="A"),
+            ScribeSubmission(product_name="ScribeA", scribe_note_content="A"),
             ScribeSubmission(product_name="gp", scribe_note_content="B"),
         ],
         pipeline=pipeline,
     )
-    assert set(result.label_to_product.values()) == {"heidi", "gp"}
+    assert set(result.label_to_product.values()) == {"ScribeA", "gp"}

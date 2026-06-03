@@ -126,7 +126,7 @@ class TestCLI:
                 "--candidate-note",
                 str(ai_note),
                 "--candidate-label",
-                "Heidi",
+                "ScribeA",
                 "--dimensions",
                 "omission",
                 "--format",
@@ -138,7 +138,7 @@ class TestCLI:
 
         assert result.exit_code == 0, result.output
         report_json = output.with_suffix(".json").read_text()
-        assert '"candidate_label": "Heidi"' in report_json
+        assert '"candidate_label": "ScribeA"' in report_json
 
     def test_evaluate_keeps_scribe_note_alias(self, tmp_path, monkeypatch):
         monkeypatch.setattr("scribeval.cli.LLMJudge", CLIMockJudge)
@@ -215,7 +215,7 @@ class TestCLI:
                 "--transcript",
                 str(transcript),
                 "--scribe-note",
-                f"heidi={ai_note}",
+                f"ScribeA={ai_note}",
                 "--scribe-note",
                 f"gp={gp_note}",
                 "--dimensions",
