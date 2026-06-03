@@ -16,7 +16,7 @@ class AHPRAComplianceEvaluator(BaseEvaluator):
         inputs = self._format_inputs(case)
 
         return f"""\
-You are evaluating an AI medical scribe's output for AHPRA COMPLIANCE — \
+You are evaluating a candidate final clinical note for AHPRA COMPLIANCE — \
 alignment with the Australian Health Practitioner Regulation Agency standards \
 and the Medical Board of Australia's Good Medical Practice code of conduct.
 
@@ -34,7 +34,7 @@ the Medical Board's guidelines on record-keeping.
 
 ## Your Task
 
-Assess the AI scribe output against the following AHPRA-relevant areas, \
+Assess the candidate final note against the following AHPRA-relevant areas, \
 considering what was discussed in the consultation:
 
 1. RECORD-KEEPING (Good Medical Practice 8.4):

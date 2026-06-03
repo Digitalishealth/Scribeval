@@ -1,4 +1,4 @@
-"""Omission evaluator: detects clinically significant information dropped from scribe output."""
+"""Omission evaluator: detects clinically significant information dropped from a note."""
 
 from __future__ import annotations
 
@@ -16,9 +16,9 @@ class OmissionEvaluator(BaseEvaluator):
         inputs = self._format_inputs(case)
 
         return f"""\
-You are evaluating an AI medical scribe's output for CLINICAL OMISSIONS — \
+You are evaluating a candidate final clinical note for CLINICAL OMISSIONS — \
 clinically significant information present in the consultation transcript \
-that has been dropped from the scribe's note.
+that has been dropped from the final note.
 
 {rubric}
 
@@ -32,7 +32,7 @@ that has been dropped from the scribe's note.
 
 Systematically go through the consultation transcript and identify every \
 piece of clinically relevant information. For each piece, check whether it \
-appears (verbatim or appropriately paraphrased) in the AI scribe output.
+appears (verbatim or appropriately paraphrased) in the candidate final note.
 
 Remember:
 - Not all transcript content belongs in a clinical note. Social pleasantries, \

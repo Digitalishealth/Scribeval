@@ -23,7 +23,7 @@ Respond with ONLY a JSON object matching this exact schema:
       "description": "<what was found>",
       "severity": "<none|low|moderate|high|critical>",
       "transcript_excerpt": "<relevant excerpt from transcript, or null>",
-      "note_excerpt": "<relevant excerpt from scribe note, or null>",
+      "note_excerpt": "<relevant excerpt from candidate note, or null>",
       "clinical_impact": "<potential clinical impact, or null>"
     }
   ]
@@ -119,7 +119,7 @@ class BaseEvaluator(ABC):
         parts = []
         parts.append("## Consultation Transcript")
         parts.append(f"```\n{case.transcript.content}\n```")
-        parts.append("\n## AI Scribe Output Note")
+        parts.append("\n## Candidate Final Note")
         parts.append(f"```\n{case.scribe_note.content}\n```")
 
         if case.reference_note:

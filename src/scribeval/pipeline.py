@@ -229,11 +229,11 @@ def _data_flow_statement(
     if isinstance(judge, LLMJudge):
         parts.append(
             f"Evaluation performed using {judge.judge_model} via the Anthropic API. "
-            "The consultation transcript and AI scribe output were sent to "
+            "The consultation transcript and candidate final note were sent to "
             "Anthropic's API for evaluation. Anthropic's data retention policy "
             "applies (see https://www.anthropic.com/policies). No data is stored "
             "by Scribeval beyond local report files. If a reference note was "
-            "provided, it was also sent to the API for comparison."
+            "provided, it was also sent to the API as optional adjudication context."
         )
     else:
         parts.append(
@@ -377,7 +377,7 @@ def _aggregate_run_scores(
 
 
 class EvaluationPipeline:
-    """Orchestrates evaluation of AI scribe outputs across multiple dimensions."""
+    """Orchestrates evaluation of candidate notes across multiple dimensions."""
 
     def __init__(
         self,
@@ -457,6 +457,7 @@ class EvaluationPipeline:
             report_id=_generate_id(),
             case_id=case.case_id,
             scribe_product=case.scribe_note.scribe_product,
+            candidate_label=case.scribe_note.scribe_product,
             consultation_type=consultation_type,
             dimension_scores=scores,
             overall_score=_compute_overall_score(scores, specialty_multipliers),

@@ -49,7 +49,7 @@ class PDQI9Evaluator(BaseEvaluator):
         inputs = self._format_inputs(case)
 
         return f"""\
-You are evaluating an AI medical scribe's output using the PDQI-9 \
+You are evaluating a candidate final clinical note using the PDQI-9 \
 (Physician Documentation Quality Instrument), a validated 9-item \
 instrument for assessing clinical note quality.
 
@@ -66,7 +66,7 @@ then compute an overall normalised score.
 
 ## Your Task
 
-Score the AI scribe output on each of the 9 PDQI-9 items below. Use the \
+Score the candidate final note on each of the 9 PDQI-9 items below. Use the \
 consultation transcript as ground truth for accuracy and completeness. \
 If a reference note is provided, use it as an additional quality benchmark.
 

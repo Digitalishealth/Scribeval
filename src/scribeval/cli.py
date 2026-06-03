@@ -1,7 +1,8 @@
-"""Scribeval CLI — evaluate AI medical scribe outputs."""
+"""Scribeval CLI — evaluate final clinical notes against transcripts."""
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import click
@@ -9,7 +10,9 @@ from rich.console import Console
 from rich.table import Table
 
 from scribeval import __version__
+from scribeval.benchmark import BenchmarkCase, BenchmarkReport, run_benchmark
 from scribeval.clients.fhir import FHIRTerminologyClient
+from scribeval.compare import BlindedReport, NoteSubmission
 from scribeval.config import get_settings
 from scribeval.evaluators import (
     DIMENSION_DESCRIPTIONS,
@@ -28,6 +31,14 @@ from scribeval.models.report import EvaluationReport
 from scribeval.models.score import SeverityLevel
 from scribeval.pipeline import EvaluationPipeline
 from scribeval.profiling import ProfilingJudge
+from scribeval.reporting.benchmark_report import (
+    render_benchmark_json,
+    render_benchmark_markdown,
+)
+from scribeval.reporting.comparison_report import (
+    render_comparison_json,
+    render_comparison_markdown,
+)
 from scribeval.reporting.json_report import render_json
 from scribeval.reporting.markdown_report import render_markdown
 from scribeval.rubrics.loader import load_rubric
@@ -38,7 +49,7 @@ console = Console()
 @click.group()
 @click.version_option(version=__version__, prog_name="scribeval")
 def main() -> None:
-    """Scribeval: Evaluation framework for AI medical scribes."""
+    """Scribeval: Benchmark framework for transcript-to-note quality."""
 
 
 @main.command()
@@ -49,16 +60,18 @@ def main() -> None:
     help="Path to consultation transcript file.",
 )
 @click.option(
+    "--candidate-note",
     "--scribe-note",
+    "candidate_note",
     required=True,
     type=click.Path(exists=True, path_type=Path),
-    help="Path to AI scribe output note file.",
+    help="Path to candidate final note file. --scribe-note is kept as an alias.",
 )
 @click.option(
     "--reference-note",
     type=click.Path(exists=True, path_type=Path),
     default=None,
-    help="Path to gold-standard reference note (optional).",
+    help="Path to optional adjudication reference note.",
 )
 @click.option(
     "--consultation-type",
@@ -67,9 +80,11 @@ def main() -> None:
     help="Type of consultation.",
 )
 @click.option(
+    "--candidate-label",
     "--scribe-product",
+    "candidate_label",
     default=None,
-    help="Name of the AI scribe product being evaluated.",
+    help="Label for the candidate note, such as GP, Heidi, or Lyrebird.",
 )
 @click.option(
     "--dimensions",
@@ -125,10 +140,10 @@ def main() -> None:
 )
 def evaluate(
     transcript: Path,
-    scribe_note: Path,
+    candidate_note: Path,
     reference_note: Path | None,
     consultation_type: str,
-    scribe_product: str | None,
+    candidate_label: str | None,
     dimensions: str | None,
     output: Path | None,
     output_format: str,
@@ -139,7 +154,7 @@ def evaluate(
     seed: int | None,
     profile: bool,
 ) -> None:
-    """Evaluate an AI scribe's output against clinical safety dimensions."""
+    """Evaluate a final clinical note against the whole transcript."""
     settings = get_settings()
 
     # Parse dimensions
@@ -155,8 +170,8 @@ def evaluate(
         consultation_type=ConsultationType(consultation_type),
         transcript=Transcript(content=transcript.read_text()),
         scribe_note=ScribeNote(
-            content=scribe_note.read_text(),
-            scribe_product=scribe_product,
+            content=candidate_note.read_text(),
+            scribe_product=candidate_label,
         ),
         reference_note=(
             ReferenceNote(content=reference_note.read_text())
@@ -195,10 +210,10 @@ def evaluate(
     # Show data flow before evaluation
     console.print("\n[bold]Data Flow Disclosure[/bold]")
     console.print(
-        f"  Transcript and scribe note will be sent to {judge_model} via Anthropic API."
+        f"  Transcript and candidate note will be sent to {judge_model} via Anthropic API."
     )
     if reference_note:
-        console.print("  Reference note will also be sent for comparison.")
+        console.print("  Reference note will also be sent as optional adjudication context.")
     if fhir_client is not None:
         console.print(
             f"  Extracted medication names (no transcript, no PHI) will be "
@@ -371,8 +386,8 @@ def show_data_flow(model: str | None, dimensions: str | None) -> None:
     console.print("[bold]Service 1: Anthropic API (always used)[/bold]")
     console.print("[bold]What is sent to the Anthropic API:[/bold]")
     console.print("  1. The consultation transcript (full text)")
-    console.print("  2. The AI scribe output note (full text)")
-    console.print("  3. The reference note, if provided (full text)")
+    console.print("  2. The candidate final note (full text)")
+    console.print("  3. The reference note, if provided as adjudication context (full text)")
     console.print("  4. The evaluation rubric (scoring criteria)")
     console.print(f"  5. Model: {judge_model}")
     console.print()
@@ -389,7 +404,7 @@ def show_data_flow(model: str | None, dimensions: str | None) -> None:
         console.print("  - Extracted medication name strings only (e.g. 'amoxicillin')")
         console.print("[bold]What is NOT sent to the FHIR server:[/bold]")
         console.print("  - The consultation transcript")
-        console.print("  - The full scribe note")
+        console.print("  - The full candidate note")
         console.print("  - Patient identifiers or other clinical context")
         console.print(
             "  - There is NO default endpoint. Set "
@@ -435,22 +450,23 @@ def show_data_flow(model: str | None, dimensions: str | None) -> None:
     "--transcript",
     required=True,
     type=click.Path(exists=True, path_type=Path),
-    help="Shared consultation transcript all scribes tried to summarise.",
+    help="Shared consultation transcript all candidate notes summarise.",
 )
 @click.option(
+    "--candidate-note",
     "--scribe-note",
-    "scribe_notes",
+    "candidate_notes",
     multiple=True,
     required=True,
     type=str,
-    help="Scribe notes to compare, formatted as 'label=path'. Repeat flag "
-    "for each scribe. Labels are stripped from the blinded run.",
+    help="Candidate notes to compare, formatted as 'label=path'. Repeat flag "
+    "for each submission. --scribe-note is kept as an alias.",
 )
 @click.option(
     "--reference-note",
     type=click.Path(exists=True, path_type=Path),
     default=None,
-    help="Optional gold-standard reference note.",
+    help="Optional adjudication reference note. This is not scored as a submission.",
 )
 @click.option(
     "--consultation-type",
@@ -463,6 +479,19 @@ def show_data_flow(model: str | None, dimensions: str | None) -> None:
     help="Comma-separated dimensions to evaluate.",
 )
 @click.option(
+    "--rubric-dir",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+    help="Directory containing rubric YAML files.",
+)
+@click.option(
+    "--runs",
+    type=int,
+    default=1,
+    show_default=True,
+    help="Number of times to evaluate each dimension. >1 reports variance.",
+)
+@click.option(
     "--seed",
     type=int,
     default=None,
@@ -473,38 +502,55 @@ def show_data_flow(model: str | None, dimensions: str | None) -> None:
     default=None,
     help="Claude model to use.",
 )
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Output file path for the comparison report.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["json", "markdown", "both"], case_sensitive=False),
+    default=None,
+    help="Optional comparison report output format.",
+)
 def compare_cmd(
     transcript: Path,
-    scribe_notes: tuple[str, ...],
+    candidate_notes: tuple[str, ...],
     reference_note: Path | None,
     consultation_type: str,
     dimensions: str | None,
+    rubric_dir: Path | None,
+    runs: int,
     seed: int | None,
     model: str | None,
+    output: Path | None,
+    output_format: str | None,
 ) -> None:
-    """Blinded head-to-head comparison of multiple scribe outputs.
+    """Blinded head-to-head comparison of multiple final notes.
 
-    Each scribe note is labelled S1, S2, ... in a seed-shuffled order, and
-    the scribe_product string is stripped before evaluation. The ranking
-    is printed at the end.
+    Each candidate note is labelled S1, S2, ... in a seed-shuffled order, and
+    the original submission label is stripped before evaluation. The ranking is
+    printed at the end.
     """
-    from scribeval.compare import ScribeSubmission, run_blinded_comparison
+    from scribeval.compare import run_blinded_comparison
 
     settings = get_settings()
-    submissions: list[ScribeSubmission] = []
-    for entry in scribe_notes:
+    submissions: list[NoteSubmission] = []
+    for entry in candidate_notes:
         if "=" not in entry:
             raise click.UsageError(
-                f"--scribe-note must be of the form 'product=path', got {entry!r}"
+                f"--candidate-note must be of the form 'label=path', got {entry!r}"
             )
-        product, path_str = entry.split("=", 1)
+        label, path_str = entry.split("=", 1)
         path = Path(path_str)
         if not path.exists():
-            raise click.UsageError(f"Scribe note not found: {path}")
+            raise click.UsageError(f"Candidate note not found: {path}")
         submissions.append(
-            ScribeSubmission(
-                product_name=product.strip(),
-                scribe_note_content=path.read_text(),
+            NoteSubmission(
+                label=label.strip(),
+                note_content=path.read_text(),
             )
         )
 
@@ -514,6 +560,24 @@ def compare_cmd(
         else settings.default_dimensions
     )
 
+    fhir_client: FHIRTerminologyClient | None = None
+    if "medication_terminology" in dim_list:
+        if not settings.fhir_terminology_url:
+            raise click.UsageError(
+                "medication_terminology requires SCRIBEVAL_FHIR_TERMINOLOGY_URL "
+                "to be set. Configure your own Ontoserver, or explicitly set "
+                "it to the public CSIRO sandbox "
+                "(https://r4.ontoserver.csiro.au/fhir) after reviewing the "
+                "data-flow implications in DATA_FLOW.md."
+            )
+        fhir_client = FHIRTerminologyClient(
+            endpoint=settings.fhir_terminology_url,
+            timeout_seconds=settings.fhir_timeout_seconds,
+        )
+
+    if runs < 1:
+        raise click.UsageError("--runs must be >= 1")
+
     judge = LLMJudge(
         model=model or settings.default_model,
         api_key=settings.anthropic_api_key or None,
@@ -521,7 +585,9 @@ def compare_cmd(
     pipeline = EvaluationPipeline(
         dimensions=dim_list,
         judge=judge,
-        rubric_dir=settings.rubric_dir,
+        rubric_dir=rubric_dir or settings.rubric_dir,
+        fhir_client=fhir_client,
+        runs=runs,
     )
 
     reference_content = reference_note.read_text() if reference_note else None
@@ -535,19 +601,267 @@ def compare_cmd(
         rng_seed=seed,
     )
 
-    table = Table(title="Blinded Comparison (unblinded after scoring)")
+    table = Table(title="Blinded Transcript-to-Note Comparison")
     table.add_column("Rank", justify="right")
     table.add_column("Blinded Label", style="bold")
-    table.add_column("Product (revealed)")
+    table.add_column("Submission (revealed)")
     table.add_column("Overall Score", justify="right")
     for rank, (label, score) in enumerate(result.ranking, start=1):
         table.add_row(
             str(rank),
             label,
-            result.label_to_product[label],
+            result.label_to_submission[label],
             f"{score:.3f}",
         )
     console.print(table)
+
+    if output or output_format:
+        _write_comparison_output(result, output, output_format or "both")
+
+
+def _write_comparison_output(
+    report: BlindedReport,
+    output: Path | None,
+    output_format: str,
+) -> None:
+    """Write comparison report to file(s)."""
+    base = output.stem if output else report.comparison_id
+    parent = output.parent if output else Path(".")
+
+    if output_format in ("json", "both"):
+        json_path = parent / f"{base}.json"
+        render_comparison_json(report, json_path)
+        console.print(f"JSON comparison report written to: {json_path}")
+
+    if output_format in ("markdown", "both"):
+        md_path = parent / f"{base}.md"
+        render_comparison_markdown(report, md_path)
+        console.print(f"Markdown comparison report written to: {md_path}")
+
+
+@main.command("benchmark")
+@click.argument("manifest", type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--dimensions",
+    default=None,
+    help="Comma-separated dimensions to evaluate.",
+)
+@click.option(
+    "--rubric-dir",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+    help="Directory containing rubric YAML files.",
+)
+@click.option(
+    "--runs",
+    type=int,
+    default=1,
+    show_default=True,
+    help="Number of times to evaluate each dimension. >1 reports variance.",
+)
+@click.option(
+    "--seed",
+    type=int,
+    default=None,
+    help="Seed for deterministic blinded shuffle order per case.",
+)
+@click.option(
+    "--model",
+    default=None,
+    help="Claude model to use.",
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Output file path for the benchmark report.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["json", "markdown", "both"], case_sensitive=False),
+    default=None,
+    help="Optional benchmark report output format.",
+)
+def benchmark_cmd(
+    manifest: Path,
+    dimensions: str | None,
+    rubric_dir: Path | None,
+    runs: int,
+    seed: int | None,
+    model: str | None,
+    output: Path | None,
+    output_format: str | None,
+) -> None:
+    """Run a multi-case benchmark from a JSON manifest."""
+    settings = get_settings()
+    dim_list = (
+        [d.strip() for d in dimensions.split(",")]
+        if dimensions
+        else settings.default_dimensions
+    )
+
+    fhir_client: FHIRTerminologyClient | None = None
+    if "medication_terminology" in dim_list:
+        if not settings.fhir_terminology_url:
+            raise click.UsageError(
+                "medication_terminology requires SCRIBEVAL_FHIR_TERMINOLOGY_URL "
+                "to be set. Configure your own Ontoserver, or explicitly set "
+                "it to the public CSIRO sandbox "
+                "(https://r4.ontoserver.csiro.au/fhir) after reviewing the "
+                "data-flow implications in DATA_FLOW.md."
+            )
+        fhir_client = FHIRTerminologyClient(
+            endpoint=settings.fhir_terminology_url,
+            timeout_seconds=settings.fhir_timeout_seconds,
+        )
+
+    if runs < 1:
+        raise click.UsageError("--runs must be >= 1")
+
+    cases = _load_benchmark_manifest(manifest)
+    judge = LLMJudge(
+        model=model or settings.default_model,
+        api_key=settings.anthropic_api_key or None,
+    )
+    pipeline = EvaluationPipeline(
+        dimensions=dim_list,
+        judge=judge,
+        rubric_dir=rubric_dir or settings.rubric_dir,
+        fhir_client=fhir_client,
+        runs=runs,
+    )
+
+    try:
+        result = run_benchmark(cases=cases, pipeline=pipeline, rng_seed=seed)
+    except ValueError as exc:
+        raise click.UsageError(str(exc)) from exc
+
+    table = Table(title="Scribeval Multi-Case Benchmark")
+    table.add_column("Rank", justify="right")
+    table.add_column("Submission", style="bold")
+    table.add_column("Mean Score", justify="right")
+    table.add_column("Score SD", justify="right")
+    table.add_column("Critical Findings", justify="right")
+    for rank, (label, mean_score) in enumerate(result.ranking, start=1):
+        summary = result.submission_summaries[label]
+        table.add_row(
+            str(rank),
+            label,
+            f"{mean_score:.3f}",
+            f"{summary.std_overall_score:.3f}",
+            str(summary.critical_finding_count),
+        )
+    console.print(table)
+
+    if output or output_format:
+        _write_benchmark_output(result, output, output_format or "both")
+
+
+def _load_benchmark_manifest(manifest: Path) -> list[BenchmarkCase]:
+    """Load benchmark cases from a JSON manifest."""
+    try:
+        data = json.loads(manifest.read_text())
+    except json.JSONDecodeError as exc:
+        raise click.UsageError(f"Invalid benchmark manifest JSON: {exc}") from exc
+
+    raw_cases = data.get("cases")
+    if not isinstance(raw_cases, list) or not raw_cases:
+        raise click.UsageError("Benchmark manifest must contain a non-empty 'cases' list.")
+
+    cases: list[BenchmarkCase] = []
+    for idx, raw_case in enumerate(raw_cases, start=1):
+        if not isinstance(raw_case, dict):
+            raise click.UsageError(f"Case {idx} must be an object.")
+
+        case_id = str(raw_case.get("case_id") or f"case_{idx}")
+        transcript_path = _manifest_path(manifest, raw_case.get("transcript"), case_id)
+        reference_note = raw_case.get("reference_note")
+        reference_content = None
+        if reference_note:
+            reference_content = _manifest_path(
+                manifest,
+                reference_note,
+                case_id,
+            ).read_text()
+
+        raw_candidates = raw_case.get("candidate_notes")
+        if not isinstance(raw_candidates, dict):
+            raise click.UsageError(
+                f"Case {case_id!r} must define candidate_notes as a label-to-path object."
+            )
+
+        submissions: list[NoteSubmission] = []
+        for label, path in raw_candidates.items():
+            label_text = str(label).strip()
+            if not label_text:
+                raise click.UsageError(
+                    f"Case {case_id!r} contains an empty candidate label."
+                )
+            submissions.append(
+                NoteSubmission(
+                    label=label_text,
+                    note_content=_manifest_path(manifest, path, case_id).read_text(),
+                )
+            )
+        if len(submissions) < 2:
+            raise click.UsageError(
+                f"Case {case_id!r} must include at least two candidate notes."
+            )
+
+        try:
+            consultation_type = ConsultationType(
+                raw_case.get("consultation_type", ConsultationType.GP_STANDARD.value)
+            )
+        except ValueError as exc:
+            available = ", ".join(t.value for t in ConsultationType)
+            raise click.UsageError(
+                f"Case {case_id!r} has invalid consultation_type. "
+                f"Available: {available}."
+            ) from exc
+        cases.append(
+            BenchmarkCase(
+                case_id=case_id,
+                transcript_content=transcript_path.read_text(),
+                submissions=submissions,
+                consultation_type=consultation_type,
+                reference_note_content=reference_content,
+            )
+        )
+
+    return cases
+
+
+def _manifest_path(manifest: Path, value: object, case_id: str) -> Path:
+    """Resolve a manifest path value relative to the manifest file."""
+    if not isinstance(value, str) or not value:
+        raise click.UsageError(f"Case {case_id!r} has an invalid path value.")
+    path = Path(value)
+    if not path.is_absolute():
+        path = manifest.parent / path
+    if not path.exists():
+        raise click.UsageError(f"Manifest path not found for case {case_id!r}: {path}")
+    return path
+
+
+def _write_benchmark_output(
+    report: BenchmarkReport,
+    output: Path | None,
+    output_format: str,
+) -> None:
+    """Write benchmark report to file(s)."""
+    base = output.stem if output else report.benchmark_id
+    parent = output.parent if output else Path(".")
+
+    if output_format in ("json", "both"):
+        json_path = parent / f"{base}.json"
+        render_benchmark_json(report, json_path)
+        console.print(f"JSON benchmark report written to: {json_path}")
+
+    if output_format in ("markdown", "both"):
+        md_path = parent / f"{base}.md"
+        render_benchmark_markdown(report, md_path)
+        console.print(f"Markdown benchmark report written to: {md_path}")
 
 
 @main.command("verify-detection")

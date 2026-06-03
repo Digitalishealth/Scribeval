@@ -1,0 +1,49 @@
+{
+  "cases": [
+    {
+      "case_id": "case_gp_respiratory",
+      "consultation_type": "gp_standard",
+      "transcript": "case_gp_respiratory/transcript.txt",
+      "candidate_notes": {
+        "GP_reference": "case_gp_respiratory/reference_note.txt",
+        "AI_scribe": "case_gp_respiratory/scribe_output.txt"
+      }
+    },
+    {
+      "case_id": "case_ed_chest_pain",
+      "consultation_type": "ed_presentation",
+      "transcript": "case_ed_chest_pain/transcript.txt",
+      "candidate_notes": {
+        "GP_reference": "case_ed_chest_pain/reference_note.txt",
+        "AI_scribe": "case_ed_chest_pain/scribe_output.txt"
+      }
+    },
+    {
+      "case_id": "case_paeds_fever",
+      "consultation_type": "paediatrics",
+      "transcript": "case_paeds_fever/transcript.txt",
+      "candidate_notes": {
+        "GP_reference": "case_paeds_fever/reference_note.txt",
+        "AI_scribe": "case_paeds_fever/scribe_output.txt"
+      }
+    },
+    {
+      "case_id": "case_psych_review",
+      "consultation_type": "psychiatry",
+      "transcript": "case_psych_review/transcript.txt",
+      "candidate_notes": {
+        "GP_reference": "case_psych_review/reference_note.txt",
+        "AI_scribe": "case_psych_review/scribe_output.txt"
+      }
+    },
+    {
+      "case_id": "case_specialist_diabetes",
+      "consultation_type": "specialist_review",
+      "transcript": "case_specialist_diabetes/transcript.txt",
+      "candidate_notes": {
+        "GP_reference": "case_specialist_diabetes/reference_note.txt",
+        "AI_scribe": "case_specialist_diabetes/scribe_output.txt"
+      }
+    }
+  ]
+}

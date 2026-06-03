@@ -66,8 +66,9 @@ def render_markdown(
     lines.append("")
     lines.append(f"**Report ID:** {report.report_id}")
     lines.append(f"**Case:** {report.case_id}")
-    if report.scribe_product:
-        lines.append(f"**Scribe Product:** {report.scribe_product}")
+    candidate_label = report.candidate_label or report.scribe_product
+    if candidate_label:
+        lines.append(f"**Candidate Label:** {candidate_label}")
     lines.append(f"**Consultation Type:** {report.consultation_type}")
     lines.append(f"**Evaluated:** {report.timestamp.isoformat()}")
     lines.append(f"**Scribeval Version:** {report.scribeval_version}")

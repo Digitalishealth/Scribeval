@@ -17,7 +17,19 @@ Each case contains deliberately planted errors in the `scribe_output.txt` to tes
 Each case directory contains:
 - `transcript.txt` — Simulated consultation transcript
 - `scribe_output.txt` — AI scribe output with deliberate errors
-- `reference_note.txt` — Gold-standard clinician note for comparison
+- `reference_note.txt` — Clinician-authored reference note. It can be scored
+  as a comparable submission, or supplied separately as optional adjudication
+  context.
+
+The directory also includes `benchmark_manifest.json`, which compares the
+same two labels across all synthetic cases:
+
+```bash
+scribeval benchmark samples/benchmark_manifest.json \
+    --dimensions omission,hallucination \
+    --output samples_benchmark \
+    --format both
+```
 
 ## Ground-Truth Errors as a Benchmark
 

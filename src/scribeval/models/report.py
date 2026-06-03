@@ -33,6 +33,7 @@ class EvaluationReport(BaseModel):
     report_id: str
     case_id: str
     scribe_product: str | None = None
+    candidate_label: str | None = None
     consultation_type: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
     dimension_scores: list[DimensionScore]
@@ -46,7 +47,7 @@ class EvaluationReport(BaseModel):
     specialty_weight_multipliers: dict[str, float] = Field(default_factory=dict)
     notice: str = (
         "NOT A MEDICAL DEVICE. Scribeval produces indicative quality and "
-        "safety signals for AI medical scribes. It is not clinically "
+        "safety signals for transcript-to-note documentation quality. It is not clinically "
         "validated, not TGA-registered, and must not be used as the sole "
         "basis for clinical, procurement, or regulatory decisions. See the "
         "project README for disclaimers and limitations."

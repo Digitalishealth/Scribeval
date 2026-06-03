@@ -8,9 +8,9 @@ When using the default LLM judge (Claude), the following data is sent to Anthrop
 
 | Data | Sent? | Purpose |
 |------|-------|---------|
-| Consultation transcript (full text) | Yes | Compared against scribe output |
-| AI scribe output note (full text) | Yes | The document being evaluated |
-| Reference note (full text) | If provided | Used for comparison scoring |
+| Consultation transcript (full text) | Yes | Compared against the candidate final note |
+| Candidate final note (full text) | Yes | The document being evaluated |
+| Reference note (full text) | If provided | Optional adjudication context, not a scored submission |
 | Evaluation rubric (YAML content) | Yes | Scoring criteria and instructions |
 | Your Anthropic API key | Yes | Authentication only |
 
@@ -30,8 +30,8 @@ The `medication_terminology` dimension is **opt-in** and introduces a **second e
 ### When this service is used
 
 - Only when you explicitly request the `medication_terminology` dimension via `--dimensions medication_terminology`
-- Default endpoint: `https://r4.ontoserver.csiro.au/fhir` (CSIRO public Ontoserver sandbox)
-- Override with the `SCRIBEVAL_FHIR_TERMINOLOGY_URL` environment variable
+- No default endpoint is configured
+- Set `SCRIBEVAL_FHIR_TERMINOLOGY_URL` to your own Ontoserver, or explicitly to `https://r4.ontoserver.csiro.au/fhir` after reviewing privacy implications
 
 ### What is sent to the FHIR server
 
@@ -39,20 +39,20 @@ The `medication_terminology` dimension is **opt-in** and introduces a **second e
 |------|-------|---------|
 | Extracted medication name strings | Yes | AMT lookup (e.g., `"amoxicillin"`) |
 | Consultation transcript | **NO** | Never transmitted to FHIR endpoint |
-| Full scribe note | **NO** | Never transmitted to FHIR endpoint |
+| Full candidate note | **NO** | Never transmitted to FHIR endpoint |
 | Patient identifiers | **NO** | Never transmitted to FHIR endpoint |
 | Reference note | **NO** | Never transmitted to FHIR endpoint |
 
 The two phases are deliberately separated so the FHIR server only ever sees short medication strings:
 
-1. **Phase 1 (Anthropic API):** the LLM judge extracts medication mentions from the scribe note
+1. **Phase 1 (Anthropic API):** the LLM judge extracts medication mentions from the candidate final note
 2. **Phase 2 (FHIR server):** each extracted medication name is validated via `ValueSet/$expand` against AMT
 
 Only the strings produced by Phase 1 are passed to Phase 2. Patient context, transcript content, and clinical narrative never reach the FHIR endpoint.
 
 ### Production guidance
 
-- The default CSIRO public Ontoserver sandbox is **not appropriate for sensitive clinical data**
+- The CSIRO public Ontoserver sandbox is **not appropriate for sensitive clinical data**
 - For production use, **run your own Ontoserver** or use a contracted NCTS-licensed terminology service and set `SCRIBEVAL_FHIR_TERMINOLOGY_URL` accordingly
 - Some Australian sites cannot send any clinical data outside their network — the entire dimension can be left disabled in those environments
 - The terminology server's data handling policy is its operator's responsibility, not Scribeval's
@@ -109,7 +109,7 @@ To avoid sending clinical data to any external API, use the `ManualJudge` (human
 │  (De-identified!)    │
 │                      │
 │  - transcript.txt    │
-│  - scribe_output.txt │
+│  - final_note.txt    │
 │  - reference.txt     │
 └──────────┬──────────┘
            │
@@ -128,7 +128,7 @@ To avoid sending clinical data to any external API, use the `ManualJudge` (human
 │                      │◀────│                      │
 │  Receives:           │     │  Returns:            │
 │  - Transcript text   │     │  - JSON scores       │
-│  - Scribe note text  │     │  - Findings          │
+│  - Candidate note    │     │  - Findings          │
 │  - Reference text    │     │  - Reasoning         │
 │  - Rubric criteria   │     │                      │
 └─────────────────────┘     └─────────────────────┘
@@ -165,7 +165,7 @@ To avoid sending clinical data to any external API, use the `ManualJudge` (human
 │                      │
 │  Does NOT receive:   │
 │  - Transcript        │
-│  - Scribe note       │
+│  - Candidate note    │
 │  - Patient context   │
 └─────────────────────┘
 ```

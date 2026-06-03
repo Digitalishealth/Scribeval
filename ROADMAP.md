@@ -10,6 +10,7 @@ tiers that shape Scribeval's development.
 - YAML rubric system, Click CLI, JSON and markdown reporting
 - Synthetic sample cases and data-flow disclosure
 - Opt-in `medication_terminology` evaluator with FHIR/AMT validation
+- Transcript-to-note candidate scoring, including optional GP-vs-AI comparison
 
 ## Phase 2 — critique-defence work (shipped in current release)
 
@@ -19,7 +20,9 @@ Tiered response to anticipated clinician and scribe-vendor critiques.
 
 - [x] Reproducibility controls: temperature=0, content hashing, seed
 - [x] Multi-run variance reporting (`--runs N`)
-- [x] Blinded head-to-head comparison (`scribeval compare`)
+- [x] Blinded head-to-head comparison with durable JSON/Markdown reports
+      (`scribeval compare`)
+- [x] Multi-case product benchmark aggregation (`scribeval benchmark`)
 - [x] Error injection harness (`scribeval verify-detection`)
 - [x] Calibration workflow with Cohen's κ / ICC (`scribeval calibrate`)
 
@@ -66,7 +69,7 @@ change.
 - [ ] Containerised run-it-yourself image
 - [ ] Web UI for non-technical reviewers
 - [ ] CSV / FHIR Bundle input formats
-- [ ] Batch mode with progress reporting and resumability
+- [ ] Resumable batch mode for very large benchmark runs
 - [ ] Configurable per-organisation dimension weights
 
 ### Additional evaluators (considered and rejected for now)

@@ -1,14 +1,23 @@
 [project]
 name = "scribeval"
 version = "0.1.0"
-description = "Evaluation framework for AI medical scribes in Australian healthcare"
+description = "Transcript-to-note quality benchmark for AI medical scribes"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [
     { name = "Digitalis Health" },
 ]
-keywords = ["ai", "medical-scribe", "evaluation", "healthcare", "australia", "ahpra"]
+keywords = [
+    "ai",
+    "medical-scribe",
+    "benchmark",
+    "evaluation",
+    "clinical-documentation",
+    "healthcare",
+    "australia",
+    "ahpra",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Healthcare Industry",
@@ -28,6 +37,11 @@ dependencies = [
     "rich>=13.0",
     "httpx>=0.27",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Digitalishealth/Scribeval"
+Repository = "https://github.com/Digitalishealth/Scribeval"
+Issues = "https://github.com/Digitalishealth/Scribeval/issues"
 
 [project.optional-dependencies]
 dev = [

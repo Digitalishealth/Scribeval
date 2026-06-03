@@ -49,7 +49,7 @@ class QNoteEvaluator(BaseEvaluator):
         inputs = self._format_inputs(case)
 
         return f"""\
-You are evaluating an AI medical scribe's output using QNOTE (Quality of \
+You are evaluating a candidate final clinical note using QNOTE (Quality of \
 Clinical Notes), a validated instrument for measuring clinical note quality \
 across structured documentation domains.
 
@@ -66,7 +66,7 @@ then compute an overall normalised score.
 
 ## Your Task
 
-Evaluate the AI scribe output across all 8 QNOTE domains. Use the \
+Evaluate the candidate final note across all 8 QNOTE domains. Use the \
 consultation transcript as ground truth. If a reference note is provided, \
 use it as an additional quality benchmark.
 

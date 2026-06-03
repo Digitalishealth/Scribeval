@@ -16,7 +16,7 @@ class MedicolegalEvaluator(BaseEvaluator):
         inputs = self._format_inputs(case)
 
         return f"""\
-You are evaluating an AI medical scribe's output for MEDICOLEGAL ADEQUACY — \
+You are evaluating a candidate final clinical note for MEDICOLEGAL ADEQUACY — \
 whether the clinical note meets Australian medicolegal documentation standards \
 and would adequately protect the clinician in the event of a complaint, coronial \
 inquest, or civil litigation.
@@ -35,7 +35,7 @@ Australia's Good Medical Practice code.
 
 ## Your Task
 
-Assess the AI scribe output against the following medicolegal elements, \
+Assess the candidate final note against the following medicolegal elements, \
 considering what was actually discussed in the consultation:
 
 1. CLINICAL REASONING: Is the thought process behind diagnosis and management \
@@ -57,7 +57,7 @@ findings documented to support clinical reasoning?
 treatment choices?
 
 IMPORTANT: Only assess elements that are relevant to what was discussed in the \
-consultation. If the clinician did not discuss informed consent, the scribe \
-cannot document it — do not penalise for content absent from the transcript.
+consultation. If the clinician did not discuss informed consent, the final \
+note cannot document it — do not penalise for content absent from the transcript.
 
 {OUTPUT_SCHEMA}"""

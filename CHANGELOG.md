@@ -13,9 +13,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Multi-run variance**: `EvaluationPipeline(runs=N)` evaluates each
   dimension N times and reports per-run mean, standard deviation, and 95%
   confidence interval. Helps quantify judge instability.
-- **Blinded comparison** (`scribeval.compare`): head-to-head comparison of
-  multiple scribe outputs on the same transcript with anonymised labels
-  (`S1`, `S2`, ...), seeded randomised order, and stripped product names.
+- **Blinded transcript-to-note comparison** (`scribeval compare`): head-to-head
+  comparison of multiple final notes on the same transcript with anonymised
+  labels (`S1`, `S2`, ...), seeded randomised order, stripped submission names,
+  and optional JSON/Markdown comparison reports for product-choice review.
+- **Multi-case benchmark aggregation** (`scribeval benchmark`): manifest-driven
+  product comparison across multiple transcripts with mean score, cross-case
+  score standard deviation, critical-finding counts, and JSON/Markdown reports.
 - **Error injection harness** (`scribeval.error_injection`): deterministic
   corruption taxonomy with 8 error types (missing allergy, fabricated
   finding, wrong drug/dose, missing red flag, fabricated medication,
@@ -74,6 +78,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Scribeval is now framed as a transcript-to-note quality benchmark. CLI aliases
+  `--candidate-note` and `--candidate-label` were added while preserving
+  `--scribe-note` and `--scribe-product`.
 - `LLMJudge` now accepts explicit `temperature`, `max_tokens`, and `seed`
   constructor parameters. Default temperature is 0.0.
 - `EvaluationReport` now includes `reproducibility`, `run_statistics`,
@@ -91,7 +98,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   dimension (medication_terminology).
 - YAML rubric system with Pydantic validation.
 - Click-based CLI with `evaluate`, `list-dimensions`, `validate-rubric`,
-  `show-data-flow`, and `sample-report` commands.
+  and `show-data-flow` commands.
 - JSON and markdown report formats.
 - Synthetic sample cases (`case_gp_respiratory`, `case_ed_chest_pain`,
   `case_psych_review`).

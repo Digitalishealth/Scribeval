@@ -2,7 +2,7 @@
 
 This is a two-phase evaluator that diverges from the pure LLM-as-judge pattern:
 1. Extraction phase: the LLM judge extracts medication mentions from the
-   scribe note (drug name, strength, form).
+   candidate final note (drug name, strength, form).
 2. Validation phase: each extracted medication is validated against the
    Australian Medicines Terminology (AMT) via a configurable FHIR R4
    terminology server.
@@ -55,11 +55,11 @@ OUTCOME_SEVERITY: dict[ValidationOutcome, SeverityLevel] = {
 }
 
 EXTRACTION_PROMPT_TEMPLATE = """\
-You are extracting medication mentions from an AI medical scribe's output \
+You are extracting medication mentions from a candidate final clinical \
 note for terminology validation. Your job is purely extractive — do NOT \
 evaluate, judge, or modify the medications.
 
-## AI Scribe Output Note
+## Candidate Final Note
 
 ```
 {note}
@@ -168,12 +168,12 @@ class MedicationTerminologyEvaluator(BaseEvaluator):
                 severity_summary=SeverityLevel.NONE,
                 findings=[
                     Evidence(
-                        description="No medications found in scribe note to validate.",
+                        description="No medications found in candidate note to validate.",
                         severity=SeverityLevel.NONE,
                     )
                 ],
                 reasoning=(
-                    "The scribe note contains no medication mentions. "
+                    "The candidate note contains no medication mentions. "
                     "No AMT validation was required."
                 ),
                 rubric_version=self.rubric.version,
@@ -359,7 +359,7 @@ class MedicationTerminologyEvaluator(BaseEvaluator):
             outcomes[r.outcome] = outcomes.get(r.outcome, 0) + 1
 
         parts = [
-            f"Extracted {total} medication mention(s) from the scribe note. "
+            f"Extracted {total} medication mention(s) from the candidate note. "
             f"Validated each against AMT via FHIR $expand."
         ]
         for outcome, count in outcomes.items():

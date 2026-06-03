@@ -1,4 +1,4 @@
-"""Evaluation input models: consultation transcripts, scribe outputs, and reference notes."""
+"""Evaluation input models: consultation transcripts, candidate notes, and references."""
 
 from __future__ import annotations
 
@@ -31,7 +31,10 @@ class Transcript(BaseModel):
 
 
 class ScribeNote(BaseModel):
-    """The AI scribe's output note to be evaluated."""
+    """The candidate final note to be evaluated.
+
+    The class name is retained for backward compatibility with older API users.
+    """
 
     content: str = Field(min_length=1)
     scribe_product: str | None = None

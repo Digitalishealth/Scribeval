@@ -1,6 +1,6 @@
 # Scribeval
 
-**An open evaluation framework for AI medical scribes in Australian healthcare.**
+**An open transcript-to-note quality benchmark for Australian healthcare.**
 
 > ⚠️ **NOT A MEDICAL DEVICE.** Scribeval is a research and quality-assurance
 > tool. It is **not** TGA-registered, **not** clinically validated, and must
@@ -9,11 +9,23 @@
 > See [`LICENSE`](LICENSE), [`SECURITY.md`](SECURITY.md), and
 > [`METHODOLOGY.md`](METHODOLOGY.md) for the full disclaimer and limitations.
 
-Scribeval provides a structured, evidence-based harness for scoring any AI medical scribe against clinical safety dimensions. It is grounded in Australian regulatory requirements (AHPRA, RACGP, Medicare/PBS) and current medical literature on clinical documentation quality.
+Scribeval provides a structured, evidence-based harness for scoring any final
+clinical note against the whole consultation transcript. It can evaluate AI
+scribe outputs and optionally compare them with a GP's ordinary non-AI note
+using the same scoring path. It is grounded in Australian regulatory
+requirements (AHPRA, RACGP, Medicare/PBS) and current medical literature on
+clinical documentation quality.
 
 ## Why Scribeval?
 
-AI medical scribes (Heidi Health, Lyrebird, Nabla, etc.) generate clinical notes from consultations, but there is no standardised, open benchmark to measure their safety and quality — particularly in the Australian context. Scribeval fills this gap.
+AI medical scribes (Heidi Health, Lyrebird, Nabla, etc.) generate clinical notes
+from consultations, but there is no standardised, open benchmark to measure the
+quality of the final note against the whole transcript — particularly in the
+Australian context. Scribeval fills this gap.
+
+Its benchmark role is analogous to public tools such as the SNOMED CT Entity
+Linking Benchmark, but the target is different: Scribeval scores
+transcript-to-note documentation quality, not SNOMED CT entity linking.
 
 ## Evaluation Dimensions
 
@@ -46,11 +58,16 @@ See [METHODOLOGY.md](METHODOLOGY.md) for the design rationale, including dimensi
 
 ## How It Works
 
-1. **Provide inputs**: a consultation transcript and the AI scribe's output note (a reference "gold standard" note is optional)
+1. **Provide inputs**: a consultation transcript and a candidate final note
+   (a reference note is optional adjudication context, not a scored comparator)
 2. **Scribeval evaluates** each dimension using clinically-informed rubrics and an LLM-as-judge approach (Claude)
 3. **Receive a structured report** with per-dimension scores (0-1, where 1 = perfect), severity ratings, specific findings with evidence, and an overall score
 
 Rubrics are defined in YAML and can be reviewed or customised by clinicians without touching code.
+
+For optional comparison, pass multiple final notes for the same transcript. A
+GP's non-AI note is treated as a comparable submission and receives its own
+score.
 
 ## Data Transparency
 
@@ -79,9 +96,29 @@ scribeval list-dimensions
 # Evaluate a scribe's output
 scribeval evaluate \
     --transcript consultation.txt \
-    --scribe-note scribe_output.txt \
+    --candidate-note final_note.txt \
     --consultation-type gp_standard \
-    --scribe-product heidi
+    --candidate-label Heidi
+
+# Backward-compatible aliases still work:
+#   --scribe-note is an alias for --candidate-note
+#   --scribe-product is an alias for --candidate-label
+
+# Optional GP-vs-AI comparison against the same transcript
+scribeval compare \
+    --transcript consultation.txt \
+    --candidate-note GP=gp_note.txt \
+    --candidate-note Heidi=heidi_note.txt \
+    --runs 3 \
+    --output comparison_report \
+    --format both
+
+# Multi-case benchmark for product selection
+scribeval benchmark samples/benchmark_manifest.json \
+    --dimensions omission,hallucination \
+    --runs 3 \
+    --output product_quality_benchmark \
+    --format both
 
 # Validate a rubric file
 scribeval validate-rubric rubrics/omission.yaml
@@ -113,6 +150,56 @@ See [`ROADMAP.md`](ROADMAP.md) for deferred items, and
 [`CHANGELOG.md`](CHANGELOG.md) for the full list of capabilities in this
 release.
 
+For repository-publication status and the release smoke test, see
+[`PUBLIC_RELEASE.md`](PUBLIC_RELEASE.md).
+
+## Choosing a Scribe Product
+
+For product selection, run each candidate note against the same de-identified
+transcript and save the comparison report:
+
+```bash
+scribeval compare \
+    --transcript consultation.txt \
+    --candidate-note GP=gp_note.txt \
+    --candidate-note Heidi=heidi_note.txt \
+    --candidate-note Lyrebird=lyrebird_note.txt \
+    --runs 3 \
+    --output product_quality_comparison \
+    --format both
+```
+
+The terminal shows a simple ranked score table. The JSON and Markdown reports
+preserve the unblinded ranking, per-dimension scores, severity summaries, and
+findings so a clinical governance or procurement team can review the evidence.
+Submissions are blinded while being scored; labels are revealed only in the
+final report. Use `--runs 3` or higher for higher-stakes comparisons so the
+report captures judge variance rather than a single point estimate.
+
+For a more objective product-choice exercise, use the multi-case benchmark
+command. The manifest requires every case to include the same submission labels:
+
+```json
+{
+  "cases": [
+    {
+      "case_id": "case_001",
+      "consultation_type": "gp_standard",
+      "transcript": "case_001/transcript.txt",
+      "candidate_notes": {
+        "GP": "case_001/gp_note.txt",
+        "Heidi": "case_001/heidi_note.txt",
+        "Lyrebird": "case_001/lyrebird_note.txt"
+      }
+    }
+  ]
+}
+```
+
+`scribeval benchmark` ranks products by mean score across cases, reports
+cross-case score standard deviation, counts critical findings, and preserves
+case-level results for audit.
+
 ## Sample Cases
 
 The `samples/` directory contains synthetic (entirely fictional) consultation cases with deliberately planted errors for demonstration and testing. **No real patient data is included.**
@@ -123,7 +210,8 @@ Scribeval uses an **LLM-as-judge** approach where each evaluation dimension has:
 
 - A **YAML rubric** defining severity criteria, scoring guidelines, and Australian-specific context
 - An **evaluator** that constructs a dimension-specific prompt with the rubric, inputs, and required output schema
-- A **judge** (Claude by default, or a human expert) that scores the scribe output against the rubric
+- A **judge** (Claude by default, or a human expert) that scores the candidate
+  final note against the rubric
 
 Scores are normalised 0-1 across all dimensions (1 = perfect) for consistent comparison.
 

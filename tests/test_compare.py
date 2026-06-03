@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from scribeval.compare import ScribeSubmission, run_blinded_comparison
+from scribeval.compare import NoteSubmission, ScribeSubmission, run_blinded_comparison
 from scribeval.pipeline import EvaluationPipeline
 from tests.conftest import RUBRICS_DIR, MockJudge
 
@@ -30,9 +30,9 @@ def test_compare_requires_at_least_two(sample_transcript: str) -> None:
 def test_compare_assigns_anonymous_labels(sample_transcript: str) -> None:
     pipeline = _pipeline(MockJudge())
     submissions = [
-        ScribeSubmission("heidi", "note A content for testing"),
-        ScribeSubmission("lyrebird", "note B content for testing"),
-        ScribeSubmission("nabla", "note C content for testing"),
+        NoteSubmission("heidi", "note A content for testing"),
+        NoteSubmission("lyrebird", "note B content for testing"),
+        NoteSubmission("nabla", "note C content for testing"),
     ]
     result = run_blinded_comparison(
         transcript_content=sample_transcript,
@@ -42,15 +42,16 @@ def test_compare_assigns_anonymous_labels(sample_transcript: str) -> None:
     )
     assert set(result.label_to_product.keys()) == {"S1", "S2", "S3"}
     assert set(result.label_to_product.values()) == {"heidi", "lyrebird", "nabla"}
+    assert result.label_to_submission == result.label_to_product
     assert len(result.per_label_reports) == 3
 
 
 def test_compare_is_deterministic_with_seed(sample_transcript: str) -> None:
     pipeline = _pipeline(MockJudge())
     subs = [
-        ScribeSubmission("heidi", "A"),
-        ScribeSubmission("lyrebird", "B"),
-        ScribeSubmission("nabla", "C"),
+        NoteSubmission("heidi", "A"),
+        NoteSubmission("lyrebird", "B"),
+        NoteSubmission("nabla", "C"),
     ]
     r1 = run_blinded_comparison(sample_transcript, subs, pipeline, rng_seed=7)
     r2 = run_blinded_comparison(sample_transcript, subs, pipeline, rng_seed=7)
@@ -62,8 +63,8 @@ def test_compare_strips_product_name(sample_transcript: str) -> None:
     result = run_blinded_comparison(
         sample_transcript,
         [
-            ScribeSubmission("heidi", "A"),
-            ScribeSubmission("lyrebird", "B"),
+            NoteSubmission("heidi", "A"),
+            NoteSubmission("lyrebird", "B"),
         ],
         pipeline=pipeline,
     )
@@ -71,3 +72,17 @@ def test_compare_strips_product_name(sample_transcript: str) -> None:
     # is only known through label_to_product.
     for report in result.per_label_reports.values():
         assert report.scribe_product is None
+        assert report.candidate_label is None
+
+
+def test_compare_keeps_legacy_scribe_submission(sample_transcript: str) -> None:
+    pipeline = _pipeline(MockJudge())
+    result = run_blinded_comparison(
+        sample_transcript,
+        [
+            ScribeSubmission(product_name="heidi", scribe_note_content="A"),
+            ScribeSubmission(product_name="gp", scribe_note_content="B"),
+        ],
+        pipeline=pipeline,
+    )
+    assert set(result.label_to_product.values()) == {"heidi", "gp"}

@@ -1,17 +1,16 @@
-"""Blinded head-to-head comparison of multiple AI scribe outputs.
+"""Blinded head-to-head comparison of multiple final clinical notes.
 
-Compares N scribe outputs against the same consultation transcript. The
-comparison is BLINDED: the judge never sees the scribe product name or
-the order in which scribes were submitted. Scribes are assigned anonymous
+Compares N candidate notes against the same consultation transcript. The
+comparison is BLINDED: the judge never sees the submission label or
+the order in which notes were submitted. Submissions are assigned anonymous
 labels (S1, S2, ...) in a randomised order before evaluation, and the
-mapping from label back to real product is revealed only in the final
+mapping from blinded label back to the original submission label is revealed only in the final
 report.
 
-This is the feature that matters most to a scribe vendor: it lets them
-run their own product against competitors without the judge being biased
-by brand recognition, and without being able to cherry-pick the
-ordering. Blinding is enforced at the pipeline boundary so evaluators
-cannot access the real product name even accidentally.
+This supports AI-vs-AI comparison and AI-vs-GP baseline comparison with the
+same scoring path: every final note is evaluated against the full transcript.
+Blinding is enforced at the pipeline boundary so evaluators cannot access the
+submission label even accidentally.
 """
 
 from __future__ import annotations
@@ -35,17 +34,47 @@ from scribeval.pipeline import EvaluationPipeline
 
 
 @dataclass(frozen=True)
+class NoteSubmission:
+    """A single candidate final note for a comparison run."""
+
+    label: str
+    note_content: str
+
+    @property
+    def product_name(self) -> str:
+        """Backward-compatible name used by older callers."""
+        return self.label
+
+    @property
+    def scribe_note_content(self) -> str:
+        """Backward-compatible note content name used by older callers."""
+        return self.note_content
+
+
+@dataclass(frozen=True)
 class ScribeSubmission:
-    """A single scribe product's submission for a comparison run."""
+    """Backward-compatible AI-scribe submission shape.
+
+    Prefer NoteSubmission for new code. This class remains so existing imports
+    and keyword construction continue to work.
+    """
 
     product_name: str
     scribe_note_content: str
+
+    @property
+    def label(self) -> str:
+        return self.product_name
+
+    @property
+    def note_content(self) -> str:
+        return self.scribe_note_content
 
 
 class BlindedReport(BaseModel):
     """Result of a blinded comparison run.
 
-    The `label_to_product` mapping is the unblinding key. It should be
+    The `label_to_submission` mapping is the unblinding key. It should be
     presented to the user only after the per-label scores are shown, so
     the visual order matches the score ranking and not the original
     submission order.
@@ -53,6 +82,7 @@ class BlindedReport(BaseModel):
 
     comparison_id: str
     transcript_hash: str
+    label_to_submission: dict[str, str] = Field(default_factory=dict)
     label_to_product: dict[str, str]
     per_label_reports: dict[str, EvaluationReport]
     ranking: list[tuple[str, float]] = Field(default_factory=list)
@@ -61,18 +91,18 @@ class BlindedReport(BaseModel):
 
 def run_blinded_comparison(
     transcript_content: str,
-    submissions: list[ScribeSubmission],
+    submissions: list[NoteSubmission | ScribeSubmission],
     pipeline: EvaluationPipeline,
     consultation_type: ConsultationType = ConsultationType.GP_STANDARD,
     reference_note_content: str | None = None,
     rng_seed: int | None = None,
 ) -> BlindedReport:
-    """Run a blinded comparison across the given scribe submissions.
+    """Run a blinded comparison across the given final-note submissions.
 
     The submissions are shuffled deterministically if `rng_seed` is set
     (important for reproducibility studies) and otherwise use a fresh
     random order per invocation. Each submission is wrapped in a case
-    with `scribe_product=None` so the judge cannot see the brand.
+    with `scribe_product=None` so the judge cannot see the label.
     """
     if len(submissions) < 2:
         raise ValueError("At least two submissions are required for comparison.")
@@ -93,14 +123,14 @@ def run_blinded_comparison(
 
     for idx, submission in enumerate(shuffled, start=1):
         label = f"S{idx}"
-        label_to_product[label] = submission.product_name
+        label_to_product[label] = submission.label
         blinded_case = EvaluationCase(
             case_id=f"blinded_{label}",
             consultation_type=consultation_type,
             transcript=transcript,
-            # Intentionally NO scribe_product — that is the whole point.
+            # Intentionally NO scribe_product/candidate label — that is the whole point.
             scribe_note=ScribeNote(
-                content=submission.scribe_note_content,
+                content=submission.note_content,
                 scribe_product=None,
             ),
             reference_note=reference,
@@ -118,6 +148,7 @@ def run_blinded_comparison(
     return BlindedReport(
         comparison_id=uuid.uuid4().hex[:12],
         transcript_hash=content_hash(transcript_content),
+        label_to_submission=label_to_product,
         label_to_product=label_to_product,
         per_label_reports=per_label_reports,
         ranking=ranking,
