@@ -4,7 +4,12 @@
 
 `Digitalishealth/Scribeval`
 
-AI scribe evaluation framework repository.
+Transcript-to-note quality benchmark for AI medical scribes.
+
+## Publication
+
+- Visibility: public
+- Default branch: `main`
 
 ## Self-index files
 

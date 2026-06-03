@@ -26,14 +26,14 @@ transcripts.
 
 ## Publication Steps
 
-- [ ] Review all files for accidental secrets, private URLs, or real clinical
+- [x] Review all files for accidental secrets, private URLs, or real clinical
       data before changing repository visibility.
-- [ ] Decide whether to keep the current default branch name or rename the
+- [x] Decide whether to keep the current default branch name or rename the
       public default branch to `main`.
-- [ ] Make `Digitalishealth/Scribeval` public on GitHub.
-- [ ] Push the release branch and confirm GitHub Actions pass on the public
+- [x] Make `Digitalishealth/Scribeval` public on GitHub.
+- [x] Push the release branch and confirm GitHub Actions pass on the public
       repository.
-- [ ] Create a GitHub release tag and attach the recommended quick-start
+- [ ] Optional: create a GitHub release tag and attach the recommended quick-start
       command from `README.md`.
 
 ## Recommended Public Smoke Test
