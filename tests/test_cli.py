@@ -29,6 +29,16 @@ def _write_case_files(tmp_path: Path) -> tuple[Path, Path, Path]:
     return transcript, ai_note, gp_note
 
 
+def _write_candidate_notes(tmp_path: Path, count: int) -> list[Path]:
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    paths = []
+    for idx in range(1, count + 1):
+        path = tmp_path / f"scribe_{idx}.txt"
+        path.write_text(f"Candidate note {idx}.")
+        paths.append(path)
+    return paths
+
+
 def _write_benchmark_manifest(tmp_path: Path) -> Path:
     transcript_a, ai_note_a, gp_note_a = _write_case_files(tmp_path / "case_a")
     transcript_b, ai_note_b, gp_note_b = _write_case_files(tmp_path / "case_b")
@@ -250,6 +260,28 @@ class TestCLI:
         assert result.exit_code != 0
         assert "--runs must be >= 1" in result.output
 
+    def test_compare_rejects_more_than_five_candidate_notes(
+        self, tmp_path, monkeypatch
+    ):
+        monkeypatch.setattr("scribeval.cli.LLMJudge", CLIMockJudge)
+        transcript, _, _ = _write_case_files(tmp_path)
+        candidate_paths = _write_candidate_notes(tmp_path / "candidates", 6)
+        args = [
+            "compare",
+            "--transcript",
+            str(transcript),
+            "--dimensions",
+            "omission",
+        ]
+        for idx, path in enumerate(candidate_paths, start=1):
+            args.extend(["--candidate-note", f"Scribe{idx}={path}"])
+
+        runner = CliRunner()
+        result = runner.invoke(main, args)
+
+        assert result.exit_code != 0
+        assert "At most 5 submissions" in result.output
+
     def test_compare_medication_terminology_requires_fhir_url(
         self, tmp_path, monkeypatch
     ):
@@ -356,6 +388,44 @@ class TestCLI:
 
         assert result.exit_code != 0
         assert "same submission labels" in result.output
+
+    def test_benchmark_rejects_more_than_five_candidate_notes(
+        self, tmp_path, monkeypatch
+    ):
+        monkeypatch.setattr("scribeval.cli.LLMJudge", CLIMockJudge)
+        transcript, _, _ = _write_case_files(tmp_path / "case_a")
+        candidate_paths = _write_candidate_notes(tmp_path / "case_a" / "candidates", 6)
+        manifest = tmp_path / "benchmark_too_many.json"
+        manifest.write_text(
+            json.dumps(
+                {
+                    "cases": [
+                        {
+                            "case_id": "case_a",
+                            "transcript": str(transcript),
+                            "candidate_notes": {
+                                f"Scribe{idx}": str(path)
+                                for idx, path in enumerate(candidate_paths, start=1)
+                            },
+                        }
+                    ]
+                }
+            )
+        )
+
+        runner = CliRunner()
+        result = runner.invoke(
+            main,
+            [
+                "benchmark",
+                str(manifest),
+                "--dimensions",
+                "omission",
+            ],
+        )
+
+        assert result.exit_code != 0
+        assert "at most 5 candidate notes" in result.output
 
     def test_help(self):
         runner = CliRunner()

@@ -12,7 +12,7 @@ from rich.table import Table
 from scribeval import __version__
 from scribeval.benchmark import BenchmarkCase, BenchmarkReport, run_benchmark
 from scribeval.clients.fhir import FHIRTerminologyClient
-from scribeval.compare import BlindedReport, NoteSubmission
+from scribeval.compare import MAX_SUBMISSIONS, BlindedReport, NoteSubmission
 from scribeval.config import get_settings
 from scribeval.evaluators import (
     DIMENSION_DESCRIPTIONS,
@@ -460,7 +460,8 @@ def show_data_flow(model: str | None, dimensions: str | None) -> None:
     required=True,
     type=str,
     help="Candidate notes to compare, formatted as 'label=path'. Repeat flag "
-    "for each submission. --scribe-note is kept as an alias.",
+    "for each submission; 2 to 5 submissions are supported. --scribe-note is "
+    "kept as an alias.",
 )
 @click.option(
     "--reference-note",
@@ -592,14 +593,17 @@ def compare_cmd(
 
     reference_content = reference_note.read_text() if reference_note else None
 
-    result = run_blinded_comparison(
-        transcript_content=transcript.read_text(),
-        submissions=submissions,
-        pipeline=pipeline,
-        consultation_type=ConsultationType(consultation_type),
-        reference_note_content=reference_content,
-        rng_seed=seed,
-    )
+    try:
+        result = run_blinded_comparison(
+            transcript_content=transcript.read_text(),
+            submissions=submissions,
+            pipeline=pipeline,
+            consultation_type=ConsultationType(consultation_type),
+            reference_note_content=reference_content,
+            rng_seed=seed,
+        )
+    except ValueError as exc:
+        raise click.UsageError(str(exc)) from exc
 
     table = Table(title="Blinded Transcript-to-Note Comparison")
     table.add_column("Rank", justify="right")
@@ -807,6 +811,11 @@ def _load_benchmark_manifest(manifest: Path) -> list[BenchmarkCase]:
         if len(submissions) < 2:
             raise click.UsageError(
                 f"Case {case_id!r} must include at least two candidate notes."
+            )
+        if len(submissions) > MAX_SUBMISSIONS:
+            raise click.UsageError(
+                f"Case {case_id!r} must include at most {MAX_SUBMISSIONS} "
+                "candidate notes."
             )
 
         try:

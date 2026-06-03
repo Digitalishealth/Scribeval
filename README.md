@@ -110,6 +110,9 @@ scribeval compare \
     --transcript consultation.txt \
     --candidate-note GP=gp_note.txt \
     --candidate-note ScribeA=scribe_a_note.txt \
+    --candidate-note ScribeB=scribe_b_note.txt \
+    --candidate-note ScribeC=scribe_c_note.txt \
+    --candidate-note ScribeD=scribe_d_note.txt \
     --runs 3 \
     --output comparison_report \
     --format both
@@ -157,7 +160,8 @@ For repository-publication status and the release smoke test, see
 ## Choosing a Scribe Product
 
 For product selection, run each candidate note against the same de-identified
-transcript and save the comparison report:
+transcript and save the comparison report. Scribeval supports 2 to 5 candidate
+notes per comparison, including an optional GP-written baseline:
 
 ```bash
 scribeval compare \
@@ -165,6 +169,8 @@ scribeval compare \
     --candidate-note GP=gp_note.txt \
     --candidate-note ScribeA=scribe_a_note.txt \
     --candidate-note ScribeB=scribe_b_note.txt \
+    --candidate-note ScribeC=scribe_c_note.txt \
+    --candidate-note ScribeD=scribe_d_note.txt \
     --runs 3 \
     --output product_quality_comparison \
     --format both
@@ -178,7 +184,8 @@ final report. Use `--runs 3` or higher for higher-stakes comparisons so the
 report captures judge variance rather than a single point estimate.
 
 For a more objective product-choice exercise, use the multi-case benchmark
-command. The manifest requires every case to include the same submission labels:
+command. The manifest requires every case to include the same 2 to 5 submission
+labels:
 
 ```json
 {
@@ -190,7 +197,9 @@ command. The manifest requires every case to include the same submission labels:
       "candidate_notes": {
         "GP": "case_001/gp_note.txt",
         "ScribeA": "case_001/scribe_a_note.txt",
-        "ScribeB": "case_001/scribe_b_note.txt"
+        "ScribeB": "case_001/scribe_b_note.txt",
+        "ScribeC": "case_001/scribe_c_note.txt",
+        "ScribeD": "case_001/scribe_d_note.txt"
       }
     }
   ]

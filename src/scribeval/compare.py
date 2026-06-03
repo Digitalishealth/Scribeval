@@ -32,6 +32,9 @@ from scribeval.models.case import (
 from scribeval.models.report import EvaluationReport
 from scribeval.pipeline import EvaluationPipeline
 
+MIN_SUBMISSIONS = 2
+MAX_SUBMISSIONS = 5
+
 
 @dataclass(frozen=True)
 class NoteSubmission:
@@ -104,8 +107,7 @@ def run_blinded_comparison(
     random order per invocation. Each submission is wrapped in a case
     with `scribe_product=None` so the judge cannot see the label.
     """
-    if len(submissions) < 2:
-        raise ValueError("At least two submissions are required for comparison.")
+    _validate_submission_count(submissions, "comparison")
 
     rng = random.Random(rng_seed)
     shuffled = list(submissions)
@@ -153,3 +155,18 @@ def run_blinded_comparison(
         per_label_reports=per_label_reports,
         ranking=ranking,
     )
+
+
+def _validate_submission_count(
+    submissions: list[NoteSubmission | ScribeSubmission],
+    context: str,
+) -> None:
+    count = len(submissions)
+    if count < MIN_SUBMISSIONS:
+        raise ValueError(
+            f"At least {MIN_SUBMISSIONS} submissions are required for {context}."
+        )
+    if count > MAX_SUBMISSIONS:
+        raise ValueError(
+            f"At most {MAX_SUBMISSIONS} submissions are supported for {context}."
+        )

@@ -9,7 +9,13 @@ from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field
 
-from scribeval.compare import BlindedReport, NoteSubmission, run_blinded_comparison
+from scribeval.compare import (
+    MAX_SUBMISSIONS,
+    MIN_SUBMISSIONS,
+    BlindedReport,
+    NoteSubmission,
+    run_blinded_comparison,
+)
 from scribeval.models.case import ConsultationType
 from scribeval.models.score import SeverityLevel
 from scribeval.pipeline import EvaluationPipeline
@@ -68,8 +74,14 @@ def run_benchmark(
         raise ValueError("At least one benchmark case is required.")
 
     expected_labels = {submission.label for submission in cases[0].submissions}
-    if len(expected_labels) < 2:
-        raise ValueError("At least two submissions are required for benchmarking.")
+    if len(expected_labels) < MIN_SUBMISSIONS:
+        raise ValueError(
+            f"At least {MIN_SUBMISSIONS} submissions are required for benchmarking."
+        )
+    if len(expected_labels) > MAX_SUBMISSIONS:
+        raise ValueError(
+            f"At most {MAX_SUBMISSIONS} submissions are supported for benchmarking."
+        )
 
     for case in cases:
         labels = {submission.label for submission in case.submissions}

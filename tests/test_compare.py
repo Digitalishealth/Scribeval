@@ -46,6 +46,42 @@ def test_compare_assigns_anonymous_labels(sample_transcript: str) -> None:
     assert len(result.per_label_reports) == 3
 
 
+def test_compare_allows_five_submissions(sample_transcript: str) -> None:
+    pipeline = _pipeline(MockJudge())
+    submissions = [
+        NoteSubmission(f"Scribe{idx}", f"note {idx}")
+        for idx in range(1, 6)
+    ]
+    result = run_blinded_comparison(
+        transcript_content=sample_transcript,
+        submissions=submissions,
+        pipeline=pipeline,
+        rng_seed=42,
+    )
+    assert len(result.per_label_reports) == 5
+    assert set(result.label_to_submission.values()) == {
+        "Scribe1",
+        "Scribe2",
+        "Scribe3",
+        "Scribe4",
+        "Scribe5",
+    }
+
+
+def test_compare_rejects_more_than_five_submissions(sample_transcript: str) -> None:
+    pipeline = _pipeline(MockJudge())
+    submissions = [
+        NoteSubmission(f"Scribe{idx}", f"note {idx}")
+        for idx in range(1, 7)
+    ]
+    with pytest.raises(ValueError, match="At most 5 submissions"):
+        run_blinded_comparison(
+            transcript_content=sample_transcript,
+            submissions=submissions,
+            pipeline=pipeline,
+        )
+
+
 def test_compare_is_deterministic_with_seed(sample_transcript: str) -> None:
     pipeline = _pipeline(MockJudge())
     subs = [
