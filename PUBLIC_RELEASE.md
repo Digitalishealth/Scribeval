@@ -35,7 +35,7 @@ transcripts.
 - [x] Make `Digitalishealth/Scribeval` public on GitHub.
 - [x] Push the release branch and confirm GitHub Actions pass on the public
       repository.
-- [ ] Confirm the public demo loads at
+- [x] Confirm the public demo loads at
       `https://digitalishealth.github.io/Scribeval/`.
 - [ ] Optional: create a GitHub release tag and attach the recommended quick-start
       command from `README.md`.
