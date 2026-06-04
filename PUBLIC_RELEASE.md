@@ -17,6 +17,8 @@ transcripts.
       `scribeval compare`.
 - [x] Multi-case product benchmark aggregation available via
       `scribeval benchmark`.
+- [x] Static demo frontend available for synthetic Nurse + CDSS versus model
+      comparison outputs.
 - [x] JSON and Markdown outputs available for audit and governance review.
 - [x] Tests and lint pass locally.
 - [x] Public release audit script scans for obvious committed secrets and
@@ -33,6 +35,8 @@ transcripts.
 - [x] Make `Digitalishealth/Scribeval` public on GitHub.
 - [x] Push the release branch and confirm GitHub Actions pass on the public
       repository.
+- [ ] Confirm the public demo loads at
+      `https://digitalishealth.github.io/Scribeval/`.
 - [ ] Optional: create a GitHub release tag and attach the recommended quick-start
       command from `README.md`.
 

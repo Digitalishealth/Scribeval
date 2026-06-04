@@ -12,6 +12,14 @@ The data in `demo-data.json` is synthetic and exists to show how Scribeval
 outputs can be presented for product-selection review. It is not a clinical
 validation result.
 
+## Public Demo
+
+The public static demo is deployed from this directory to:
+
+```text
+https://digitalishealth.github.io/Scribeval/
+```
+
 ## Run Locally
 
 From the repository root:

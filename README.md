@@ -216,6 +216,8 @@ A static dashboard in [`frontend/`](frontend/) shows synthetic benchmark outputs
 for Nurse + CDSS versus four product-agnostic model candidates, including
 variation across prompting strategies.
 
+Live demo: <https://digitalishealth.github.io/Scribeval/>
+
 ```bash
 python3 -m http.server 8765
 ```
