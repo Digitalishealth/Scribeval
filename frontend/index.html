@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scribeval Demo Dashboard</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Scribeval demo</p>
+        <h1>Transcript-to-note benchmark</h1>
+      </div>
+      <div class="header-meta" aria-label="Benchmark metadata">
+        <span id="case-count">-- cases</span>
+        <span id="generated-at">Synthetic data</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="toolbar" aria-label="Dashboard controls">
+        <div class="segmented" role="tablist" aria-label="Views">
+          <button class="tab-button active" data-view="overview" role="tab" aria-selected="true">
+            Overview
+          </button>
+          <button class="tab-button" data-view="strategies" role="tab" aria-selected="false">
+            Prompting
+          </button>
+          <button class="tab-button" data-view="findings" role="tab" aria-selected="false">
+            Findings
+          </button>
+        </div>
+        <label class="select-label">
+          Dimension
+          <select id="dimension-select"></select>
+        </label>
+      </section>
+
+      <section id="overview-view" class="view active" aria-labelledby="overview-title">
+        <div class="metrics-row" id="metrics-row"></div>
+        <div class="content-grid">
+          <section class="panel wide">
+            <div class="panel-header">
+              <h2 id="overview-title">Candidate ranking</h2>
+              <span class="panel-note">Nurse+CDSS baseline and four model outputs</span>
+            </div>
+            <div id="ranking-bars" class="bar-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Case mix</h2>
+              <span class="panel-note">Synthetic demo set</span>
+            </div>
+            <div id="case-mix" class="case-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="strategies-view" class="view" aria-labelledby="strategies-title">
+        <div class="content-grid single">
+          <section class="panel wide">
+            <div class="panel-header">
+              <h2 id="strategies-title">Prompting strategy comparison</h2>
+              <span class="panel-note">Scores show within-model prompt sensitivity</span>
+            </div>
+            <div id="strategy-matrix" class="matrix"></div>
+          </section>
+          <section class="panel wide">
+            <div class="panel-header">
+              <h2>Prompt lift</h2>
+              <span class="panel-note">CDSS-informed minus standard prompt</span>
+            </div>
+            <div id="prompt-lift" class="bar-list compact"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="findings-view" class="view" aria-labelledby="findings-title">
+        <div class="content-grid single">
+          <section class="panel wide">
+            <div class="panel-header">
+              <h2 id="findings-title">Safety findings</h2>
+              <span class="panel-note">Synthetic examples across candidates and prompts</span>
+            </div>
+            <div id="findings-list" class="findings-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

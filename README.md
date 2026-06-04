@@ -210,6 +210,18 @@ labels:
 cross-case score standard deviation, counts critical findings, and preserves
 case-level results for audit.
 
+## Demo Frontend
+
+A static dashboard in [`frontend/`](frontend/) shows synthetic benchmark outputs
+for Nurse + CDSS versus four product-agnostic model candidates, including
+variation across prompting strategies.
+
+```bash
+python3 -m http.server 8765
+```
+
+Open `http://localhost:8765/frontend/`.
+
 ## Sample Cases
 
 The `samples/` directory contains synthetic (entirely fictional) consultation cases with deliberately planted errors for demonstration and testing. **No real patient data is included.**

@@ -1,0 +1,236 @@
+{
+  "metadata": {
+    "benchmark_id": "demo_prompting_strategy_001",
+    "title": "Synthetic Prompting Strategy Benchmark",
+    "case_count": 12,
+    "generated_at": "2026-06-04T09:00:00+10:00",
+    "disclaimer": "Synthetic demonstration data only. No real patient data."
+  },
+  "dimensions": [
+    "overall",
+    "omission",
+    "hallucination",
+    "medicolegal",
+    "ahpra",
+    "pdqi9",
+    "qnote",
+    "medication_terminology"
+  ],
+  "prompting_strategies": [
+    {
+      "id": "standard",
+      "label": "Standard",
+      "description": "Transcript-to-note prompt without explicit safety checklist."
+    },
+    {
+      "id": "structured",
+      "label": "Structured SOAP",
+      "description": "Sectioned note prompt with explicit history, assessment, plan, and safety-netting headings."
+    },
+    {
+      "id": "safety_first",
+      "label": "Safety First",
+      "description": "Prompt prioritising allergies, medications, red flags, follow-up, and unsupported claims."
+    },
+    {
+      "id": "cdss_informed",
+      "label": "CDSS-Informed",
+      "description": "Prompt receives CDSS flags for high-risk omissions and medication-safety checks."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "nurse_cdss",
+      "label": "Nurse + CDSS",
+      "type": "clinical_baseline",
+      "accent": "#007c89",
+      "summary": "Human nurse documentation supported by a clinical decision support checklist.",
+      "scores": {
+        "overall": 0.91,
+        "omission": 0.93,
+        "hallucination": 0.98,
+        "medicolegal": 0.89,
+        "ahpra": 0.92,
+        "pdqi9": 0.86,
+        "qnote": 0.88,
+        "medication_terminology": 0.95
+      },
+      "critical_findings": 0,
+      "high_findings": 1,
+      "score_sd": 0.028,
+      "prompt_results": {
+        "standard": null,
+        "structured": null,
+        "safety_first": null,
+        "cdss_informed": 0.91
+      }
+    },
+    {
+      "id": "model_a",
+      "label": "Model A",
+      "type": "ai_scribe",
+      "accent": "#3d5afe",
+      "summary": "Strong general note quality; most sensitive to prompt structure.",
+      "scores": {
+        "overall": 0.86,
+        "omission": 0.84,
+        "hallucination": 0.91,
+        "medicolegal": 0.83,
+        "ahpra": 0.87,
+        "pdqi9": 0.84,
+        "qnote": 0.86,
+        "medication_terminology": 0.9
+      },
+      "critical_findings": 1,
+      "high_findings": 4,
+      "score_sd": 0.049,
+      "prompt_results": {
+        "standard": 0.78,
+        "structured": 0.84,
+        "safety_first": 0.88,
+        "cdss_informed": 0.91
+      }
+    },
+    {
+      "id": "model_b",
+      "label": "Model B",
+      "type": "ai_scribe",
+      "accent": "#8e24aa",
+      "summary": "High fluency but weaker safety-netting unless prompted explicitly.",
+      "scores": {
+        "overall": 0.81,
+        "omission": 0.77,
+        "hallucination": 0.87,
+        "medicolegal": 0.79,
+        "ahpra": 0.82,
+        "pdqi9": 0.85,
+        "qnote": 0.8,
+        "medication_terminology": 0.84
+      },
+      "critical_findings": 2,
+      "high_findings": 6,
+      "score_sd": 0.066,
+      "prompt_results": {
+        "standard": 0.72,
+        "structured": 0.79,
+        "safety_first": 0.84,
+        "cdss_informed": 0.88
+      }
+    },
+    {
+      "id": "model_c",
+      "label": "Model C",
+      "type": "ai_scribe",
+      "accent": "#d84315",
+      "summary": "Conservative with fewer hallucinations but more clinically relevant omissions.",
+      "scores": {
+        "overall": 0.79,
+        "omission": 0.72,
+        "hallucination": 0.94,
+        "medicolegal": 0.75,
+        "ahpra": 0.8,
+        "pdqi9": 0.78,
+        "qnote": 0.76,
+        "medication_terminology": 0.89
+      },
+      "critical_findings": 1,
+      "high_findings": 7,
+      "score_sd": 0.041,
+      "prompt_results": {
+        "standard": 0.74,
+        "structured": 0.77,
+        "safety_first": 0.8,
+        "cdss_informed": 0.84
+      }
+    },
+    {
+      "id": "model_d",
+      "label": "Model D",
+      "type": "ai_scribe",
+      "accent": "#2e7d32",
+      "summary": "Best medication terminology results; variable medicolegal completeness.",
+      "scores": {
+        "overall": 0.84,
+        "omission": 0.82,
+        "hallucination": 0.89,
+        "medicolegal": 0.78,
+        "ahpra": 0.84,
+        "pdqi9": 0.83,
+        "qnote": 0.82,
+        "medication_terminology": 0.96
+      },
+      "critical_findings": 1,
+      "high_findings": 5,
+      "score_sd": 0.058,
+      "prompt_results": {
+        "standard": 0.76,
+        "structured": 0.83,
+        "safety_first": 0.86,
+        "cdss_informed": 0.89
+      }
+    }
+  ],
+  "case_mix": [
+    {
+      "case_id": "gp_respiratory",
+      "label": "GP respiratory infection",
+      "acuity": "routine",
+      "highest_risk_dimension": "omission"
+    },
+    {
+      "case_id": "ed_chest_pain",
+      "label": "ED chest pain",
+      "acuity": "urgent",
+      "highest_risk_dimension": "hallucination"
+    },
+    {
+      "case_id": "paeds_fever",
+      "label": "Paediatric fever",
+      "acuity": "moderate",
+      "highest_risk_dimension": "medication_terminology"
+    },
+    {
+      "case_id": "psych_review",
+      "label": "Psychiatric review",
+      "acuity": "moderate",
+      "highest_risk_dimension": "medicolegal"
+    }
+  ],
+  "findings": [
+    {
+      "candidate": "Model B",
+      "strategy": "Standard",
+      "dimension": "Omission",
+      "severity": "critical",
+      "finding": "Safety-netting red flags missing in 3 of 12 cases."
+    },
+    {
+      "candidate": "Model C",
+      "strategy": "Structured SOAP",
+      "dimension": "Omission",
+      "severity": "high",
+      "finding": "Relevant negative cardiac history omitted in ED chest pain case."
+    },
+    {
+      "candidate": "Model A",
+      "strategy": "CDSS-Informed",
+      "dimension": "Hallucination",
+      "severity": "low",
+      "finding": "One unsupported review-of-systems statement; no high-severity fabrication."
+    },
+    {
+      "candidate": "Nurse + CDSS",
+      "strategy": "CDSS-Informed",
+      "dimension": "Medicolegal",
+      "severity": "high",
+      "finding": "One case had follow-up interval documented without rationale."
+    },
+    {
+      "candidate": "Model D",
+      "strategy": "Safety First",
+      "dimension": "Medication Terminology",
+      "severity": "none",
+      "finding": "Medication names and strengths validated across all medication-bearing cases."
+    }
+  ]
+}
