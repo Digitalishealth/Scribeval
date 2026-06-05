@@ -20,9 +20,21 @@
   },
   "minimum_independent_review_requirements": {
     "reviewers_per_case": 2,
+    "reviewers_per_case_submission": 2,
     "eligible_registration_status": "current",
     "minimum_years_post_registration": 1,
     "required_training_completed": true,
+    "required_dimensions": [
+      "omission",
+      "hallucination",
+      "medicolegal",
+      "ahpra",
+      "pdqi9",
+      "qnote"
+    ],
+    "optional_dimensions": [
+      "medication_terminology"
+    ],
     "allowed_review_roles": [
       "primary_reviewer",
       "secondary_reviewer",
@@ -30,6 +42,7 @@
     ],
     "conflict_of_interest": "none"
   },
+  "readiness_audit_command": "python scripts/audit_clinician_review_readiness.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --output-json <readiness_report.json> --output-md <readiness_report.md> --fail-on-not-ready",
   "evidence_import_command": "python scripts/import_validation_ratings.py --worksheet <filled_worksheet.csv> --judge-scores <scribeval_scores.json> --reviewer-registry <reviewer_registry.csv> --require-qualified-reviewers --output <calibration_pairs.json>",
   "clinical_validation_claim": "Do not claim independent clinical validation until the synthetic worksheet is replaced by qualified clinician ratings imported with reviewer provenance."
 }

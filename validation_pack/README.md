@@ -58,10 +58,22 @@ python scripts/build_reviewer_packets.py
 5. Assign each reviewer a pseudonymous `reviewer_id` and record eligibility in
    `reviewer_registry_template.csv`. Do not store names, contact details,
    provider numbers, or registration numbers in this public evidence trail.
-6. Run Scribeval on the same blinded submissions.
-7. Export Scribeval scores in the shape shown in
+6. Audit the filled worksheet and reviewer registry before treating it as
+   independent clinician evidence:
+
+```bash
+python scripts/audit_clinician_review_readiness.py \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --output-json <readiness_report.json> \
+  --output-md <readiness_report.md> \
+  --fail-on-not-ready
+```
+
+7. Run Scribeval on the same blinded submissions.
+8. Export Scribeval scores in the shape shown in
    `evidence/synthetic_scribeval_scores_v0.json`.
-8. Convert reviewer ratings and Scribeval scores into calibration pairs:
+9. Convert reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -87,7 +99,7 @@ python scripts/import_validation_ratings.py \
   --output <calibration_pairs.json>
 ```
 
-9. Run:
+10. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json

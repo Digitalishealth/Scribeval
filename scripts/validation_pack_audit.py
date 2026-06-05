@@ -31,6 +31,14 @@ VALID_DIMENSIONS = {
     "qnote",
 }
 VALID_SEVERITIES = {"none", "low", "moderate", "high", "critical"}
+REQUIRED_CLINICIAN_REVIEW_DIMENSIONS = {
+    "ahpra",
+    "hallucination",
+    "medicolegal",
+    "omission",
+    "pdqi9",
+    "qnote",
+}
 REQUIRED_REVIEWER_REGISTRY_FIELDS = {
     "conflict_of_interest",
     "country",
@@ -318,6 +326,14 @@ def audit_clinician_review_protocol() -> None:
     require(
         requirements.get("reviewers_per_case") >= 2,
         "clinician review protocol must require at least two reviewers per case",
+    )
+    require(
+        requirements.get("reviewers_per_case_submission") >= 2,
+        "clinician review protocol must require at least two reviewers per case-submission",
+    )
+    require(
+        set(requirements.get("required_dimensions", [])) == REQUIRED_CLINICIAN_REVIEW_DIMENSIONS,
+        "clinician review protocol required_dimensions drift",
     )
     require(
         requirements.get("eligible_registration_status") == "current",

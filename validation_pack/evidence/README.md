@@ -15,7 +15,18 @@ independent clinical validation.
 For real clinician ratings, keep reviewer provenance outside the scoring
 worksheet by using `../reviewer_registry_template.csv`. Reviewer IDs should be
 pseudonymous and must not expose names, contact details, provider numbers, or
-registration numbers. The stricter import path is:
+registration numbers. First audit the completed review set:
+
+```bash
+python scripts/audit_clinician_review_readiness.py \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --output-json <readiness_report.json> \
+  --output-md <readiness_report.md> \
+  --fail-on-not-ready
+```
+
+Then use the stricter import path:
 
 ```bash
 python scripts/import_validation_ratings.py \

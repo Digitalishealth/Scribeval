@@ -39,6 +39,65 @@ REQUIRED_REVIEWER_REGISTRY_FIELDS = {
     "training_completed",
     "years_post_registration",
 }
+REQUIRED_CLINICIAN_REVIEW_DIMENSIONS = (
+    "omission",
+    "hallucination",
+    "medicolegal",
+    "ahpra",
+    "pdqi9",
+    "qnote",
+)
+
+
+def reviewer_worksheet_fields() -> list[str]:
+    with (VALIDATION_PACK / "reviewer_worksheet.csv").open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        return list(reader.fieldnames or [])
+
+
+def write_qualified_reviewer_registry(path: Path) -> None:
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "reviewer_id",
+                "profession",
+                "country",
+                "registration_status",
+                "years_post_registration",
+                "specialty",
+                "review_role",
+                "conflict_of_interest",
+                "training_completed",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "reviewer_id": "reviewer_clinician_001",
+                "profession": "general_practitioner",
+                "country": "AU",
+                "registration_status": "current",
+                "years_post_registration": "8",
+                "specialty": "general_practice",
+                "review_role": "primary_reviewer",
+                "conflict_of_interest": "none",
+                "training_completed": "yes",
+            }
+        )
+        writer.writerow(
+            {
+                "reviewer_id": "reviewer_clinician_002",
+                "profession": "general_practitioner",
+                "country": "AU",
+                "registration_status": "current",
+                "years_post_registration": "12",
+                "specialty": "general_practice",
+                "review_role": "secondary_reviewer",
+                "conflict_of_interest": "none",
+                "training_completed": "yes",
+            }
+        )
 
 
 def test_validation_manifest_defines_twenty_blinded_cases() -> None:
@@ -82,9 +141,11 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert protocol["benchmark_unit"] == "whole transcript -> final note quality score"
     requirements = protocol["minimum_independent_review_requirements"]
     assert requirements["reviewers_per_case"] == 2
+    assert requirements["reviewers_per_case_submission"] == 2
     assert requirements["eligible_registration_status"] == "current"
     assert requirements["required_training_completed"] is True
     assert requirements["minimum_years_post_registration"] >= 1
+    assert tuple(requirements["required_dimensions"]) == REQUIRED_CLINICIAN_REVIEW_DIMENSIONS
 
     with (VALIDATION_PACK / "reviewer_registry_template.csv").open(newline="") as handle:
         fieldnames = set(csv.DictReader(handle).fieldnames or [])
@@ -342,28 +403,7 @@ def test_reviewer_import_reproduces_evidence_pairs(tmp_path: Path) -> None:
 
 def test_reviewer_import_accepts_qualified_reviewer_registry(tmp_path: Path) -> None:
     worksheet = tmp_path / "qualified_worksheet.csv"
-    worksheet_fields = [
-        "case_id",
-        "blinded_submission",
-        "reviewer_id",
-        "overall_score",
-        "overall_severity",
-        "omission_score",
-        "omission_severity",
-        "hallucination_score",
-        "hallucination_severity",
-        "medicolegal_score",
-        "medicolegal_severity",
-        "ahpra_score",
-        "ahpra_severity",
-        "pdqi9_score",
-        "pdqi9_severity",
-        "qnote_score",
-        "qnote_severity",
-        "medication_terminology_score",
-        "medication_terminology_severity",
-        "reviewer_comments",
-    ]
+    worksheet_fields = reviewer_worksheet_fields()
     with worksheet.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=worksheet_fields)
         writer.writeheader()
@@ -376,24 +416,9 @@ def test_reviewer_import_accepts_qualified_reviewer_registry(tmp_path: Path) -> 
                 "omission_severity": "low",
                 "reviewer_comments": "Strict registry import test.",
             }
-        )
-    registry = tmp_path / "reviewer_registry.csv"
-    registry.write_text(
-        "\n".join(
-            [
-                (
-                    "reviewer_id,profession,country,registration_status,"
-                    "years_post_registration,specialty,review_role,"
-                    "conflict_of_interest,training_completed"
-                ),
-                (
-                    "reviewer_clinician_001,general_practitioner,AU,current,8,"
-                    "general_practice,primary_reviewer,none,yes"
-                ),
-            ]
-        )
-        + "\n"
     )
+    registry = tmp_path / "reviewer_registry.csv"
+    write_qualified_reviewer_registry(registry)
     output = tmp_path / "pairs.json"
 
     result = subprocess.run(
@@ -422,6 +447,95 @@ def test_reviewer_import_accepts_qualified_reviewer_registry(tmp_path: Path) -> 
     assert pairs[0]["case_id"] == "val_gp_respiratory_001"
     assert pairs[0]["blind_label"] == "Submission A"
     assert pairs[0]["dimension"] == "omission"
+
+
+def test_clinician_review_readiness_audit_accepts_complete_qualified_inputs(
+    tmp_path: Path,
+) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    output_json = tmp_path / "readiness.json"
+    output_md = tmp_path / "readiness.md"
+    write_qualified_reviewer_registry(registry)
+
+    corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
+    with worksheet.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=reviewer_worksheet_fields())
+        writer.writeheader()
+        for rel_path in corpus_manifest["case_files"]:
+            case = json.loads((CORPUS / rel_path).read_text())
+            for note in case["candidate_notes"]:
+                for reviewer_id in ("reviewer_clinician_001", "reviewer_clinician_002"):
+                    row = {
+                        "case_id": case["case_id"],
+                        "blinded_submission": note["blind_label"],
+                        "reviewer_id": reviewer_id,
+                        "reviewer_comments": "Complete readiness fixture.",
+                    }
+                    for dimension in REQUIRED_CLINICIAN_REVIEW_DIMENSIONS:
+                        row[f"{dimension}_score"] = "0.90"
+                        row[f"{dimension}_severity"] = "low"
+                    writer.writerow(row)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/audit_clinician_review_readiness.py",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+            "--fail-on-not-ready",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    report = json.loads(output_json.read_text())
+    assert "Clinician review readiness: ready" in result.stdout
+    assert report["is_ready_for_independent_validation"] is True
+    assert report["coverage"]["expected_case_submission_count"] == 100
+    assert report["coverage"]["complete_case_submission_count"] == 100
+    assert report["coverage"]["qualified_reviewer_count"] == 2
+    assert all(not rows for rows in report["issues"].values())
+    assert "Status: ready" in output_md.read_text()
+
+
+def test_clinician_review_readiness_audit_reports_incomplete_template(
+    tmp_path: Path,
+) -> None:
+    registry = tmp_path / "reviewer_registry.csv"
+    output_json = tmp_path / "readiness.json"
+    write_qualified_reviewer_registry(registry)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/audit_clinician_review_readiness.py",
+            "--worksheet",
+            "validation_pack/reviewer_worksheet.csv",
+            "--reviewer-registry",
+            str(registry),
+            "--output-json",
+            str(output_json),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    report = json.loads(output_json.read_text())
+    assert "Clinician review readiness: not ready" in result.stdout
+    assert report["is_ready_for_independent_validation"] is False
+    assert report["coverage"]["complete_case_submission_count"] == 0
+    assert len(report["issues"]["under_reviewed_submissions"]) == 100
 
 
 def test_stratified_evidence_summary_reproduces_committed_artifacts(tmp_path: Path) -> None:

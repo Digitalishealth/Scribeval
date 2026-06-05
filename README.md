@@ -182,11 +182,14 @@ The pack is intended to produce evidence about agreement with clinicians
 (weighted kappa for severity ratings and ICC(2,1) for continuous scores). The
 included example data is synthetic and illustrative only; it is not clinical
 validation evidence. For independent clinician ratings, run
+`scripts/audit_clinician_review_readiness.py` first, then run
 `scripts/import_validation_ratings.py` with `--reviewer-registry` and
 `--require-qualified-reviewers` so the calibration pairs carry reviewer
 eligibility provenance without exposing direct identifiers. The generated
 stratified summary shows whether agreement evidence spans specialties, note
-sources, prompting strategies, and safety-critical failure modes.
+sources, prompting strategies, and safety-critical failure modes. The readiness
+audit checks that every blinded case-submission has two qualified reviewers and
+complete required dimension ratings before calibration import.
 
 ## Choosing a Scribe Product
 
