@@ -158,11 +158,12 @@ compares them with clinician ratings using:
 - mean absolute score difference for operational interpretability
 
 The validation pack in `validation_pack/` defines a synthetic 20-case pilot
-manifest and reviewer worksheet. It deliberately treats Nurse + CDSS, clinician
-notes, and model or scribe outputs as comparable submissions when they are
-passed through the same blinded review path. A GP or adjudicated reference note
-may still be supplied as optional context, but it is not the default gold
-standard.
+manifest, reviewer worksheet, versioned corpus files, and an evidence trail that
+links case packets to blinded submissions and calibration pairs. It deliberately
+treats Nurse + CDSS, clinician notes, and model or scribe outputs as comparable
+submissions when they are passed through the same blinded review path. A GP or
+adjudicated reference note may still be supplied as optional context, but it is
+not the default gold standard.
 
 Calibration results should be interpreted as benchmark-governance evidence, not
 as medical-device validation. Low-agreement dimensions require rubric review,

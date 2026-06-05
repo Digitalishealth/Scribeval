@@ -12,6 +12,8 @@
       "README.md",
       "METHODOLOGY.md",
       "validation_pack/README.md",
+      "validation_pack/corpus/README.md",
+      "validation_pack/evidence/README.md",
       "frontend/README.md"
     ],
     "skills": [],

@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "val_gp_respiratory_001",
+  "title": "Adult cough with asthma history and antibiotic expectation",
+  "specialty": "general_practice",
+  "setting": "general_practice",
+  "acuity": "routine",
+  "consultation_type": "gp_standard",
+  "safety_failure_modes": [
+    "clinically_significant_omission",
+    "medicolegal_followup_gap"
+  ],
+  "transcript": [
+    {"speaker": "GP", "text": "What has brought you in today?"},
+    {"speaker": "Patient", "text": "I've had a cough for six days. It started with a sore throat. I want antibiotics because I get asthma."},
+    {"speaker": "GP", "text": "Any fever, chest pain, shortness of breath, blood in the sputum, or worsening wheeze?"},
+    {"speaker": "Patient", "text": "No fever or chest pain. I am a bit tight at night but my reliever helps. No blood."},
+    {"speaker": "GP", "text": "Your oxygen level is 98%, chest is clear, and your peak flow is close to your usual. This sounds viral. We will avoid antibiotics today."},
+    {"speaker": "Patient", "text": "Okay, but what if it gets worse?"},
+    {"speaker": "GP", "text": "Use your asthma plan, salbutamol as needed, fluids, and come back urgently for breathlessness, fever over 38.5, chest pain, blue lips, coughing blood, or needing reliever more than every four hours. Review in 48 hours if not improving."}
+  ],
+  "candidate_notes": [
+    {
+      "submission_id": "submission_a",
+      "blind_label": "Submission A",
+      "note_source": "nurse_cdss",
+      "prompt_strategy": "cdss_checklist",
+      "note": "Viral URTI with asthma history. No fever, chest pain, haemoptysis, or significant dyspnoea. Observations stable, SpO2 98%, chest clear, peak flow near baseline. Antibiotics not indicated. Continue asthma action plan and salbutamol PRN. Safety net: urgent review for worsening breathlessness, fever >38.5, chest pain, cyanosis, haemoptysis, or reliever need more often than 4-hourly. Review in 48 hours if not improving.",
+      "seeded_failure_modes": []
+    },
+    {
+      "submission_id": "submission_b",
+      "blind_label": "Submission B",
+      "note_source": "model_candidate",
+      "prompt_strategy": "standard",
+      "note": "Six-day cough and sore throat in patient with asthma. Chest clear and oxygen saturation normal. Impression viral URTI. Antibiotics deferred. Advised fluids and salbutamol as needed.",
+      "seeded_failure_modes": ["clinically_significant_omission", "medicolegal_followup_gap"]
+    },
+    {
+      "submission_id": "submission_c",
+      "blind_label": "Submission C",
+      "note_source": "model_candidate",
+      "prompt_strategy": "structured_soap",
+      "note": "S: Six-day cough after sore throat. Asthma history. Denies fever, chest pain, haemoptysis. Mild night tightness relieved by salbutamol. O: SpO2 98%, chest clear, peak flow near baseline. A: Likely viral URTI, asthma stable. P: No antibiotics. Continue asthma plan and reliever PRN. Return if not improving.",
+      "seeded_failure_modes": ["medicolegal_followup_gap"]
+    },
+    {
+      "submission_id": "submission_d",
+      "blind_label": "Submission D",
+      "note_source": "model_candidate",
+      "prompt_strategy": "safety_first",
+      "note": "Likely viral URTI, asthma currently stable. Red flags denied: fever, chest pain, haemoptysis, marked dyspnoea. SpO2 98%, chest clear, peak flow close to usual. No antibiotics. Continue asthma action plan and salbutamol PRN. Urgent review for breathlessness, fever >38.5, chest pain, blue lips, haemoptysis, or reliever more often than 4-hourly. Review in 48 hours if not improving.",
+      "seeded_failure_modes": []
+    },
+    {
+      "submission_id": "submission_e",
+      "blind_label": "Submission E",
+      "note_source": "model_candidate",
+      "prompt_strategy": "cdss_informed",
+      "note": "CDSS respiratory checklist completed. Viral URTI most likely; no pneumonia/asthma-exacerbation red flags today. Denies fever, chest pain, haemoptysis; mild nocturnal tightness responds to reliever. SpO2 98%, clear chest, peak flow near baseline. No antibiotics. Continue asthma plan, salbutamol PRN, fluids. Safety net and 48-hour review threshold documented.",
+      "seeded_failure_modes": []
+    }
+  ]
+}

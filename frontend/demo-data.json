@@ -235,57 +235,59 @@
   ],
   "validation_pilot": {
     "case_count": 20,
+    "corpus_case_packets": 4,
     "submissions_per_case": 5,
     "clinician_reviewers": 2,
+    "evidence_pairs": 23,
     "disclaimer": "Synthetic example metrics only. Not clinical validation evidence.",
     "summary": {
-      "median_weighted_kappa": 0.84,
-      "kappa_interpretation": "Substantial to almost-perfect agreement",
-      "median_icc": 0.955,
-      "mean_abs_difference": 0.036
+      "median_weighted_kappa": 1.0,
+      "kappa_interpretation": "Synthetic bootstrap agreement fixture",
+      "median_icc": 0.97,
+      "mean_abs_difference": 0.029
     },
     "agreement": [
       {
         "dimension": "ahpra",
-        "n_pairs": 8,
-        "weighted_kappa": 0.886,
-        "icc_2_1": 0.956,
-        "mean_abs_difference": 0.031
-      },
-      {
-        "dimension": "hallucination",
-        "n_pairs": 8,
-        "weighted_kappa": 0.915,
-        "icc_2_1": 0.971,
+        "n_pairs": 3,
+        "weighted_kappa": 1.0,
+        "icc_2_1": 0.937,
         "mean_abs_difference": 0.033
       },
       {
+        "dimension": "hallucination",
+        "n_pairs": 4,
+        "weighted_kappa": 1.0,
+        "icc_2_1": 0.993,
+        "mean_abs_difference": 0.025
+      },
+      {
         "dimension": "medicolegal",
-        "n_pairs": 8,
-        "weighted_kappa": 0.795,
-        "icc_2_1": 0.953,
-        "mean_abs_difference": 0.041
+        "n_pairs": 4,
+        "weighted_kappa": 1.0,
+        "icc_2_1": 0.970,
+        "mean_abs_difference": 0.033
       },
       {
         "dimension": "omission",
-        "n_pairs": 8,
-        "weighted_kappa": 0.714,
-        "icc_2_1": 0.956,
-        "mean_abs_difference": 0.036
+        "n_pairs": 5,
+        "weighted_kappa": 0.783,
+        "icc_2_1": 0.992,
+        "mean_abs_difference": 0.028
       },
       {
         "dimension": "pdqi9",
-        "n_pairs": 8,
-        "weighted_kappa": 0.750,
-        "icc_2_1": 0.942,
-        "mean_abs_difference": 0.036
+        "n_pairs": 3,
+        "weighted_kappa": 1.0,
+        "icc_2_1": 0.342,
+        "mean_abs_difference": 0.030
       },
       {
         "dimension": "qnote",
-        "n_pairs": 8,
-        "weighted_kappa": 0.902,
-        "icc_2_1": 0.953,
-        "mean_abs_difference": 0.040
+        "n_pairs": 4,
+        "weighted_kappa": 1.0,
+        "icc_2_1": 0.969,
+        "mean_abs_difference": 0.022
       }
     ],
     "workflow": [
@@ -300,6 +302,10 @@
       {
         "label": "Calibration output",
         "detail": "Scribeval reports weighted kappa for severity and ICC(2,1) for continuous 0-1 scores."
+      },
+      {
+        "label": "Evidence trail",
+        "detail": "Each synthetic pair references a corpus case and blinded submission for reproducible audit."
       }
     ]
   }

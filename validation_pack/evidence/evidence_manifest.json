@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "synthetic_agreement_v0",
+  "status": "synthetic_bootstrap",
+  "disclaimer": "Illustrative synthetic reviewer ratings only. Replace with independent clinician ratings before making clinical validation claims.",
+  "corpus_manifest": "../corpus/corpus_manifest.json",
+  "calibration_pairs": "calibration_pairs_v0.json",
+  "calibration_report": "calibration_report_v0.md",
+  "rating_sources": [
+    {
+      "source_id": "scribeval_judge_synthetic_v0",
+      "type": "synthetic_scribeval_output",
+      "description": "Illustrative Scribeval-like scores for reproducibility testing."
+    },
+    {
+      "source_id": "clinician_reviewer_synthetic_v0",
+      "type": "synthetic_clinician_rating",
+      "description": "Illustrative clinician-like ratings for agreement workflow testing."
+    }
+  ],
+  "coverage": {
+    "case_count": 4,
+    "submission_count": 20,
+    "dimensions": [
+      "ahpra",
+      "hallucination",
+      "medicolegal",
+      "omission",
+      "pdqi9",
+      "qnote"
+    ],
+    "note_sources": [
+      "nurse_cdss",
+      "model_candidate"
+    ],
+    "prompt_strategies": [
+      "cdss_checklist",
+      "standard",
+      "structured_soap",
+      "safety_first",
+      "cdss_informed"
+    ]
+  }
+}

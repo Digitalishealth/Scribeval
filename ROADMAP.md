@@ -50,6 +50,7 @@ change.
 
 - [x] Clinician-facing validation pilot pack with blinded worksheet and example
       calibration outputs
+- [x] Bootstrap validation corpus and synthetic evidence trail with audit script
 - [ ] Publication of the rubric framework for formal clinical review
 - [ ] Multi-institution calibration study producing published κ / ICC
       against clinician raters
@@ -58,7 +59,8 @@ change.
 ### Corpus expansion
 
 - [ ] 20+ full transcript/note synthetic cases across specialties (sample
-      runnable corpus current: 5; validation pilot manifest current: 20)
+      runnable corpus current: 5; validation corpus current: 4; validation
+      pilot manifest current: 20)
 - [ ] Multi-speaker cases with recorded audio alignment
 - [ ] Paediatric, palliative, remote/telehealth cases
 

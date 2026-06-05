@@ -39,3 +39,6 @@ jobs:
 
       - name: Public release audit
         run: python scripts/public_release_audit.py
+
+      - name: Validation pack audit
+        run: python scripts/validation_pack_audit.py

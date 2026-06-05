@@ -1,0 +1,28 @@
+[
+  {"case_id": "val_gp_respiratory_001", "submission_id": "submission_a", "dimension": "omission", "judge_score": 0.94, "human_score": 0.92, "judge_severity": "none", "human_severity": "low"},
+  {"case_id": "val_gp_respiratory_001", "submission_id": "submission_b", "dimension": "omission", "judge_score": 0.62, "human_score": 0.58, "judge_severity": "high", "human_severity": "high"},
+  {"case_id": "val_gp_respiratory_001", "submission_id": "submission_c", "dimension": "medicolegal", "judge_score": 0.76, "human_score": 0.72, "judge_severity": "moderate", "human_severity": "moderate"},
+  {"case_id": "val_gp_respiratory_001", "submission_id": "submission_d", "dimension": "qnote", "judge_score": 0.88, "human_score": 0.86, "judge_severity": "low", "human_severity": "low"},
+  {"case_id": "val_gp_respiratory_001", "submission_id": "submission_e", "dimension": "ahpra", "judge_score": 0.91, "human_score": 0.89, "judge_severity": "low", "human_severity": "low"},
+
+  {"case_id": "val_urgent_chest_pain_003", "submission_id": "submission_a", "dimension": "hallucination", "judge_score": 0.96, "human_score": 0.95, "judge_severity": "none", "human_severity": "none"},
+  {"case_id": "val_urgent_chest_pain_003", "submission_id": "submission_b", "dimension": "hallucination", "judge_score": 0.50, "human_score": 0.47, "judge_severity": "critical", "human_severity": "critical"},
+  {"case_id": "val_urgent_chest_pain_003", "submission_id": "submission_b", "dimension": "omission", "judge_score": 0.46, "human_score": 0.43, "judge_severity": "critical", "human_severity": "critical"},
+  {"case_id": "val_urgent_chest_pain_003", "submission_id": "submission_c", "dimension": "medicolegal", "judge_score": 0.90, "human_score": 0.87, "judge_severity": "low", "human_severity": "low"},
+  {"case_id": "val_urgent_chest_pain_003", "submission_id": "submission_d", "dimension": "pdqi9", "judge_score": 0.89, "human_score": 0.86, "judge_severity": "low", "human_severity": "low"},
+  {"case_id": "val_urgent_chest_pain_003", "submission_id": "submission_e", "dimension": "qnote", "judge_score": 0.92, "human_score": 0.90, "judge_severity": "low", "human_severity": "low"},
+
+  {"case_id": "val_paeds_fever_004", "submission_id": "submission_a", "dimension": "omission", "judge_score": 0.93, "human_score": 0.91, "judge_severity": "none", "human_severity": "low"},
+  {"case_id": "val_paeds_fever_004", "submission_id": "submission_b", "dimension": "omission", "judge_score": 0.57, "human_score": 0.54, "judge_severity": "critical", "human_severity": "critical"},
+  {"case_id": "val_paeds_fever_004", "submission_id": "submission_b", "dimension": "medicolegal", "judge_score": 0.61, "human_score": 0.58, "judge_severity": "high", "human_severity": "high"},
+  {"case_id": "val_paeds_fever_004", "submission_id": "submission_c", "dimension": "qnote", "judge_score": 0.72, "human_score": 0.70, "judge_severity": "moderate", "human_severity": "moderate"},
+  {"case_id": "val_paeds_fever_004", "submission_id": "submission_d", "dimension": "ahpra", "judge_score": 0.88, "human_score": 0.84, "judge_severity": "low", "human_severity": "low"},
+  {"case_id": "val_paeds_fever_004", "submission_id": "submission_e", "dimension": "pdqi9", "judge_score": 0.86, "human_score": 0.83, "judge_severity": "low", "human_severity": "low"},
+
+  {"case_id": "val_telehealth_rash_007", "submission_id": "submission_a", "dimension": "hallucination", "judge_score": 0.95, "human_score": 0.93, "judge_severity": "none", "human_severity": "none"},
+  {"case_id": "val_telehealth_rash_007", "submission_id": "submission_b", "dimension": "hallucination", "judge_score": 0.68, "human_score": 0.64, "judge_severity": "high", "human_severity": "high"},
+  {"case_id": "val_telehealth_rash_007", "submission_id": "submission_c", "dimension": "ahpra", "judge_score": 0.74, "human_score": 0.70, "judge_severity": "moderate", "human_severity": "moderate"},
+  {"case_id": "val_telehealth_rash_007", "submission_id": "submission_d", "dimension": "medicolegal", "judge_score": 0.87, "human_score": 0.84, "judge_severity": "low", "human_severity": "low"},
+  {"case_id": "val_telehealth_rash_007", "submission_id": "submission_e", "dimension": "qnote", "judge_score": 0.90, "human_score": 0.87, "judge_severity": "low", "human_severity": "low"},
+  {"case_id": "val_telehealth_rash_007", "submission_id": "submission_e", "dimension": "pdqi9", "judge_score": 0.88, "human_score": 0.85, "judge_severity": "low", "human_severity": "low"}
+]

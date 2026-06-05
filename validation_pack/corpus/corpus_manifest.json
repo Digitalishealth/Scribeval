@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "corpus_id": "scribeval_validation_corpus_v0",
+  "status": "bootstrap_subset",
+  "disclaimer": "Synthetic case packets only. No real patient data. Not clinical validation evidence until rated by independent clinicians.",
+  "target_case_count": 20,
+  "current_case_count": 4,
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "required_submission_range": [2, 5],
+  "case_files": [
+    "cases/val_gp_respiratory_001.json",
+    "cases/val_urgent_chest_pain_003.json",
+    "cases/val_paeds_fever_004.json",
+    "cases/val_telehealth_rash_007.json"
+  ],
+  "coverage": {
+    "specialties": [
+      "general_practice",
+      "urgent_care",
+      "paediatrics",
+      "telehealth"
+    ],
+    "note_sources": [
+      "nurse_cdss",
+      "model_candidate"
+    ],
+    "prompt_strategies": [
+      "standard",
+      "structured_soap",
+      "safety_first",
+      "cdss_informed"
+    ],
+    "safety_failure_modes": [
+      "clinically_significant_omission",
+      "unsupported_hallucination",
+      "medication_dosing_risk",
+      "medicolegal_followup_gap",
+      "over_inference_from_uncertain_transcript"
+    ]
+  }
+}

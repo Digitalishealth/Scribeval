@@ -161,11 +161,14 @@ For repository-publication status and the release smoke test, see
 
 The [`validation_pack/`](validation_pack/) directory contains a clinician-facing
 pilot protocol for testing Scribeval against independent human reviewers. It
-includes a 20-case synthetic review manifest, a blinded reviewer worksheet, and
-example calibration inputs/results for:
+includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
+bootstrap corpus of complete synthetic transcript/note packets, and example
+calibration inputs/results for:
 
 ```bash
 scribeval calibrate validation_pack/results/example_calibration_pairs.json
+scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
+python scripts/validation_pack_audit.py
 ```
 
 The pack is intended to produce evidence about agreement with clinicians

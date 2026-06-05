@@ -7,6 +7,7 @@ outputs. It compares:
 - Four product-agnostic model candidates
 - Four prompting strategies: standard, structured SOAP, safety-first, and
   CDSS-informed prompting
+- Synthetic clinician-calibration evidence linked to the validation corpus
 
 The data in `demo-data.json` is synthetic and exists to show how Scribeval
 outputs can be presented for product-selection review. It is not a clinical

@@ -223,19 +223,19 @@ function renderValidation() {
       detail: `${pilot.submissions_per_case} blinded submissions per case`,
     },
     {
-      label: "Reviewers",
-      value: String(pilot.clinician_reviewers),
-      detail: "Independent human ratings for calibration",
+      label: "Corpus packets",
+      value: String(pilot.corpus_case_packets),
+      detail: "Complete synthetic transcript/note cases",
+    },
+    {
+      label: "Evidence pairs",
+      value: String(pilot.evidence_pairs),
+      detail: "Traceable judge/reviewer comparisons",
     },
     {
       label: "Median kappa",
       value: formatScore(pilot.summary.median_weighted_kappa),
       detail: pilot.summary.kappa_interpretation,
-    },
-    {
-      label: "Median ICC",
-      value: formatScore(pilot.summary.median_icc),
-      detail: "Absolute score agreement",
     },
   ];
 
