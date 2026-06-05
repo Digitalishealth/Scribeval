@@ -14,6 +14,20 @@ ROOT = Path(__file__).resolve().parents[1]
 VALIDATION_PACK = ROOT / "validation_pack"
 CORPUS = VALIDATION_PACK / "corpus"
 EVIDENCE = VALIDATION_PACK / "evidence"
+REVIEWER_PACKETS = VALIDATION_PACK / "reviewer_packets"
+
+FORBIDDEN_REVIEWER_PACKET_TOKENS = {
+    "cdss_checklist",
+    "cdss_informed",
+    "model_candidate",
+    "note_source",
+    "nurse_cdss",
+    "prompt_strategy",
+    "safety_first",
+    "seeded_failure_modes",
+    "structured_soap",
+    "submission_id",
+}
 
 
 def test_validation_manifest_defines_twenty_blinded_cases() -> None:
@@ -168,6 +182,32 @@ def test_evidence_pairs_reference_corpus_and_are_computable() -> None:
     assert min(agreement.n_pairs for agreement in agreements) >= 3
 
 
+def test_reviewer_packets_cover_corpus_without_metadata_leakage() -> None:
+    corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
+    packet_manifest = json.loads(
+        (REVIEWER_PACKETS / "reviewer_packet_manifest.json").read_text()
+    )
+
+    assert packet_manifest["case_count"] == 20
+    assert len(packet_manifest["packet_files"]) == len(corpus_manifest["case_files"])
+
+    packet_files = {Path(path).stem: path for path in packet_manifest["packet_files"]}
+    for rel_path in corpus_manifest["case_files"]:
+        case = json.loads((CORPUS / rel_path).read_text())
+        packet_path = REVIEWER_PACKETS / packet_files[case["case_id"]]
+        packet_text = packet_path.read_text()
+        lower_packet_text = packet_text.lower()
+
+        assert case["title"] in packet_text
+        assert "## Transcript" in packet_text
+        assert "## Blinded Candidate Notes" in packet_text
+        for token in FORBIDDEN_REVIEWER_PACKET_TOKENS:
+            assert token not in lower_packet_text
+        for submission in case["candidate_notes"]:
+            assert f"### {submission['blind_label']}" in packet_text
+            assert submission["note"] in packet_text
+
+
 def test_validation_pack_audit_script_passes() -> None:
     result = subprocess.run(
         [sys.executable, "scripts/validation_pack_audit.py"],
@@ -178,6 +218,35 @@ def test_validation_pack_audit_script_passes() -> None:
     )
 
     assert "Validation pack audit passed." in result.stdout
+    assert "Reviewer packets: 20" in result.stdout
+
+
+def test_reviewer_packet_builder_reproduces_committed_packets(tmp_path: Path) -> None:
+    output_dir = tmp_path / "reviewer_packets"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_reviewer_packets.py",
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Wrote 20 reviewer packets" in result.stdout
+    expected_files = sorted(
+        path.relative_to(REVIEWER_PACKETS) for path in REVIEWER_PACKETS.rglob("*")
+    )
+    generated_files = sorted(path.relative_to(output_dir) for path in output_dir.rglob("*"))
+    assert generated_files == expected_files
+    for rel_path in expected_files:
+        expected_path = REVIEWER_PACKETS / rel_path
+        generated_path = output_dir / rel_path
+        if expected_path.is_file():
+            assert generated_path.read_text() == expected_path.read_text()
 
 
 def test_reviewer_import_reproduces_evidence_pairs(tmp_path: Path) -> None:

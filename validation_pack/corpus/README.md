@@ -34,3 +34,13 @@ case packet -> Scribeval score -> clinician rating -> calibration statistic
 
 The included evidence is synthetic and illustrative until independent clinician
 ratings are collected.
+
+## Reviewer Projection
+
+The JSON packets in this directory are the coordinator and audit source of
+truth. They include source, prompting, and seeded-failure metadata that should
+not be visible during blinded clinical review.
+
+Run `python scripts/build_reviewer_packets.py` from the repository root to
+generate `../reviewer_packets/`, which contains the reviewer-facing transcript
+and blinded note text projection.

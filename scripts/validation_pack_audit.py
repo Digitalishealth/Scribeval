@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "validation_pack"
 CORPUS = PACK / "corpus"
 EVIDENCE = PACK / "evidence"
+REVIEWER_PACKETS = PACK / "reviewer_packets"
 
 VALID_DIMENSIONS = {
     "ahpra",
@@ -29,6 +30,18 @@ VALID_DIMENSIONS = {
     "qnote",
 }
 VALID_SEVERITIES = {"none", "low", "moderate", "high", "critical"}
+FORBIDDEN_REVIEWER_PACKET_TOKENS = {
+    "cdss_checklist",
+    "cdss_informed",
+    "model_candidate",
+    "note_source",
+    "nurse_cdss",
+    "prompt_strategy",
+    "safety_first",
+    "seeded_failure_modes",
+    "structured_soap",
+    "submission_id",
+}
 
 
 def load_json(path: Path) -> Any:
@@ -60,6 +73,7 @@ def audit_corpus() -> dict[str, set[str]]:
     note_sources: set[str] = set()
     prompt_strategies: set[str] = set()
     failure_modes: set[str] = set()
+    blind_labels_by_case: dict[str, set[str]] = {}
 
     for rel_path in case_files:
         case_path = CORPUS / rel_path
@@ -114,6 +128,7 @@ def audit_corpus() -> dict[str, set[str]]:
             prompt_strategies.add(submission["prompt_strategy"])
             failure_modes.update(submission.get("seeded_failure_modes", []))
         failure_modes.update(case.get("safety_failure_modes", []))
+        blind_labels_by_case[case_id] = seen_blind_labels
 
     return {
         "case_ids": case_ids,
@@ -121,6 +136,7 @@ def audit_corpus() -> dict[str, set[str]]:
         "note_sources": note_sources,
         "prompt_strategies": prompt_strategies,
         "failure_modes": failure_modes,
+        "blind_labels_by_case": blind_labels_by_case,
     }
 
 
@@ -176,10 +192,52 @@ def audit_evidence(corpus_refs: dict[str, set[str]]) -> int:
     return len(pairs)
 
 
+def audit_reviewer_packets(corpus_refs: dict[str, set[str]]) -> int:
+    require((REVIEWER_PACKETS / "README.md").exists(), "missing reviewer packet README")
+    manifest_path = REVIEWER_PACKETS / "reviewer_packet_manifest.json"
+    manifest = load_json(manifest_path)
+    packet_files = manifest.get("packet_files")
+    require(isinstance(packet_files, list) and packet_files, "reviewer packet manifest is empty")
+    require(
+        manifest.get("case_count") == len(corpus_refs["case_ids"]),
+        "reviewer packet case_count does not match corpus",
+    )
+    require(
+        manifest.get("case_count") == len(packet_files),
+        "reviewer packet case_count does not match packet_files length",
+    )
+
+    labels_by_case = corpus_refs["blind_labels_by_case"]
+    seen_case_ids: set[str] = set()
+    for rel_path in packet_files:
+        packet_path = REVIEWER_PACKETS / rel_path
+        require(packet_path.exists(), f"missing reviewer packet: {rel_path}")
+        case_id = packet_path.stem
+        require(case_id in corpus_refs["case_ids"], f"reviewer packet has unknown case: {case_id}")
+        seen_case_ids.add(case_id)
+
+        text = packet_path.read_text()
+        lower_text = text.lower()
+        for token in FORBIDDEN_REVIEWER_PACKET_TOKENS:
+            require(token not in lower_text, f"{rel_path} exposes hidden metadata token {token}")
+        for blind_label in labels_by_case[case_id]:
+            require(
+                f"### {blind_label}" in text,
+                f"{rel_path} missing blinded submission heading {blind_label}",
+            )
+
+    require(
+        seen_case_ids == corpus_refs["case_ids"],
+        "reviewer packets do not cover every corpus case",
+    )
+    return len(packet_files)
+
+
 def main() -> int:
     try:
         corpus_refs = audit_corpus()
         pair_count = audit_evidence(corpus_refs)
+        packet_count = audit_reviewer_packets(corpus_refs)
     except AssertionError as exc:
         print(f"Validation pack audit failed: {exc}", file=sys.stderr)
         return 1
@@ -187,6 +245,7 @@ def main() -> int:
     print("Validation pack audit passed.")
     print(f"Cases: {len(corpus_refs['case_ids'])}")
     print(f"Submissions: {len(corpus_refs['submission_refs'])}")
+    print(f"Reviewer packets: {packet_count}")
     print(f"Evidence pairs: {pair_count}")
     print(f"Note sources: {', '.join(sorted(corpus_refs['note_sources']))}")
     print(f"Prompt strategies: {', '.join(sorted(corpus_refs['prompt_strategies']))}")

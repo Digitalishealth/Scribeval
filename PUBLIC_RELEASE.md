@@ -23,6 +23,8 @@ transcripts.
       and example calibration output.
 - [x] Full 20-case synthetic validation corpus included with traceable
       transcript/note packets.
+- [x] Generated blinded reviewer packets included for clinician scoring without
+      coordinator-only corpus metadata.
 - [x] Validation corpus audit verifies case packets and evidence references
       without API keys.
 - [x] JSON and Markdown outputs available for audit and governance review.

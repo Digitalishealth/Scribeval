@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "packet_id": "scribeval_reviewer_packets_v0",
+  "source_corpus": "../corpus/corpus_manifest.json",
+  "case_count": 20,
+  "blinding": {
+    "hidden_fields": [
+      "submission_id",
+      "note_source",
+      "prompt_strategy",
+      "seeded_failure_modes"
+    ],
+    "visible_submission_labels": [
+      "Submission A",
+      "Submission B",
+      "Submission C",
+      "Submission D",
+      "Submission E"
+    ],
+    "note_text_policy": "Candidate note text is preserved verbatim. Workflow self-identification inside the note text remains visible because it is part of the scored note."
+  },
+  "packet_files": [
+    "cases/val_gp_respiratory_001.md",
+    "cases/val_gp_diabetes_002.md",
+    "cases/val_urgent_chest_pain_003.md",
+    "cases/val_paeds_fever_004.md",
+    "cases/val_psych_review_005.md",
+    "cases/val_palliative_pain_006.md",
+    "cases/val_telehealth_rash_007.md",
+    "cases/val_aged_care_falls_008.md",
+    "cases/val_antenatal_bleeding_009.md",
+    "cases/val_msk_back_pain_010.md",
+    "cases/val_respiratory_copd_011.md",
+    "cases/val_abdo_pain_012.md",
+    "cases/val_skin_lesion_013.md",
+    "cases/val_renal_polypharmacy_014.md",
+    "cases/val_indigenous_health_015.md",
+    "cases/val_substance_use_016.md",
+    "cases/val_womens_health_017.md",
+    "cases/val_elder_confusion_018.md",
+    "cases/val_child_asthma_019.md",
+    "cases/val_results_followup_020.md"
+  ]
+}
