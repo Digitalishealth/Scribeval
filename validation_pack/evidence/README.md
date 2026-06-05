@@ -46,6 +46,13 @@ python scripts/summarize_reviewer_reliability.py \
   --output-json <reviewer_reliability.json> \
   --output-md <reviewer_reliability.md> \
   --fail-on-not-ready
+python scripts/build_consensus_validation_ratings.py \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --output <consensus_calibration_pairs.json> \
+  --output-summary-json <consensus_summary.json> \
+  --output-summary-md <consensus_summary.md>
 python scripts/import_validation_ratings.py \
   --worksheet <filled_worksheet.csv> \
   --judge-scores <scribeval_scores.json> \
@@ -58,8 +65,9 @@ python scripts/summarize_validation_evidence.py \
 ```
 
 For a completed independent clinician run, prefer the bundle builder because it
-keeps the readiness report, reviewer reliability report, calibration pairs,
-agreement report, stratified summary, manifest, and source hashes together:
+keeps the readiness report, reviewer reliability report, individual and
+consensus calibration pairs, agreement reports, stratified summary, manifest,
+and source hashes together:
 
 ```bash
 python scripts/build_validation_evidence_bundle.py \

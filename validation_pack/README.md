@@ -106,7 +106,23 @@ python scripts/summarize_reviewer_reliability.py \
    claims and should trigger rubric clarification, reviewer retraining, or
    adjudication.
 
-11. Convert reviewer ratings and Scribeval scores into calibration pairs:
+11. Build consensus clinician ratings for judge-vs-consensus reporting:
+
+```bash
+python scripts/build_consensus_validation_ratings.py \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --output <consensus_calibration_pairs.json> \
+  --output-summary-json <consensus_summary.json> \
+  --output-summary-md <consensus_summary.md>
+```
+
+   Consensus ratings average qualified reviewer scores and use a consensus
+   severity label. Rows with score or severity disagreement are flagged for
+   adjudication before strong validation claims are made.
+
+12. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -151,7 +167,7 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-12. Run:
+13. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json

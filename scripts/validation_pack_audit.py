@@ -339,6 +339,11 @@ def audit_clinician_review_protocol() -> None:
         in protocol.get("reviewer_reliability_command", ""),
         "clinician review protocol missing reviewer reliability command",
     )
+    require(
+        "build_consensus_validation_ratings.py"
+        in protocol.get("consensus_rating_command", ""),
+        "clinician review protocol missing consensus rating command",
+    )
     requirements = protocol.get("minimum_independent_review_requirements", {})
     require(
         requirements.get("reviewers_per_case") >= 2,

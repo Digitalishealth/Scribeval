@@ -181,6 +181,13 @@ python scripts/summarize_reviewer_reliability.py \
     --output-json <reviewer_reliability.json> \
     --output-md <reviewer_reliability.md> \
     --fail-on-not-ready
+python scripts/build_consensus_validation_ratings.py \
+    --worksheet <filled_worksheet.csv> \
+    --reviewer-registry <reviewer_registry.csv> \
+    --judge-scores <scribeval_scores.json> \
+    --output <consensus_calibration_pairs.json> \
+    --output-summary-json <consensus_summary.json> \
+    --output-summary-md <consensus_summary.md>
 python scripts/summarize_validation_evidence.py
 scribeval calibrate validation_pack/results/example_calibration_pairs.json
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -195,7 +202,8 @@ validation evidence. For independent clinician ratings, run
 `scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets,
 run `scripts/audit_clinician_review_readiness.py`, export Scribeval scores with
 `scripts/export_validation_judge_scores.py`, check clinician inter-rater
-agreement with `scripts/summarize_reviewer_reliability.py`, then run
+agreement with `scripts/summarize_reviewer_reliability.py`, build consensus
+clinician ratings with `scripts/build_consensus_validation_ratings.py`, then run
 `scripts/import_validation_ratings.py` with `--reviewer-registry` and
 `--require-qualified-reviewers` so the calibration pairs carry reviewer
 eligibility provenance without exposing direct identifiers. The generated
@@ -204,9 +212,10 @@ sources, prompting strategies, and safety-critical failure modes. The readiness
 audit checks that every blinded case-submission has two qualified reviewers and
 complete required dimension ratings before calibration import. The reviewer
 reliability report shows whether clinician reviewers agree enough for their
-ratings to be a defensible comparator. For a completed review run,
-`scripts/build_validation_evidence_bundle.py` orchestrates these steps into one
-versioned bundle with source hashes.
+ratings to be a defensible comparator. The consensus ratings provide a cleaner
+judge-vs-clinician comparison and flag rows needing adjudication before strong
+claims. For a completed review run, `scripts/build_validation_evidence_bundle.py`
+orchestrates these steps into one versioned bundle with source hashes.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
 publication and rejects raw clinician CSV inputs.
 

@@ -90,6 +90,18 @@ def calibration_report_markdown(*, run_id: str, pairs: list[dict[str, Any]]) -> 
     return "\n".join(lines) + "\n"
 
 
+def consensus_report_markdown(*, run_id: str, pairs: list[dict[str, Any]]) -> str:
+    from build_consensus_validation_ratings import consensus_summary, report_markdown
+
+    summary = consensus_summary(pairs)
+    report = report_markdown(summary)
+    return report.replace(
+        "# Clinician Consensus Validation Ratings",
+        f"# Clinician Consensus Validation Ratings: {run_id}",
+        1,
+    )
+
+
 def bundle_manifest(
     *,
     run_id: str,
@@ -102,6 +114,8 @@ def bundle_manifest(
     bundle_dir: Path,
     readiness_report: dict[str, Any],
     pair_count: int,
+    consensus_pair_count: int,
+    consensus_adjudication_required_count: int,
     reviewer_reliability_pair_count: int,
 ) -> dict[str, Any]:
     return {
@@ -119,6 +133,8 @@ def bundle_manifest(
         "judge_scores": relative_or_name(judge_scores),
         "calibration_pairs": "calibration_pairs.json",
         "calibration_report": "calibration_report.md",
+        "consensus_calibration_pairs": "consensus_calibration_pairs.json",
+        "consensus_calibration_report": "consensus_calibration_report.md",
         "readiness_report": "readiness_report.json",
         "readiness_report_markdown": "readiness_report.md",
         "stratified_summary": "stratified_summary.json",
@@ -144,6 +160,8 @@ def bundle_manifest(
                 "qualified_reviewer_count"
             ],
             "calibration_pair_count": pair_count,
+            "consensus_calibration_pair_count": consensus_pair_count,
+            "consensus_adjudication_required_count": consensus_adjudication_required_count,
             "reviewer_reliability_pair_count": reviewer_reliability_pair_count,
         },
     }
@@ -161,6 +179,7 @@ def build_bundle(
     evidence_status: str,
 ) -> Path:
     from audit_clinician_review_readiness import audit_readiness, report_markdown
+    from build_consensus_validation_ratings import build_consensus_pairs
     from import_validation_ratings import (
         build_pairs,
         load_blind_label_map,
@@ -203,6 +222,13 @@ def build_bundle(
         corpus_manifest=corpus_manifest,
         protocol=protocol,
     )
+    consensus_pairs = build_consensus_pairs(
+        worksheet=worksheet,
+        reviewer_registry=reviewer_registry,
+        judge_scores_path=judge_scores,
+        corpus_manifest=corpus_manifest,
+        protocol=protocol,
+    )
     manifest = bundle_manifest(
         run_id=run_id,
         evidence_status=evidence_status,
@@ -214,6 +240,10 @@ def build_bundle(
         bundle_dir=bundle_dir,
         readiness_report=readiness,
         pair_count=len(pairs),
+        consensus_pair_count=len(consensus_pairs),
+        consensus_adjudication_required_count=sum(
+            1 for pair in consensus_pairs if pair["adjudication_required"]
+        ),
         reviewer_reliability_pair_count=reviewer_reliability["coverage"][
             "reliability_pair_count"
         ],
@@ -224,6 +254,10 @@ def build_bundle(
     write_json(bundle_dir / "calibration_pairs.json", pairs)
     (bundle_dir / "calibration_report.md").write_text(
         calibration_report_markdown(run_id=run_id, pairs=pairs)
+    )
+    write_json(bundle_dir / "consensus_calibration_pairs.json", consensus_pairs)
+    (bundle_dir / "consensus_calibration_report.md").write_text(
+        consensus_report_markdown(run_id=run_id, pairs=consensus_pairs)
     )
     write_json(bundle_dir / "evidence_manifest.json", manifest)
     write_json(bundle_dir / "reviewer_reliability.json", reviewer_reliability)

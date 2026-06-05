@@ -35,6 +35,8 @@ transcripts.
       score JSON without transcript/note text or raw judge excerpts.
 - [x] Clinician reviewer reliability summary measures inter-rater agreement
       before judge-vs-clinician calibration claims.
+- [x] Consensus clinician rating builder produces judge-vs-consensus pairs and
+      adjudication flags for reviewer disagreement.
 - [x] Versioned evidence bundle builder produces readiness, calibration,
       agreement, stratified summary, manifest, and source-hash artifacts.
 - [x] Evidence-run audit verifies publishable bundles and rejects raw clinician

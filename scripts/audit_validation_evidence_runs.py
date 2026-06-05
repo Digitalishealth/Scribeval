@@ -28,6 +28,8 @@ REQUIRED_MANIFEST_FILES = (
     "readiness_report_markdown",
     "calibration_pairs",
     "calibration_report",
+    "consensus_calibration_pairs",
+    "consensus_calibration_report",
     "stratified_summary",
     "stratified_summary_report",
     "reviewer_reliability",
@@ -163,11 +165,13 @@ def audit_readiness(
 def audit_pairs_and_summary(
     bundle_name: str,
     pairs_path: Path,
+    consensus_pairs_path: Path,
     summary_path: Path,
     reviewer_reliability_path: Path,
     manifest: dict[str, Any],
 ) -> int:
     pairs = load_json(pairs_path)
+    consensus_pairs = load_json(consensus_pairs_path)
     summary = load_json(summary_path)
     reviewer_reliability = load_json(reviewer_reliability_path)
     manifest_coverage = manifest.get("coverage", {})
@@ -176,6 +180,24 @@ def audit_pairs_and_summary(
     require(
         manifest_coverage.get("calibration_pair_count") == pair_count,
         f"{bundle_name} manifest calibration_pair_count drift",
+    )
+    require(
+        isinstance(consensus_pairs, list) and consensus_pairs,
+        f"{bundle_name} has no consensus calibration pairs",
+    )
+    consensus_pair_count = len(consensus_pairs)
+    require(
+        manifest_coverage.get("consensus_calibration_pair_count") == consensus_pair_count,
+        f"{bundle_name} manifest consensus_calibration_pair_count drift",
+    )
+    require(
+        all("adjudication_required" in pair for pair in consensus_pairs),
+        f"{bundle_name} consensus pairs missing adjudication flags",
+    )
+    require(
+        manifest_coverage.get("consensus_adjudication_required_count")
+        == sum(1 for pair in consensus_pairs if pair["adjudication_required"]),
+        f"{bundle_name} consensus adjudication count drift",
     )
     require(
         summary.get("benchmark_unit") == BENCHMARK_UNIT,
@@ -234,6 +256,7 @@ def audit_bundle(bundle_dir: Path) -> int:
     return audit_pairs_and_summary(
         bundle_dir.name,
         paths["calibration_pairs"],
+        paths["consensus_calibration_pairs"],
         paths["stratified_summary"],
         paths["reviewer_reliability"],
         manifest,

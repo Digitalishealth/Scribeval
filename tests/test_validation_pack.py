@@ -192,6 +192,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
+    assert "build_consensus_validation_ratings.py" in protocol["consensus_rating_command"]
     requirements = protocol["minimum_independent_review_requirements"]
     assert requirements["reviewers_per_case"] == 2
     assert requirements["reviewers_per_case_submission"] == 2
@@ -660,6 +661,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     manifest = json.loads((bundle_dir / "evidence_manifest.json").read_text())
     readiness = json.loads((bundle_dir / "readiness_report.json").read_text())
     pairs = json.loads((bundle_dir / "calibration_pairs.json").read_text())
+    consensus_pairs = json.loads((bundle_dir / "consensus_calibration_pairs.json").read_text())
     stratified = json.loads((bundle_dir / "stratified_summary.json").read_text())
     reviewer_reliability = json.loads((bundle_dir / "reviewer_reliability.json").read_text())
 
@@ -669,7 +671,11 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["coverage"]["complete_case_submission_count"] == 100
     assert manifest["coverage"]["qualified_reviewer_count"] == 2
     assert manifest["coverage"]["calibration_pair_count"] == 1200
+    assert manifest["coverage"]["consensus_calibration_pair_count"] == 600
+    assert manifest["coverage"]["consensus_adjudication_required_count"] == 0
     assert manifest["coverage"]["reviewer_reliability_pair_count"] == 600
+    assert manifest["consensus_calibration_pairs"] == "consensus_calibration_pairs.json"
+    assert manifest["consensus_calibration_report"] == "consensus_calibration_report.md"
     assert manifest["reviewer_reliability"] == "reviewer_reliability.json"
     assert manifest["reviewer_reliability_report"] == "reviewer_reliability.md"
     assert set(manifest["source_hashes"]) == {
@@ -681,11 +687,16 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     }
     assert readiness["is_ready_for_independent_validation"] is True
     assert len(pairs) == 1200
+    assert len(consensus_pairs) == 600
+    assert all(not pair["adjudication_required"] for pair in consensus_pairs)
     assert stratified["coverage"]["pair_count"] == 1200
     assert stratified["evidence_status"] == "independent_clinician_review"
     assert reviewer_reliability["coverage"]["reliability_pair_count"] == 600
     assert reviewer_reliability["readiness"]["is_ready_for_independent_validation"] is True
     assert "Weighted kappa" in (bundle_dir / "calibration_report.md").read_text()
+    assert "Judge vs Consensus Agreement" in (
+        bundle_dir / "consensus_calibration_report.md"
+    ).read_text()
     assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
     assert "Reviewer Reliability" in (bundle_dir / "reviewer_reliability.md").read_text()
 
@@ -783,6 +794,69 @@ def test_reviewer_reliability_summary_accepts_complete_qualified_inputs(
     )
     assert all(row["weighted_kappa"] == 1.0 for row in summary["dimension_agreement"])
     assert "Clinician Reviewer Reliability Report" in output_md.read_text()
+
+
+def test_consensus_validation_ratings_build_importable_pairs(
+    tmp_path: Path,
+) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output = tmp_path / "consensus_pairs.json"
+    output_summary_json = tmp_path / "consensus_summary.json"
+    output_summary_md = tmp_path / "consensus_summary.md"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_consensus_validation_ratings.py",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--output",
+            str(output),
+            "--output-summary-json",
+            str(output_summary_json),
+            "--output-summary-md",
+            str(output_summary_md),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    pairs = json.loads(output.read_text())
+    summary = json.loads(output_summary_json.read_text())
+    assert "Wrote 600 consensus calibration pairs" in result.stdout
+    assert len(pairs) == 600
+    assert pairs[0]["reviewer_count"] == 2
+    assert pairs[0]["human_score"] == 0.9
+    assert pairs[0]["human_severity"] == "low"
+    assert pairs[0]["severity_consensus_method"] == "unanimous"
+    assert pairs[0]["adjudication_required"] is False
+    assert summary["coverage"]["consensus_pair_count"] == 600
+    assert summary["coverage"]["adjudication_required_count"] == 0
+    assert "Judge vs Consensus Agreement" in output_summary_md.read_text()
+
+    pairs_for_agreement = [
+        RatingPair(
+            dimension=pair["dimension"],
+            judge_score=float(pair["judge_score"]),
+            human_score=float(pair["human_score"]),
+            judge_severity=pair["judge_severity"],
+            human_severity=pair["human_severity"],
+        )
+        for pair in pairs
+    ]
+    assert {agreement.dimension for agreement in compute_agreement(pairs_for_agreement)} == set(
+        REQUIRED_CLINICIAN_REVIEW_DIMENSIONS
+    )
 
 
 def test_evidence_run_audit_accepts_empty_directory(tmp_path: Path) -> None:
