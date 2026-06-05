@@ -211,6 +211,43 @@ def test_evidence_pairs_reference_corpus_and_are_computable() -> None:
     assert min(agreement.n_pairs for agreement in agreements) >= 3
 
 
+def test_stratified_evidence_summary_covers_corpus_metadata() -> None:
+    corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
+    summary = json.loads((EVIDENCE / "stratified_summary_v0.json").read_text())
+
+    specialties: set[str] = set()
+    note_sources: set[str] = set()
+    prompt_strategies: set[str] = set()
+    failure_modes: set[str] = set()
+    for rel_path in corpus_manifest["case_files"]:
+        case = json.loads((CORPUS / rel_path).read_text())
+        specialties.add(case["specialty"])
+        failure_modes.update(case["safety_failure_modes"])
+        for note in case["candidate_notes"]:
+            note_sources.add(note["note_source"])
+            prompt_strategies.add(note["prompt_strategy"])
+            failure_modes.update(note["seeded_failure_modes"])
+
+    assert summary["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert summary["coverage"]["case_count"] == 20
+    assert summary["coverage"]["submission_count"] == 100
+    assert summary["coverage"]["pair_count"] == 118
+    assert set(summary["coverage"]["dimensions"]) == {
+        "ahpra",
+        "hallucination",
+        "medication_terminology",
+        "medicolegal",
+        "omission",
+        "pdqi9",
+        "qnote",
+    }
+    assert {row["value"] for row in summary["strata"]["specialty"]} == specialties
+    assert {row["value"] for row in summary["strata"]["note_source"]} == note_sources
+    assert {row["value"] for row in summary["strata"]["prompt_strategy"]} == prompt_strategies
+    assert {row["value"] for row in summary["strata"]["failure_mode"]} == failure_modes
+    assert all(row["pair_count"] > 0 for rows in summary["strata"].values() for row in rows)
+
+
 def test_reviewer_packets_cover_corpus_without_metadata_leakage() -> None:
     corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
     packet_manifest = json.loads(
@@ -385,6 +422,32 @@ def test_reviewer_import_accepts_qualified_reviewer_registry(tmp_path: Path) -> 
     assert pairs[0]["case_id"] == "val_gp_respiratory_001"
     assert pairs[0]["blind_label"] == "Submission A"
     assert pairs[0]["dimension"] == "omission"
+
+
+def test_stratified_evidence_summary_reproduces_committed_artifacts(tmp_path: Path) -> None:
+    output_json = tmp_path / "stratified_summary_v0.json"
+    output_md = tmp_path / "stratified_summary_v0.md"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/summarize_validation_evidence.py",
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Wrote stratified evidence summary" in result.stdout
+    assert json.loads(output_json.read_text()) == json.loads(
+        (EVIDENCE / "stratified_summary_v0.json").read_text()
+    )
+    assert output_md.read_text() == (EVIDENCE / "stratified_summary_v0.md").read_text()
 
 
 def test_frontend_exposes_validation_pilot_summary() -> None:

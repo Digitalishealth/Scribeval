@@ -1,0 +1,673 @@
+{
+  "schema_version": "1.0.0",
+  "summary_id": "stratified_evidence_summary_v0",
+  "evidence_id": "synthetic_agreement_v0",
+  "evidence_status": "synthetic_bootstrap",
+  "disclaimer": "Illustrative synthetic reviewer ratings only. Replace with independent clinician ratings before making clinical validation claims.",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "source_files": {
+    "evidence_manifest": "validation_pack/evidence/evidence_manifest.json",
+    "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
+    "calibration_pairs": "validation_pack/evidence/calibration_pairs_v0.json"
+  },
+  "coverage": {
+    "case_count": 20,
+    "submission_count": 100,
+    "pair_count": 118,
+    "dimension_count": 7,
+    "dimensions": [
+      "ahpra",
+      "hallucination",
+      "medication_terminology",
+      "medicolegal",
+      "omission",
+      "pdqi9",
+      "qnote"
+    ]
+  },
+  "strata": {
+    "specialty": [
+      {
+        "value": "aged_care",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 12,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0317,
+        "severity_exact_agreement": 0.8333
+      },
+      {
+        "value": "chronic_disease",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 12,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0325,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "general_practice",
+        "case_count": 9,
+        "submission_count": 45,
+        "pair_count": 53,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0328,
+        "severity_exact_agreement": 0.9434
+      },
+      {
+        "value": "mental_health",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0317,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "paediatrics",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 12,
+        "dimension_count": 6,
+        "dimensions": [
+          "ahpra",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0292,
+        "severity_exact_agreement": 0.9167
+      },
+      {
+        "value": "palliative_care",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 5,
+        "dimension_count": 5,
+        "dimensions": [
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.034,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "telehealth",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0317,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "urgent_care",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 12,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0292,
+        "severity_exact_agreement": 1.0
+      }
+    ],
+    "note_source": [
+      {
+        "value": "model_candidate",
+        "case_count": 20,
+        "submission_count": 80,
+        "pair_count": 98,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0332,
+        "severity_exact_agreement": 0.9898
+      },
+      {
+        "value": "nurse_cdss",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 20,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0255,
+        "severity_exact_agreement": 0.75
+      }
+    ],
+    "prompt_strategy": [
+      {
+        "value": "cdss_checklist",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 20,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0255,
+        "severity_exact_agreement": 0.75
+      },
+      {
+        "value": "cdss_informed",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 21,
+        "dimension_count": 3,
+        "dimensions": [
+          "ahpra",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.029,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "safety_first",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 20,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.029,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "standard",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 37,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission"
+        ],
+        "mean_abs_difference": 0.0359,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "structured_soap",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 20,
+        "dimension_count": 4,
+        "dimensions": [
+          "ahpra",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0365,
+        "severity_exact_agreement": 0.95
+      }
+    ],
+    "failure_mode": [
+      {
+        "value": "anticoagulant_head_injury_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 4,
+        "dimensions": [
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0283,
+        "severity_exact_agreement": 0.8333
+      },
+      {
+        "value": "asthma_action_plan_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medication_terminology",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.03,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "clinically_significant_omission",
+        "case_count": 18,
+        "submission_count": 90,
+        "pair_count": 107,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0318,
+        "severity_exact_agreement": 0.9439
+      },
+      {
+        "value": "confidentiality_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "contraception_contraindication_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 6,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0333,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "copd_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 6,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "culturally_safe_care_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "delirium_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 0.8333
+      },
+      {
+        "value": "diabetes_safety_net_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0317,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "documentation_photo_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "ectopic_pregnancy_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0283,
+        "severity_exact_agreement": 0.8333
+      },
+      {
+        "value": "medication_adherence_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0317,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "medication_dosing_risk",
+        "case_count": 5,
+        "submission_count": 25,
+        "pair_count": 29,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0321,
+        "severity_exact_agreement": 0.9655
+      },
+      {
+        "value": "medicolegal_followup_gap",
+        "case_count": 9,
+        "submission_count": 29,
+        "pair_count": 32,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0328,
+        "severity_exact_agreement": 0.9688
+      },
+      {
+        "value": "opioid_safety_net_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 5,
+        "dimension_count": 5,
+        "dimensions": [
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.034,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "over_inference_from_uncertain_transcript",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 12,
+        "dimension_count": 6,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0325,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "preventive_care_followup_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "renal_medication_interaction",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0333,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "results_followup_ownership_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 4,
+        "dimensions": [
+          "ahpra",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0317,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "skin_cancer_referral_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "suicide_risk_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0317,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "unsupported_hallucination",
+        "case_count": 11,
+        "submission_count": 39,
+        "pair_count": 50,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medication_terminology",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0318,
+        "severity_exact_agreement": 0.92
+      },
+      {
+        "value": "withdrawal_risk_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "ahpra",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.035,
+        "severity_exact_agreement": 1.0
+      },
+      {
+        "value": "work_certificate_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 6,
+        "dimension_count": 5,
+        "dimensions": [
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0333,
+        "severity_exact_agreement": 0.8333
+      }
+    ]
+  }
+}

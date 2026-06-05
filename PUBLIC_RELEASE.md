@@ -27,6 +27,8 @@ transcripts.
       coordinator-only corpus metadata.
 - [x] Pseudonymous reviewer registry template and clinician review protocol
       included for independent rating provenance.
+- [x] Stratified validation evidence summary included across specialty, note
+      source, prompt strategy, and safety-critical failure mode.
 - [x] Validation corpus audit verifies case packets and evidence references
       without API keys.
 - [x] JSON and Markdown outputs available for audit and governance review.

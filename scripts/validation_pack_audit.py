@@ -92,6 +92,7 @@ def audit_corpus() -> dict[str, set[str]]:
     note_sources: set[str] = set()
     prompt_strategies: set[str] = set()
     failure_modes: set[str] = set()
+    specialties: set[str] = set()
     blind_labels_by_case: dict[str, set[str]] = {}
 
     for rel_path in case_files:
@@ -102,6 +103,8 @@ def audit_corpus() -> dict[str, set[str]]:
         require(isinstance(case_id, str) and case_id, f"{rel_path} has no case_id")
         require(case_id not in case_ids, f"duplicate case_id: {case_id}")
         case_ids.add(case_id)
+        require(case.get("specialty"), f"{case_id} has no specialty")
+        specialties.add(case["specialty"])
 
         transcript = case.get("transcript")
         require(isinstance(transcript, list) and transcript, f"{case_id} has no transcript")
@@ -155,6 +158,7 @@ def audit_corpus() -> dict[str, set[str]]:
         "note_sources": note_sources,
         "prompt_strategies": prompt_strategies,
         "failure_modes": failure_modes,
+        "specialties": specialties,
         "blind_labels_by_case": blind_labels_by_case,
     }
 
@@ -165,10 +169,17 @@ def audit_evidence(corpus_refs: dict[str, set[str]]) -> int:
     judge_scores_path = EVIDENCE / manifest["judge_scores"]
     pairs_path = EVIDENCE / manifest["calibration_pairs"]
     report_path = EVIDENCE / manifest["calibration_report"]
+    summary_path = EVIDENCE / manifest["stratified_summary"]
+    summary_report_path = EVIDENCE / manifest["stratified_summary_report"]
     require(worksheet_path.exists(), f"missing reviewer worksheet: {worksheet_path}")
     require(judge_scores_path.exists(), f"missing judge scores: {judge_scores_path}")
     require(pairs_path.exists(), f"missing calibration pairs: {pairs_path}")
     require(report_path.exists(), f"missing calibration report: {report_path}")
+    require(summary_path.exists(), f"missing stratified summary: {summary_path}")
+    require(
+        summary_report_path.exists(),
+        f"missing stratified summary report: {summary_report_path}",
+    )
 
     pairs = load_json(pairs_path)
     require(isinstance(pairs, list) and pairs, "calibration pairs must be a non-empty list")
@@ -208,7 +219,52 @@ def audit_evidence(corpus_refs: dict[str, set[str]]) -> int:
         referenced_cases == corpus_refs["case_ids"],
         "evidence pairs do not cover every corpus case",
     )
+    audit_stratified_summary(summary_path, corpus_refs, len(pairs), referenced_submissions)
     return len(pairs)
+
+
+def audit_stratified_summary(
+    summary_path: Path,
+    corpus_refs: dict[str, set[str]],
+    pair_count: int,
+    referenced_submissions: set[str],
+) -> None:
+    summary = load_json(summary_path)
+    require(
+        summary.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "stratified summary has invalid benchmark_unit",
+    )
+    coverage = summary.get("coverage", {})
+    require(coverage.get("case_count") == len(corpus_refs["case_ids"]), "summary case_count drift")
+    require(
+        coverage.get("submission_count") == len(referenced_submissions),
+        "summary submission_count drift",
+    )
+    require(coverage.get("pair_count") == pair_count, "summary pair_count drift")
+    require(set(coverage.get("dimensions", [])) == VALID_DIMENSIONS, "summary dimensions drift")
+
+    strata = summary.get("strata", {})
+    expected_values = {
+        "specialty": corpus_refs["specialties"],
+        "note_source": corpus_refs["note_sources"],
+        "prompt_strategy": corpus_refs["prompt_strategies"],
+        "failure_mode": corpus_refs["failure_modes"],
+    }
+    for stratum, values in expected_values.items():
+        rows = strata.get(stratum)
+        require(isinstance(rows, list) and rows, f"summary missing {stratum} rows")
+        observed_values = {row.get("value") for row in rows}
+        require(observed_values == values, f"summary {stratum} coverage drift")
+        for row in rows:
+            require(row.get("pair_count", 0) > 0, f"summary {stratum} row has no pairs")
+            require(
+                0 <= row.get("mean_abs_difference", -1) <= 1,
+                f"summary {stratum} row mean_abs_difference outside 0..1",
+            )
+            require(
+                0 <= row.get("severity_exact_agreement", -1) <= 1,
+                f"summary {stratum} row severity agreement outside 0..1",
+            )
 
 
 def audit_reviewer_packets(corpus_refs: dict[str, set[str]]) -> int:

@@ -8,7 +8,10 @@
   "judge_scores": "synthetic_scribeval_scores_v0.json",
   "calibration_pairs": "calibration_pairs_v0.json",
   "calibration_report": "calibration_report_v0.md",
+  "stratified_summary": "stratified_summary_v0.json",
+  "stratified_summary_report": "stratified_summary_v0.md",
   "generated_by": "python scripts/import_validation_ratings.py --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json --output validation_pack/evidence/calibration_pairs_v0.json",
+  "stratified_summary_generated_by": "python scripts/summarize_validation_evidence.py",
   "rating_sources": [
     {
       "source_id": "scribeval_judge_synthetic_v0",

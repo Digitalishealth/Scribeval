@@ -70,6 +70,12 @@ python scripts/import_validation_ratings.py \
   --output validation_pack/evidence/calibration_pairs_v0.json
 ```
 
+Generate the stratified evidence summary:
+
+```bash
+python scripts/summarize_validation_evidence.py
+```
+
 For independent clinician ratings, add the registry checks:
 
 ```bash
@@ -111,5 +117,6 @@ instructions, more cases, or adjudication by a second clinician.
 | `corpus/` | Complete synthetic transcript/note case packets |
 | `reviewer_packets/` | Generated clinician-facing blinded transcript/note packets |
 | `evidence/` | Worksheet, score, calibration-pair, and report evidence trail |
+| `evidence/stratified_summary_v0.json` | Agreement coverage by specialty, source, prompt strategy, and failure mode |
 | `results/example_calibration_pairs.json` | Example judge-vs-human calibration input |
 | `results/example_calibration_report.md` | Example rendered interpretation |

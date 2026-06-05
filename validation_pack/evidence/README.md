@@ -5,6 +5,7 @@ corpus. The intended trail is:
 
 ```text
 case packet -> blinded submission -> Scribeval score -> clinician rating -> agreement statistic
+           -> stratified evidence summary
 ```
 
 The current `synthetic_agreement_v0` files are illustrative bootstrap data. They
@@ -23,6 +24,9 @@ python scripts/import_validation_ratings.py \
   --reviewer-registry <reviewer_registry.csv> \
   --require-qualified-reviewers \
   --output <calibration_pairs.json>
+python scripts/summarize_validation_evidence.py \
+  --output-json <stratified_summary.json> \
+  --output-md <stratified_summary.md>
 ```
 
 ## Files
@@ -34,6 +38,8 @@ python scripts/import_validation_ratings.py \
 | `synthetic_scribeval_scores_v0.json` | Synthetic Scribeval score export fixture |
 | `calibration_pairs_v0.json` | Judge-vs-reviewer score pairs with case/submission references |
 | `calibration_report_v0.md` | Rendered interpretation of the calibration pairs |
+| `stratified_summary_v0.json` | Agreement coverage by specialty, source, prompt strategy, and failure mode |
+| `stratified_summary_v0.md` | Human-readable stratified evidence summary |
 
 ## Reproduce
 
@@ -42,6 +48,7 @@ python scripts/import_validation_ratings.py \
   --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv \
   --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json \
   --output validation_pack/evidence/calibration_pairs_v0.json
+python scripts/summarize_validation_evidence.py
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 python scripts/validation_pack_audit.py
 ```

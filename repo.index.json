@@ -16,6 +16,7 @@
       "validation_pack/corpus/README.md",
       "validation_pack/reviewer_packets/README.md",
       "validation_pack/evidence/README.md",
+      "validation_pack/evidence/stratified_summary_v0.md",
       "frontend/README.md"
     ],
     "skills": [],
