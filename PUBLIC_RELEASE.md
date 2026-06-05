@@ -25,6 +25,8 @@ transcripts.
       transcript/note packets.
 - [x] Generated blinded reviewer packets included for clinician scoring without
       coordinator-only corpus metadata.
+- [x] Pseudonymous reviewer registry template and clinician review protocol
+      included for independent rating provenance.
 - [x] Validation corpus audit verifies case packets and evidence references
       without API keys.
 - [x] JSON and Markdown outputs available for audit and governance review.

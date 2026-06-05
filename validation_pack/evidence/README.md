@@ -11,6 +11,20 @@ The current `synthetic_agreement_v0` files are illustrative bootstrap data. They
 exercise the evidence format and calibration workflow, but they are not
 independent clinical validation.
 
+For real clinician ratings, keep reviewer provenance outside the scoring
+worksheet by using `../reviewer_registry_template.csv`. Reviewer IDs should be
+pseudonymous and must not expose names, contact details, provider numbers, or
+registration numbers. The stricter import path is:
+
+```bash
+python scripts/import_validation_ratings.py \
+  --worksheet <filled_worksheet.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --require-qualified-reviewers \
+  --output <calibration_pairs.json>
+```
+
 ## Files
 
 | File | Purpose |

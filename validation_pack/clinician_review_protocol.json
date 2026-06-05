@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "protocol_id": "scribeval_independent_clinician_review_v1",
+  "status": "ready_for_independent_review",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "review_materials": {
+    "case_packets": "reviewer_packets/",
+    "worksheet_template": "reviewer_worksheet.csv",
+    "reviewer_registry_template": "reviewer_registry_template.csv"
+  },
+  "reviewer_identity_policy": {
+    "store_pseudonymous_reviewer_id_only": true,
+    "forbidden_public_fields": [
+      "name",
+      "email",
+      "phone",
+      "provider_number",
+      "registration_number"
+    ]
+  },
+  "minimum_independent_review_requirements": {
+    "reviewers_per_case": 2,
+    "eligible_registration_status": "current",
+    "minimum_years_post_registration": 1,
+    "required_training_completed": true,
+    "allowed_review_roles": [
+      "primary_reviewer",
+      "secondary_reviewer",
+      "adjudicator"
+    ],
+    "conflict_of_interest": "none"
+  },
+  "evidence_import_command": "python scripts/import_validation_ratings.py --worksheet <filled_worksheet.csv> --judge-scores <scribeval_scores.json> --reviewer-registry <reviewer_registry.csv> --require-qualified-reviewers --output <calibration_pairs.json>",
+  "clinical_validation_claim": "Do not claim independent clinical validation until the synthetic worksheet is replaced by qualified clinician ratings imported with reviewer provenance."
+}

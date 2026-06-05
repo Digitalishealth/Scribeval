@@ -9,6 +9,7 @@ real case/submission IDs with valid scores and severity labels.
 
 from __future__ import annotations
 
+import csv
 import json
 import sys
 from pathlib import Path
@@ -30,6 +31,24 @@ VALID_DIMENSIONS = {
     "qnote",
 }
 VALID_SEVERITIES = {"none", "low", "moderate", "high", "critical"}
+REQUIRED_REVIEWER_REGISTRY_FIELDS = {
+    "conflict_of_interest",
+    "country",
+    "profession",
+    "registration_status",
+    "review_role",
+    "reviewer_id",
+    "specialty",
+    "training_completed",
+    "years_post_registration",
+}
+FORBIDDEN_REVIEWER_REGISTRY_FIELDS = {
+    "email",
+    "name",
+    "phone",
+    "provider_number",
+    "registration_number",
+}
 FORBIDDEN_REVIEWER_PACKET_TOKENS = {
     "cdss_checklist",
     "cdss_informed",
@@ -233,11 +252,46 @@ def audit_reviewer_packets(corpus_refs: dict[str, set[str]]) -> int:
     return len(packet_files)
 
 
+def audit_clinician_review_protocol() -> None:
+    protocol = load_json(PACK / "clinician_review_protocol.json")
+    require(
+        protocol.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "clinician review protocol has invalid benchmark_unit",
+    )
+    requirements = protocol.get("minimum_independent_review_requirements", {})
+    require(
+        requirements.get("reviewers_per_case") >= 2,
+        "clinician review protocol must require at least two reviewers per case",
+    )
+    require(
+        requirements.get("eligible_registration_status") == "current",
+        "clinician review protocol must require current registration",
+    )
+    require(
+        requirements.get("required_training_completed") is True,
+        "clinician review protocol must require training completion",
+    )
+
+    registry_path = PACK / "reviewer_registry_template.csv"
+    require(registry_path.exists(), "missing reviewer registry template")
+    with registry_path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = set(reader.fieldnames or [])
+    missing_fields = REQUIRED_REVIEWER_REGISTRY_FIELDS - fields
+    forbidden_fields = FORBIDDEN_REVIEWER_REGISTRY_FIELDS & fields
+    require(not missing_fields, f"reviewer registry template missing fields {missing_fields}")
+    require(
+        not forbidden_fields,
+        f"reviewer registry template includes direct identifiers {forbidden_fields}",
+    )
+
+
 def main() -> int:
     try:
         corpus_refs = audit_corpus()
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
+        audit_clinician_review_protocol()
     except AssertionError as exc:
         print(f"Validation pack audit failed: {exc}", file=sys.stderr)
         return 1
@@ -246,6 +300,7 @@ def main() -> int:
     print(f"Cases: {len(corpus_refs['case_ids'])}")
     print(f"Submissions: {len(corpus_refs['submission_refs'])}")
     print(f"Reviewer packets: {packet_count}")
+    print("Clinician review protocol: ready_for_independent_review")
     print(f"Evidence pairs: {pair_count}")
     print(f"Note sources: {', '.join(sorted(corpus_refs['note_sources']))}")
     print(f"Prompt strategies: {', '.join(sorted(corpus_refs['prompt_strategies']))}")

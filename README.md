@@ -163,7 +163,8 @@ The [`validation_pack/`](validation_pack/) directory contains a clinician-facing
 pilot protocol for testing Scribeval against independent human reviewers. It
 includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
 20-case synthetic corpus of complete transcript/note packets, generated blinded
-reviewer packets, and example calibration inputs/results for:
+reviewer packets, a pseudonymous reviewer registry template, and example
+calibration inputs/results for:
 
 ```bash
 python scripts/build_reviewer_packets.py
@@ -179,7 +180,10 @@ python scripts/validation_pack_audit.py
 The pack is intended to produce evidence about agreement with clinicians
 (weighted kappa for severity ratings and ICC(2,1) for continuous scores). The
 included example data is synthetic and illustrative only; it is not clinical
-validation evidence.
+validation evidence. For independent clinician ratings, run
+`scripts/import_validation_ratings.py` with `--reviewer-registry` and
+`--require-qualified-reviewers` so the calibration pairs carry reviewer
+eligibility provenance without exposing direct identifiers.
 
 ## Choosing a Scribe Product
 

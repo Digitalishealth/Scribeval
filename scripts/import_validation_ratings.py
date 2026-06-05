@@ -29,6 +29,27 @@ DIMENSIONS = (
     "medication_terminology",
 )
 VALID_SEVERITIES = {"none", "low", "moderate", "high", "critical"}
+REQUIRED_REVIEWER_REGISTRY_FIELDS = (
+    "reviewer_id",
+    "profession",
+    "country",
+    "registration_status",
+    "years_post_registration",
+    "specialty",
+    "review_role",
+    "conflict_of_interest",
+    "training_completed",
+)
+FORBIDDEN_REVIEWER_REGISTRY_FIELDS = {
+    "email",
+    "name",
+    "phone",
+    "provider_number",
+    "registration_number",
+}
+VALID_REVIEW_ROLES = {"primary_reviewer", "secondary_reviewer", "adjudicator"}
+TRUE_VALUES = {"1", "true", "yes", "y"}
+NO_CONFLICT_VALUES = {"none", "no", "n"}
 
 
 def load_json(path: Path) -> Any:
@@ -75,6 +96,63 @@ def load_judge_scores(judge_scores_path: Path) -> dict[tuple[str, str, str], dic
     return scores
 
 
+def load_reviewer_registry(registry_path: Path) -> dict[str, dict[str, str]]:
+    reviewers: dict[str, dict[str, str]] = {}
+    with registry_path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = set(reader.fieldnames or [])
+        missing_fields = set(REQUIRED_REVIEWER_REGISTRY_FIELDS) - fieldnames
+        if missing_fields:
+            raise ValueError(
+                f"Reviewer registry is missing fields: {sorted(missing_fields)}"
+            )
+        forbidden_fields = FORBIDDEN_REVIEWER_REGISTRY_FIELDS & fieldnames
+        if forbidden_fields:
+            raise ValueError(
+                "Reviewer registry must not contain direct identifiers: "
+                f"{sorted(forbidden_fields)}"
+            )
+
+        for row_index, row in enumerate(reader, start=2):
+            reviewer_id = row.get("reviewer_id", "").strip()
+            if not reviewer_id:
+                raise ValueError(f"Reviewer registry row {row_index} has no reviewer_id")
+            if reviewer_id in reviewers:
+                raise ValueError(f"Duplicate reviewer_id in registry: {reviewer_id}")
+            reviewers[reviewer_id] = {key: value.strip() for key, value in row.items()}
+    return reviewers
+
+
+def validate_qualified_reviewer(
+    reviewer_id: str,
+    registry: dict[str, dict[str, str]],
+    *,
+    row_index: int,
+) -> None:
+    reviewer = registry.get(reviewer_id)
+    if reviewer is None:
+        raise ValueError(f"Worksheet row {row_index} reviewer_id is not in reviewer registry")
+    if reviewer_id.lower().startswith("synthetic"):
+        raise ValueError(f"Worksheet row {row_index} reviewer_id is synthetic")
+    if reviewer["registration_status"].lower() != "current":
+        raise ValueError(f"Worksheet row {row_index} reviewer is not currently registered")
+    if reviewer["training_completed"].lower() not in TRUE_VALUES:
+        raise ValueError(f"Worksheet row {row_index} reviewer has not completed training")
+    if reviewer["review_role"].lower() not in VALID_REVIEW_ROLES:
+        raise ValueError(f"Worksheet row {row_index} reviewer has invalid review_role")
+    if reviewer["conflict_of_interest"].lower() not in NO_CONFLICT_VALUES:
+        raise ValueError(f"Worksheet row {row_index} reviewer has a conflict of interest")
+
+    try:
+        years = int(reviewer["years_post_registration"])
+    except ValueError as exc:
+        raise ValueError(
+            f"Worksheet row {row_index} reviewer years_post_registration is not an integer"
+        ) from exc
+    if years < 1:
+        raise ValueError(f"Worksheet row {row_index} reviewer has insufficient experience")
+
+
 def validate_score(value: Any, label: str) -> float:
     try:
         score = float(value)
@@ -96,6 +174,7 @@ def build_pairs(
     worksheet_path: Path,
     judge_scores: dict[tuple[str, str, str], dict[str, Any]],
     blind_label_map: dict[tuple[str, str], str],
+    reviewer_registry: dict[str, dict[str, str]] | None = None,
 ) -> list[dict[str, Any]]:
     pairs: list[dict[str, Any]] = []
     with worksheet_path.open(newline="") as handle:
@@ -108,6 +187,12 @@ def build_pairs(
                 raise ValueError(f"Worksheet row {row_index} is missing case_id/blinded_submission")
             if not reviewer_id:
                 continue
+            if reviewer_registry is not None:
+                validate_qualified_reviewer(
+                    reviewer_id,
+                    reviewer_registry,
+                    row_index=row_index,
+                )
 
             submission_id = blind_label_map.get((case_id, blind_label))
             if submission_id is None:
@@ -167,15 +252,44 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_CORPUS_MANIFEST,
         help="Path to validation corpus_manifest.json.",
     )
+    parser.add_argument(
+        "--reviewer-registry",
+        type=Path,
+        help=(
+            "Optional pseudonymous reviewer registry CSV. When provided, every "
+            "non-empty worksheet reviewer_id must be registered, currently "
+            "registered, trained, and conflict-free."
+        ),
+    )
+    parser.add_argument(
+        "--require-qualified-reviewers",
+        action="store_true",
+        help=(
+            "Fail unless --reviewer-registry is provided and all reviewers pass "
+            "provenance checks."
+        ),
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    if args.require_qualified_reviewers and args.reviewer_registry is None:
+        print(
+            "Import failed: --require-qualified-reviewers needs --reviewer-registry",
+            file=sys.stderr,
+        )
+        return 1
+
     try:
         blind_label_map = load_blind_label_map(args.corpus_manifest)
         judge_scores = load_judge_scores(args.judge_scores)
-        pairs = build_pairs(args.worksheet, judge_scores, blind_label_map)
+        reviewer_registry = (
+            load_reviewer_registry(args.reviewer_registry)
+            if args.reviewer_registry is not None
+            else None
+        )
+        pairs = build_pairs(args.worksheet, judge_scores, blind_label_map, reviewer_registry)
     except ValueError as exc:
         print(f"Import failed: {exc}", file=sys.stderr)
         return 1

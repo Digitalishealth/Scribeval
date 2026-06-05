@@ -55,10 +55,13 @@ python scripts/build_reviewer_packets.py
    imported spreadsheet copy.
 4. Ask reviewers to score each blinded submission against the transcript, not
    against another note.
-5. Run Scribeval on the same blinded submissions.
-6. Export Scribeval scores in the shape shown in
+5. Assign each reviewer a pseudonymous `reviewer_id` and record eligibility in
+   `reviewer_registry_template.csv`. Do not store names, contact details,
+   provider numbers, or registration numbers in this public evidence trail.
+6. Run Scribeval on the same blinded submissions.
+7. Export Scribeval scores in the shape shown in
    `evidence/synthetic_scribeval_scores_v0.json`.
-7. Convert reviewer ratings and Scribeval scores into calibration pairs:
+8. Convert reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -67,7 +70,18 @@ python scripts/import_validation_ratings.py \
   --output validation_pack/evidence/calibration_pairs_v0.json
 ```
 
-8. Run:
+For independent clinician ratings, add the registry checks:
+
+```bash
+python scripts/import_validation_ratings.py \
+  --worksheet <filled_worksheet.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --require-qualified-reviewers \
+  --output <calibration_pairs.json>
+```
+
+9. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -91,6 +105,8 @@ instructions, more cases, or adjudication by a second clinician.
 | File | Purpose |
 |---|---|
 | `case_manifest.json` | 20-case synthetic validation design |
+| `clinician_review_protocol.json` | Minimum reviewer provenance and eligibility protocol |
+| `reviewer_registry_template.csv` | Pseudonymous reviewer eligibility template |
 | `reviewer_worksheet.csv` | Spreadsheet template for blinded human scoring |
 | `corpus/` | Complete synthetic transcript/note case packets |
 | `reviewer_packets/` | Generated clinician-facing blinded transcript/note packets |

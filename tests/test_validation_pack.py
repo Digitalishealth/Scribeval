@@ -28,6 +28,17 @@ FORBIDDEN_REVIEWER_PACKET_TOKENS = {
     "structured_soap",
     "submission_id",
 }
+REQUIRED_REVIEWER_REGISTRY_FIELDS = {
+    "conflict_of_interest",
+    "country",
+    "profession",
+    "registration_status",
+    "review_role",
+    "reviewer_id",
+    "specialty",
+    "training_completed",
+    "years_post_registration",
+}
 
 
 def test_validation_manifest_defines_twenty_blinded_cases() -> None:
@@ -63,6 +74,24 @@ def test_reviewer_worksheet_covers_every_case_submission_pair() -> None:
     assert {row["case_id"] for row in rows} == case_ids
     assert {row["blinded_submission"] for row in rows} == blind_labels
     assert "reviewer_comments" in rows[0]
+
+
+def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
+    protocol = json.loads((VALIDATION_PACK / "clinician_review_protocol.json").read_text())
+
+    assert protocol["benchmark_unit"] == "whole transcript -> final note quality score"
+    requirements = protocol["minimum_independent_review_requirements"]
+    assert requirements["reviewers_per_case"] == 2
+    assert requirements["eligible_registration_status"] == "current"
+    assert requirements["required_training_completed"] is True
+    assert requirements["minimum_years_post_registration"] >= 1
+
+    with (VALIDATION_PACK / "reviewer_registry_template.csv").open(newline="") as handle:
+        fieldnames = set(csv.DictReader(handle).fieldnames or [])
+    assert fieldnames >= REQUIRED_REVIEWER_REGISTRY_FIELDS
+    assert {"name", "email", "phone", "provider_number", "registration_number"}.isdisjoint(
+        fieldnames
+    )
 
 
 def test_example_calibration_pairs_are_computable() -> None:
@@ -272,6 +301,90 @@ def test_reviewer_import_reproduces_evidence_pairs(tmp_path: Path) -> None:
     assert json.loads(output.read_text()) == json.loads(
         (EVIDENCE / "calibration_pairs_v0.json").read_text()
     )
+
+
+def test_reviewer_import_accepts_qualified_reviewer_registry(tmp_path: Path) -> None:
+    worksheet = tmp_path / "qualified_worksheet.csv"
+    worksheet_fields = [
+        "case_id",
+        "blinded_submission",
+        "reviewer_id",
+        "overall_score",
+        "overall_severity",
+        "omission_score",
+        "omission_severity",
+        "hallucination_score",
+        "hallucination_severity",
+        "medicolegal_score",
+        "medicolegal_severity",
+        "ahpra_score",
+        "ahpra_severity",
+        "pdqi9_score",
+        "pdqi9_severity",
+        "qnote_score",
+        "qnote_severity",
+        "medication_terminology_score",
+        "medication_terminology_severity",
+        "reviewer_comments",
+    ]
+    with worksheet.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=worksheet_fields)
+        writer.writeheader()
+        writer.writerow(
+            {
+                "case_id": "val_gp_respiratory_001",
+                "blinded_submission": "Submission A",
+                "reviewer_id": "reviewer_clinician_001",
+                "omission_score": "0.92",
+                "omission_severity": "low",
+                "reviewer_comments": "Strict registry import test.",
+            }
+        )
+    registry = tmp_path / "reviewer_registry.csv"
+    registry.write_text(
+        "\n".join(
+            [
+                (
+                    "reviewer_id,profession,country,registration_status,"
+                    "years_post_registration,specialty,review_role,"
+                    "conflict_of_interest,training_completed"
+                ),
+                (
+                    "reviewer_clinician_001,general_practitioner,AU,current,8,"
+                    "general_practice,primary_reviewer,none,yes"
+                ),
+            ]
+        )
+        + "\n"
+    )
+    output = tmp_path / "pairs.json"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/import_validation_ratings.py",
+            "--worksheet",
+            str(worksheet),
+            "--judge-scores",
+            "validation_pack/evidence/synthetic_scribeval_scores_v0.json",
+            "--reviewer-registry",
+            str(registry),
+            "--require-qualified-reviewers",
+            "--output",
+            str(output),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    pairs = json.loads(output.read_text())
+    assert "Wrote 1 calibration pairs" in result.stdout
+    assert pairs[0]["reviewer_id"] == "reviewer_clinician_001"
+    assert pairs[0]["case_id"] == "val_gp_respiratory_001"
+    assert pairs[0]["blind_label"] == "Submission A"
+    assert pairs[0]["dimension"] == "omission"
 
 
 def test_frontend_exposes_validation_pilot_summary() -> None:
