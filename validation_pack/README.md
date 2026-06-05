@@ -99,6 +99,18 @@ python scripts/import_validation_ratings.py \
   --output <calibration_pairs.json>
 ```
 
+For a completed independent clinician review, the preferred reproducible path
+is to build a versioned evidence bundle:
+
+```bash
+python scripts/build_validation_evidence_bundle.py \
+  --run-id <review_run_id> \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --output-dir validation_pack/evidence_runs
+```
+
 10. Run:
 
 ```bash
@@ -130,5 +142,6 @@ instructions, more cases, or adjudication by a second clinician.
 | `reviewer_packets/` | Generated clinician-facing blinded transcript/note packets |
 | `evidence/` | Worksheet, score, calibration-pair, and report evidence trail |
 | `evidence/stratified_summary_v0.json` | Agreement coverage by specialty, source, prompt strategy, and failure mode |
+| `evidence_runs/` | Optional generated independent clinician evidence bundles |
 | `results/example_calibration_pairs.json` | Example judge-vs-human calibration input |
 | `results/example_calibration_report.md` | Example rendered interpretation |

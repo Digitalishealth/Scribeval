@@ -29,6 +29,13 @@ def round_metric(value: float) -> float:
     return round(value, 4)
 
 
+def display_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.resolve().as_posix()
+
+
 class StratumAccumulator:
     def __init__(self) -> None:
         self.case_ids: set[str] = set()
@@ -138,9 +145,9 @@ def summarize(evidence_manifest_path: Path) -> dict[str, Any]:
         "disclaimer": manifest["disclaimer"],
         "benchmark_unit": "whole transcript -> final note quality score",
         "source_files": {
-            "evidence_manifest": str(evidence_manifest_path.relative_to(ROOT)),
-            "corpus_manifest": str(corpus_manifest_path.relative_to(ROOT)),
-            "calibration_pairs": str(pairs_path.relative_to(ROOT)),
+            "evidence_manifest": display_path(evidence_manifest_path),
+            "corpus_manifest": display_path(corpus_manifest_path),
+            "calibration_pairs": display_path(pairs_path),
         },
         "coverage": {
             "case_count": len(corpus_index["case_index"]),

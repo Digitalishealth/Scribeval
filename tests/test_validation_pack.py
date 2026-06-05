@@ -100,6 +100,42 @@ def write_qualified_reviewer_registry(path: Path) -> None:
         )
 
 
+def write_complete_review_worksheet_and_judge_scores(
+    worksheet: Path,
+    judge_scores: Path,
+) -> None:
+    corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
+    judge_score_rows: list[dict[str, object]] = []
+    with worksheet.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=reviewer_worksheet_fields())
+        writer.writeheader()
+        for rel_path in corpus_manifest["case_files"]:
+            case = json.loads((CORPUS / rel_path).read_text())
+            for note in case["candidate_notes"]:
+                for dimension in REQUIRED_CLINICIAN_REVIEW_DIMENSIONS:
+                    judge_score_rows.append(
+                        {
+                            "case_id": case["case_id"],
+                            "submission_id": note["submission_id"],
+                            "dimension": dimension,
+                            "judge_score": 0.9,
+                            "judge_severity": "low",
+                        }
+                    )
+                for reviewer_id in ("reviewer_clinician_001", "reviewer_clinician_002"):
+                    row = {
+                        "case_id": case["case_id"],
+                        "blinded_submission": note["blind_label"],
+                        "reviewer_id": reviewer_id,
+                        "reviewer_comments": "Complete readiness fixture.",
+                    }
+                    for dimension in REQUIRED_CLINICIAN_REVIEW_DIMENSIONS:
+                        row[f"{dimension}_score"] = "0.90"
+                        row[f"{dimension}_severity"] = "low"
+                    writer.writerow(row)
+    judge_scores.write_text(json.dumps(judge_score_rows, indent=2) + "\n")
+
+
 def test_validation_manifest_defines_twenty_blinded_cases() -> None:
     manifest = json.loads((VALIDATION_PACK / "case_manifest.json").read_text())
 
@@ -456,26 +492,9 @@ def test_clinician_review_readiness_audit_accepts_complete_qualified_inputs(
     registry = tmp_path / "reviewer_registry.csv"
     output_json = tmp_path / "readiness.json"
     output_md = tmp_path / "readiness.md"
+    judge_scores = tmp_path / "judge_scores.json"
     write_qualified_reviewer_registry(registry)
-
-    corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
-    with worksheet.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=reviewer_worksheet_fields())
-        writer.writeheader()
-        for rel_path in corpus_manifest["case_files"]:
-            case = json.loads((CORPUS / rel_path).read_text())
-            for note in case["candidate_notes"]:
-                for reviewer_id in ("reviewer_clinician_001", "reviewer_clinician_002"):
-                    row = {
-                        "case_id": case["case_id"],
-                        "blinded_submission": note["blind_label"],
-                        "reviewer_id": reviewer_id,
-                        "reviewer_comments": "Complete readiness fixture.",
-                    }
-                    for dimension in REQUIRED_CLINICIAN_REVIEW_DIMENSIONS:
-                        row[f"{dimension}_score"] = "0.90"
-                        row[f"{dimension}_severity"] = "low"
-                    writer.writerow(row)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
 
     result = subprocess.run(
         [
@@ -536,6 +555,64 @@ def test_clinician_review_readiness_audit_reports_incomplete_template(
     assert report["is_ready_for_independent_validation"] is False
     assert report["coverage"]["complete_case_submission_count"] == 0
     assert len(report["issues"]["under_reviewed_submissions"]) == 100
+
+
+def test_validation_evidence_bundle_builder_creates_reproducible_run(
+    tmp_path: Path,
+) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output_dir = tmp_path / "evidence_runs"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_validation_evidence_bundle.py",
+            "--run-id",
+            "qualified_fixture_v1",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    bundle_dir = output_dir / "qualified_fixture_v1"
+    manifest = json.loads((bundle_dir / "evidence_manifest.json").read_text())
+    readiness = json.loads((bundle_dir / "readiness_report.json").read_text())
+    pairs = json.loads((bundle_dir / "calibration_pairs.json").read_text())
+    stratified = json.loads((bundle_dir / "stratified_summary.json").read_text())
+
+    assert "Wrote validation evidence bundle" in result.stdout
+    assert manifest["status"] == "independent_clinician_review"
+    assert manifest["coverage"]["case_submission_count"] == 100
+    assert manifest["coverage"]["complete_case_submission_count"] == 100
+    assert manifest["coverage"]["qualified_reviewer_count"] == 2
+    assert manifest["coverage"]["calibration_pair_count"] == 1200
+    assert set(manifest["source_hashes"]) == {
+        "corpus_manifest_sha256",
+        "judge_scores_sha256",
+        "protocol_sha256",
+        "reviewer_registry_sha256",
+        "reviewer_worksheet_sha256",
+    }
+    assert readiness["is_ready_for_independent_validation"] is True
+    assert len(pairs) == 1200
+    assert stratified["coverage"]["pair_count"] == 1200
+    assert stratified["evidence_status"] == "independent_clinician_review"
+    assert "Weighted kappa" in (bundle_dir / "calibration_report.md").read_text()
+    assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
 
 
 def test_stratified_evidence_summary_reproduces_committed_artifacts(tmp_path: Path) -> None:

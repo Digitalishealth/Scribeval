@@ -189,7 +189,9 @@ eligibility provenance without exposing direct identifiers. The generated
 stratified summary shows whether agreement evidence spans specialties, note
 sources, prompting strategies, and safety-critical failure modes. The readiness
 audit checks that every blinded case-submission has two qualified reviewers and
-complete required dimension ratings before calibration import.
+complete required dimension ratings before calibration import. For a completed
+review run, `scripts/build_validation_evidence_bundle.py` orchestrates these
+steps into one versioned bundle with source hashes.
 
 ## Choosing a Scribe Product
 

@@ -40,6 +40,19 @@ python scripts/summarize_validation_evidence.py \
   --output-md <stratified_summary.md>
 ```
 
+For a completed independent clinician run, prefer the bundle builder because it
+keeps the readiness report, calibration pairs, agreement report, stratified
+summary, manifest, and source hashes together:
+
+```bash
+python scripts/build_validation_evidence_bundle.py \
+  --run-id <review_run_id> \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --output-dir validation_pack/evidence_runs
+```
+
 ## Files
 
 | File | Purpose |

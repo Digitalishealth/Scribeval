@@ -29,6 +29,8 @@ transcripts.
       included for independent rating provenance.
 - [x] Independent clinician review readiness audit checks two qualified
       reviewers per blinded case-submission before calibration import.
+- [x] Versioned evidence bundle builder produces readiness, calibration,
+      agreement, stratified summary, manifest, and source-hash artifacts.
 - [x] Stratified validation evidence summary included across specialty, note
       source, prompt strategy, and safety-critical failure mode.
 - [x] Validation corpus audit verifies case packets and evidence references
