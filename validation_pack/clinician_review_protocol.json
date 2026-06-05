@@ -42,6 +42,7 @@
     ],
     "conflict_of_interest": "none"
   },
+  "assignment_builder_command": "python scripts/build_reviewer_assignments.py --reviewer-registry <reviewer_registry.csv> --output-dir <reviewer_assignments_dir>",
   "readiness_audit_command": "python scripts/audit_clinician_review_readiness.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --output-json <readiness_report.json> --output-md <readiness_report.md> --fail-on-not-ready",
   "evidence_import_command": "python scripts/import_validation_ratings.py --worksheet <filled_worksheet.csv> --judge-scores <scribeval_scores.json> --reviewer-registry <reviewer_registry.csv> --require-qualified-reviewers --output <calibration_pairs.json>",
   "evidence_bundle_command": "python scripts/build_validation_evidence_bundle.py --run-id <review_run_id> --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --judge-scores <scribeval_scores.json> --output-dir validation_pack/evidence_runs",

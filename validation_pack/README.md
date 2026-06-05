@@ -58,7 +58,15 @@ python scripts/build_reviewer_packets.py
 5. Assign each reviewer a pseudonymous `reviewer_id` and record eligibility in
    `reviewer_registry_template.csv`. Do not store names, contact details,
    provider numbers, or registration numbers in this public evidence trail.
-6. Audit the filled worksheet and reviewer registry before treating it as
+6. Generate reviewer-specific assignment worksheets:
+
+```bash
+python scripts/build_reviewer_assignments.py \
+  --reviewer-registry <reviewer_registry.csv> \
+  --output-dir <reviewer_assignments_dir>
+```
+
+7. Audit the filled worksheet and reviewer registry before treating it as
    independent clinician evidence:
 
 ```bash
@@ -70,10 +78,10 @@ python scripts/audit_clinician_review_readiness.py \
   --fail-on-not-ready
 ```
 
-7. Run Scribeval on the same blinded submissions.
-8. Export Scribeval scores in the shape shown in
+8. Run Scribeval on the same blinded submissions.
+9. Export Scribeval scores in the shape shown in
    `evidence/synthetic_scribeval_scores_v0.json`.
-9. Convert reviewer ratings and Scribeval scores into calibration pairs:
+10. Convert reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -111,7 +119,7 @@ python scripts/build_validation_evidence_bundle.py \
   --output-dir validation_pack/evidence_runs
 ```
 
-10. Run:
+11. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -140,6 +148,7 @@ instructions, more cases, or adjudication by a second clinician.
 | `reviewer_worksheet.csv` | Spreadsheet template for blinded human scoring |
 | `corpus/` | Complete synthetic transcript/note case packets |
 | `reviewer_packets/` | Generated clinician-facing blinded transcript/note packets |
+| `reviewer_assignments/` | Optional generated reviewer-specific assignment worksheets |
 | `evidence/` | Worksheet, score, calibration-pair, and report evidence trail |
 | `evidence/stratified_summary_v0.json` | Agreement coverage by specialty, source, prompt strategy, and failure mode |
 | `evidence_runs/` | Optional generated independent clinician evidence bundles |

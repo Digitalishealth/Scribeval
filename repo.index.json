@@ -17,6 +17,7 @@
       "validation_pack/reviewer_packets/README.md",
       "validation_pack/evidence/README.md",
       "validation_pack/evidence/stratified_summary_v0.md",
+      "scripts/build_reviewer_assignments.py",
       "scripts/audit_clinician_review_readiness.py",
       "scripts/build_validation_evidence_bundle.py",
       "frontend/README.md"

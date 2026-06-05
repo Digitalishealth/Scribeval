@@ -27,6 +27,8 @@ transcripts.
       coordinator-only corpus metadata.
 - [x] Pseudonymous reviewer registry template and clinician review protocol
       included for independent rating provenance.
+- [x] Reviewer assignment builder creates balanced reviewer-specific
+      worksheets for blinded case-submission collection.
 - [x] Independent clinician review readiness audit checks two qualified
       reviewers per blinded case-submission before calibration import.
 - [x] Versioned evidence bundle builder produces readiness, calibration,

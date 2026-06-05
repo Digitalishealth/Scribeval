@@ -15,7 +15,15 @@ independent clinical validation.
 For real clinician ratings, keep reviewer provenance outside the scoring
 worksheet by using `../reviewer_registry_template.csv`. Reviewer IDs should be
 pseudonymous and must not expose names, contact details, provider numbers, or
-registration numbers. First audit the completed review set:
+registration numbers. First generate reviewer-specific assignment worksheets:
+
+```bash
+python scripts/build_reviewer_assignments.py \
+  --reviewer-registry <reviewer_registry.csv> \
+  --output-dir <reviewer_assignments_dir>
+```
+
+After reviewers complete their worksheets, audit the completed review set:
 
 ```bash
 python scripts/audit_clinician_review_readiness.py \

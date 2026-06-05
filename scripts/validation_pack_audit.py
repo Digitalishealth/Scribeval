@@ -322,6 +322,10 @@ def audit_clinician_review_protocol() -> None:
         protocol.get("benchmark_unit") == "whole transcript -> final note quality score",
         "clinician review protocol has invalid benchmark_unit",
     )
+    require(
+        "build_reviewer_assignments.py" in protocol.get("assignment_builder_command", ""),
+        "clinician review protocol missing assignment builder command",
+    )
     requirements = protocol.get("minimum_independent_review_requirements", {})
     require(
         requirements.get("reviewers_per_case") >= 2,

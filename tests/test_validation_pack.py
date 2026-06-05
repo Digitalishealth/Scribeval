@@ -557,6 +557,57 @@ def test_clinician_review_readiness_audit_reports_incomplete_template(
     assert len(report["issues"]["under_reviewed_submissions"]) == 100
 
 
+def test_reviewer_assignment_builder_balances_required_reviewers(
+    tmp_path: Path,
+) -> None:
+    registry = tmp_path / "reviewer_registry.csv"
+    output_dir = tmp_path / "reviewer_assignments"
+    write_qualified_reviewer_registry(registry)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_reviewer_assignments.py",
+            "--reviewer-registry",
+            str(registry),
+            "--output-dir",
+            str(output_dir),
+            "--seed",
+            "7",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    manifest = json.loads((output_dir / "assignment_manifest.json").read_text())
+    assert "Wrote reviewer assignments" in result.stdout
+    assert manifest["case_submission_count"] == 100
+    assert manifest["assignment_count"] == 200
+    assert manifest["reviewer_count"] == 2
+    assert all(
+        len(reviewers) == 2
+        for reviewers in manifest["case_submission_reviewers"].values()
+    )
+    assert {item["assignment_count"] for item in manifest["worksheet_files"]} == {100}
+    assert len(manifest["worksheet_files"]) == 2
+
+    assigned_pairs: set[tuple[str, str, str]] = set()
+    for item in manifest["worksheet_files"]:
+        worksheet_path = output_dir / item["path"]
+        with worksheet_path.open(newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        assert len(rows) == 100
+        assert {row["reviewer_id"] for row in rows} == {item["reviewer_id"]}
+        assert all(not row["omission_score"] for row in rows)
+        for row in rows:
+            assigned_pairs.add(
+                (row["case_id"], row["blinded_submission"], row["reviewer_id"])
+            )
+    assert len(assigned_pairs) == 200
+
+
 def test_validation_evidence_bundle_builder_creates_reproducible_run(
     tmp_path: Path,
 ) -> None:
