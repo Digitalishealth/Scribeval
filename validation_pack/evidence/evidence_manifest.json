@@ -4,8 +4,11 @@
   "status": "synthetic_bootstrap",
   "disclaimer": "Illustrative synthetic reviewer ratings only. Replace with independent clinician ratings before making clinical validation claims.",
   "corpus_manifest": "../corpus/corpus_manifest.json",
+  "reviewer_worksheet": "synthetic_reviewer_worksheet_v0.csv",
+  "judge_scores": "synthetic_scribeval_scores_v0.json",
   "calibration_pairs": "calibration_pairs_v0.json",
   "calibration_report": "calibration_report_v0.md",
+  "generated_by": "python scripts/import_validation_ratings.py --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json --output validation_pack/evidence/calibration_pairs_v0.json",
   "rating_sources": [
     {
       "source_id": "scribeval_judge_synthetic_v0",

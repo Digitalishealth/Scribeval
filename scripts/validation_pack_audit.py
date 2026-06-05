@@ -126,8 +126,12 @@ def audit_corpus() -> dict[str, set[str]]:
 
 def audit_evidence(corpus_refs: dict[str, set[str]]) -> int:
     manifest = load_json(EVIDENCE / "evidence_manifest.json")
+    worksheet_path = EVIDENCE / manifest["reviewer_worksheet"]
+    judge_scores_path = EVIDENCE / manifest["judge_scores"]
     pairs_path = EVIDENCE / manifest["calibration_pairs"]
     report_path = EVIDENCE / manifest["calibration_report"]
+    require(worksheet_path.exists(), f"missing reviewer worksheet: {worksheet_path}")
+    require(judge_scores_path.exists(), f"missing judge scores: {judge_scores_path}")
     require(pairs_path.exists(), f"missing calibration pairs: {pairs_path}")
     require(report_path.exists(), f"missing calibration report: {report_path}")
 
@@ -139,7 +143,11 @@ def audit_evidence(corpus_refs: dict[str, set[str]]) -> int:
     for index, pair in enumerate(pairs, start=1):
         case_id = pair.get("case_id")
         submission_id = pair.get("submission_id")
+        blind_label = pair.get("blind_label")
+        reviewer_id = pair.get("reviewer_id")
         reference = f"{case_id}:{submission_id}"
+        require(blind_label, f"pair {index} has no blind_label")
+        require(reviewer_id, f"pair {index} has no reviewer_id")
         require(
             case_id in corpus_refs["case_ids"],
             f"pair {index} references unknown case {case_id}",

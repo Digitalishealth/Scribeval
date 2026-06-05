@@ -166,6 +166,10 @@ bootstrap corpus of complete synthetic transcript/note packets, and example
 calibration inputs/results for:
 
 ```bash
+python scripts/import_validation_ratings.py \
+    --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv \
+    --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json \
+    --output validation_pack/evidence/calibration_pairs_v0.json
 scribeval calibrate validation_pack/results/example_calibration_pairs.json
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 python scripts/validation_pack_audit.py

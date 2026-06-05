@@ -51,12 +51,21 @@ Scribeval's 2-to-5 comparison limit and avoids implying a fixed vendor set.
 4. Ask reviewers to score each blinded submission against the transcript, not
    against another note.
 5. Run Scribeval on the same blinded submissions.
-6. Convert reviewer ratings and Scribeval scores into the JSON shape shown in
-   `results/example_calibration_pairs.json`.
-7. Run:
+6. Export Scribeval scores in the shape shown in
+   `evidence/synthetic_scribeval_scores_v0.json`.
+7. Convert reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
-scribeval calibrate validation_pack/results/example_calibration_pairs.json
+python scripts/import_validation_ratings.py \
+  --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv \
+  --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json \
+  --output validation_pack/evidence/calibration_pairs_v0.json
+```
+
+8. Run:
+
+```bash
+scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 ```
 
 ## Interpretation
@@ -78,6 +87,7 @@ instructions, more cases, or adjudication by a second clinician.
 |---|---|
 | `case_manifest.json` | 20-case synthetic validation design |
 | `reviewer_worksheet.csv` | Spreadsheet template for blinded human scoring |
+| `corpus/` | Complete synthetic transcript/note case packets |
+| `evidence/` | Worksheet, score, calibration-pair, and report evidence trail |
 | `results/example_calibration_pairs.json` | Example judge-vs-human calibration input |
 | `results/example_calibration_report.md` | Example rendered interpretation |
-

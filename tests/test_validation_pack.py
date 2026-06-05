@@ -161,6 +161,31 @@ def test_validation_pack_audit_script_passes() -> None:
     assert "Validation pack audit passed." in result.stdout
 
 
+def test_reviewer_import_reproduces_evidence_pairs(tmp_path: Path) -> None:
+    output = tmp_path / "pairs.json"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/import_validation_ratings.py",
+            "--worksheet",
+            "validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv",
+            "--judge-scores",
+            "validation_pack/evidence/synthetic_scribeval_scores_v0.json",
+            "--output",
+            str(output),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Wrote 23 calibration pairs" in result.stdout
+    assert json.loads(output.read_text()) == json.loads(
+        (EVIDENCE / "calibration_pairs_v0.json").read_text()
+    )
+
+
 def test_frontend_exposes_validation_pilot_summary() -> None:
     demo_data = json.loads((ROOT / "frontend" / "demo-data.json").read_text())
     pilot = demo_data["validation_pilot"]
