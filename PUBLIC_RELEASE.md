@@ -31,6 +31,8 @@ transcripts.
       worksheets for blinded case-submission collection.
 - [x] Independent clinician review readiness audit checks two qualified
       reviewers per blinded case-submission before calibration import.
+- [x] Validation corpus judge-score exporter produces importable Scribeval
+      score JSON without transcript/note text or raw judge excerpts.
 - [x] Versioned evidence bundle builder produces readiness, calibration,
       agreement, stratified summary, manifest, and source-hash artifacts.
 - [x] Evidence-run audit verifies publishable bundles and rejects raw clinician

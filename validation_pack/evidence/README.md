@@ -37,6 +37,9 @@ python scripts/audit_clinician_review_readiness.py \
 Then use the stricter import path:
 
 ```bash
+python scripts/export_validation_judge_scores.py \
+  --output <scribeval_scores.json> \
+  --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote
 python scripts/import_validation_ratings.py \
   --worksheet <filled_worksheet.csv> \
   --judge-scores <scribeval_scores.json> \

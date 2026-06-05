@@ -79,8 +79,18 @@ python scripts/audit_clinician_review_readiness.py \
 ```
 
 8. Run Scribeval on the same blinded submissions.
-9. Export Scribeval scores in the shape shown in
-   `evidence/synthetic_scribeval_scores_v0.json`.
+9. Export Scribeval scores in the shape consumed by the calibration importer:
+
+```bash
+python scripts/export_validation_judge_scores.py \
+  --output <scribeval_scores.json> \
+  --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote
+```
+
+   The export contains IDs, scores, severities, judge metadata, and hashes. It
+   intentionally omits transcript text, note text, raw judge responses,
+   reasoning, and excerpts.
+
 10. Convert reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash

@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import csv
+import importlib.util
 import json
 import subprocess
 import sys
 from pathlib import Path
 
 from scribeval.calibration import RatingPair, compute_agreement
+from tests.conftest import MockJudge
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATION_PACK = ROOT / "validation_pack"
@@ -47,6 +49,18 @@ REQUIRED_CLINICIAN_REVIEW_DIMENSIONS = (
     "pdqi9",
     "qnote",
 )
+
+
+def load_script_module(name: str):
+    spec = importlib.util.spec_from_file_location(
+        name,
+        ROOT / "scripts" / f"{name}.py",
+    )
+    assert spec is not None
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 
 def reviewer_worksheet_fields() -> list[str]:
@@ -175,6 +189,8 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     protocol = json.loads((VALIDATION_PACK / "clinician_review_protocol.json").read_text())
 
     assert protocol["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
+    assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     requirements = protocol["minimum_independent_review_requirements"]
     assert requirements["reviewers_per_case"] == 2
     assert requirements["reviewers_per_case_submission"] == 2
@@ -664,6 +680,55 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert stratified["evidence_status"] == "independent_clinician_review"
     assert "Weighted kappa" in (bundle_dir / "calibration_report.md").read_text()
     assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
+
+
+def test_validation_judge_score_exporter_writes_importable_scores(
+    tmp_path: Path,
+) -> None:
+    exporter = load_script_module("export_validation_judge_scores")
+    output = tmp_path / "judge_scores.json"
+    manifest_output = tmp_path / "judge_scores_manifest.json"
+
+    scores, manifest = exporter.export_judge_scores(
+        corpus_manifest=CORPUS / "corpus_manifest.json",
+        output=output,
+        manifest_output=manifest_output,
+        dimensions=["omission"],
+        judge=MockJudge(),
+        rubric_dir=ROOT / "rubrics",
+        runs=1,
+        max_cases=1,
+        max_submissions=1,
+    )
+
+    assert len(scores) == 1
+    assert output.exists()
+    assert manifest_output.exists()
+    assert manifest["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert manifest["case_count"] == 1
+    assert manifest["submission_count"] == 1
+    assert manifest["score_count"] == 1
+    assert manifest["dimensions"] == ["omission"]
+    assert set(manifest["source_hashes"]) == {
+        "case_files_sha256",
+        "corpus_manifest_sha256",
+    }
+
+    row = json.loads(output.read_text())[0]
+    assert row["case_id"] == "val_gp_respiratory_001"
+    assert row["submission_id"] == "submission_a"
+    assert row["blind_label"] == "Submission A"
+    assert row["dimension"] == "omission"
+    assert row["judge_score"] == 0.75
+    assert row["judge_severity"] == "moderate"
+    assert row["judge_type"] == "mock"
+    assert "transcript" not in row
+    assert "note" not in row
+    assert "raw_judge_response" not in row
+
+    load_judge_scores = load_script_module("import_validation_ratings").load_judge_scores
+    imported = load_judge_scores(output)
+    assert ("val_gp_respiratory_001", "submission_a", "omission") in imported
 
 
 def test_evidence_run_audit_accepts_empty_directory(tmp_path: Path) -> None:

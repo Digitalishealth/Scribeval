@@ -326,6 +326,14 @@ def audit_clinician_review_protocol() -> None:
         "build_reviewer_assignments.py" in protocol.get("assignment_builder_command", ""),
         "clinician review protocol missing assignment builder command",
     )
+    require(
+        "export_validation_judge_scores.py" in protocol.get("judge_score_export_command", ""),
+        "clinician review protocol missing judge score export command",
+    )
+    require(
+        "<scribeval_scores.json>" in protocol.get("judge_score_export_command", ""),
+        "clinician review protocol judge score export command missing score output placeholder",
+    )
     requirements = protocol.get("minimum_independent_review_requirements", {})
     require(
         requirements.get("reviewers_per_case") >= 2,

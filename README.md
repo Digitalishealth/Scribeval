@@ -172,6 +172,9 @@ python scripts/import_validation_ratings.py \
     --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv \
     --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json \
     --output validation_pack/evidence/calibration_pairs_v0.json
+python scripts/export_validation_judge_scores.py \
+    --output <scribeval_scores.json> \
+    --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote
 python scripts/summarize_validation_evidence.py
 scribeval calibrate validation_pack/results/example_calibration_pairs.json
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -184,7 +187,8 @@ The pack is intended to produce evidence about agreement with clinicians
 included example data is synthetic and illustrative only; it is not clinical
 validation evidence. For independent clinician ratings, run
 `scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets,
-run `scripts/audit_clinician_review_readiness.py`, then run
+run `scripts/audit_clinician_review_readiness.py`, export Scribeval scores with
+`scripts/export_validation_judge_scores.py`, then run
 `scripts/import_validation_ratings.py` with `--reviewer-registry` and
 `--require-qualified-reviewers` so the calibration pairs carry reviewer
 eligibility provenance without exposing direct identifiers. The generated
