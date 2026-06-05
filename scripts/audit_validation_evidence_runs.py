@@ -34,6 +34,8 @@ REQUIRED_MANIFEST_FILES = (
     "stratified_summary_report",
     "reviewer_reliability",
     "reviewer_reliability_report",
+    "validation_claim_readiness",
+    "validation_claim_readiness_report",
 )
 REQUIRED_SOURCE_HASHES = {
     "corpus_manifest_sha256",
@@ -168,12 +170,14 @@ def audit_pairs_and_summary(
     consensus_pairs_path: Path,
     summary_path: Path,
     reviewer_reliability_path: Path,
+    claim_readiness_path: Path,
     manifest: dict[str, Any],
 ) -> int:
     pairs = load_json(pairs_path)
     consensus_pairs = load_json(consensus_pairs_path)
     summary = load_json(summary_path)
     reviewer_reliability = load_json(reviewer_reliability_path)
+    claim_readiness = load_json(claim_readiness_path)
     manifest_coverage = manifest.get("coverage", {})
     require(isinstance(pairs, list) and pairs, f"{bundle_name} has no calibration pairs")
     pair_count = len(pairs)
@@ -236,6 +240,23 @@ def audit_pairs_and_summary(
         set(reliability_strata) >= REQUIRED_STRATA,
         f"{bundle_name} reviewer reliability strata drift",
     )
+    require(
+        claim_readiness.get("benchmark_unit") == BENCHMARK_UNIT,
+        f"{bundle_name} validation claim readiness has invalid benchmark_unit",
+    )
+    require(
+        claim_readiness.get("evidence_id") == manifest.get("evidence_id"),
+        f"{bundle_name} validation claim readiness evidence_id drift",
+    )
+    require(
+        isinstance(claim_readiness.get("is_ready_for_validation_claim"), bool),
+        f"{bundle_name} validation claim readiness missing status",
+    )
+    require(
+        isinstance(claim_readiness.get("checks"), list)
+        and claim_readiness.get("checks"),
+        f"{bundle_name} validation claim readiness has no checks",
+    )
     return pair_count
 
 
@@ -259,6 +280,7 @@ def audit_bundle(bundle_dir: Path) -> int:
         paths["consensus_calibration_pairs"],
         paths["stratified_summary"],
         paths["reviewer_reliability"],
+        paths["validation_claim_readiness"],
         manifest,
     )
 

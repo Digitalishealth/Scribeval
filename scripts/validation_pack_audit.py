@@ -344,6 +344,16 @@ def audit_clinician_review_protocol() -> None:
         in protocol.get("consensus_rating_command", ""),
         "clinician review protocol missing consensus rating command",
     )
+    require(
+        "assess_validation_claim_readiness.py"
+        in protocol.get("validation_claim_readiness_command", ""),
+        "clinician review protocol missing validation claim readiness command",
+    )
+    thresholds = protocol.get("validation_claim_thresholds", {})
+    require(
+        thresholds.get("minimum_case_count") == 20,
+        "clinician review protocol validation claim thresholds missing full corpus case count",
+    )
     requirements = protocol.get("minimum_independent_review_requirements", {})
     require(
         requirements.get("reviewers_per_case") >= 2,

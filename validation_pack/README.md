@@ -167,7 +167,17 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-13. Run:
+13. Assess whether the bundle is ready for validation claims:
+
+```bash
+python scripts/assess_validation_claim_readiness.py \
+  --evidence-manifest validation_pack/evidence_runs/<review_run_id>/evidence_manifest.json \
+  --output-json <validation_claim_readiness.json> \
+  --output-md <validation_claim_readiness.md> \
+  --fail-on-not-ready
+```
+
+14. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json

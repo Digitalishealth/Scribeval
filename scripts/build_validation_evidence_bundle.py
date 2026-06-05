@@ -141,6 +141,8 @@ def bundle_manifest(
         "stratified_summary_report": "stratified_summary.md",
         "reviewer_reliability": "reviewer_reliability.json",
         "reviewer_reliability_report": "reviewer_reliability.md",
+        "validation_claim_readiness": "validation_claim_readiness.json",
+        "validation_claim_readiness_report": "validation_claim_readiness.md",
         "generated_by": "python scripts/build_validation_evidence_bundle.py",
         "source_hashes": {
             "reviewer_worksheet_sha256": sha256_file(worksheet),
@@ -178,6 +180,8 @@ def build_bundle(
     protocol: Path,
     evidence_status: str,
 ) -> Path:
+    from assess_validation_claim_readiness import assess_claim_readiness
+    from assess_validation_claim_readiness import report_markdown as claim_report_markdown
     from audit_clinician_review_readiness import audit_readiness, report_markdown
     from build_consensus_validation_ratings import build_consensus_pairs
     from import_validation_ratings import (
@@ -268,6 +272,14 @@ def build_bundle(
     summary = summarize(bundle_dir / "evidence_manifest.json")
     write_json(bundle_dir / "stratified_summary.json", summary)
     (bundle_dir / "stratified_summary.md").write_text(stratified_report_markdown(summary))
+    claim_readiness = assess_claim_readiness(
+        evidence_manifest_path=bundle_dir / "evidence_manifest.json",
+        protocol_path=protocol,
+    )
+    write_json(bundle_dir / "validation_claim_readiness.json", claim_readiness)
+    (bundle_dir / "validation_claim_readiness.md").write_text(
+        claim_report_markdown(claim_readiness)
+    )
     return bundle_dir
 
 

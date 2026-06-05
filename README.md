@@ -188,6 +188,11 @@ python scripts/build_consensus_validation_ratings.py \
     --output <consensus_calibration_pairs.json> \
     --output-summary-json <consensus_summary.json> \
     --output-summary-md <consensus_summary.md>
+python scripts/assess_validation_claim_readiness.py \
+    --evidence-manifest <evidence_manifest.json> \
+    --output-json <validation_claim_readiness.json> \
+    --output-md <validation_claim_readiness.md> \
+    --fail-on-not-ready
 python scripts/summarize_validation_evidence.py
 scribeval calibrate validation_pack/results/example_calibration_pairs.json
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -214,8 +219,10 @@ complete required dimension ratings before calibration import. The reviewer
 reliability report shows whether clinician reviewers agree enough for their
 ratings to be a defensible comparator. The consensus ratings provide a cleaner
 judge-vs-clinician comparison and flag rows needing adjudication before strong
-claims. For a completed review run, `scripts/build_validation_evidence_bundle.py`
-orchestrates these steps into one versioned bundle with source hashes.
+claims. The validation-claim readiness report applies explicit protocol
+thresholds before treating the bundle as evidence for validation claims. For a
+completed review run, `scripts/build_validation_evidence_bundle.py` orchestrates
+these steps into one versioned bundle with source hashes.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
 publication and rejects raw clinician CSV inputs.
 

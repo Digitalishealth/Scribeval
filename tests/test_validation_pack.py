@@ -193,6 +193,11 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
     assert "build_consensus_validation_ratings.py" in protocol["consensus_rating_command"]
+    assert "assess_validation_claim_readiness.py" in protocol[
+        "validation_claim_readiness_command"
+    ]
+    assert protocol["validation_claim_thresholds"]["minimum_case_count"] == 20
+    assert protocol["validation_claim_thresholds"]["minimum_submission_count"] == 100
     requirements = protocol["minimum_independent_review_requirements"]
     assert requirements["reviewers_per_case"] == 2
     assert requirements["reviewers_per_case_submission"] == 2
@@ -664,6 +669,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     consensus_pairs = json.loads((bundle_dir / "consensus_calibration_pairs.json").read_text())
     stratified = json.loads((bundle_dir / "stratified_summary.json").read_text())
     reviewer_reliability = json.loads((bundle_dir / "reviewer_reliability.json").read_text())
+    claim_readiness = json.loads((bundle_dir / "validation_claim_readiness.json").read_text())
 
     assert "Wrote validation evidence bundle" in result.stdout
     assert manifest["status"] == "independent_clinician_review"
@@ -678,6 +684,8 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["consensus_calibration_report"] == "consensus_calibration_report.md"
     assert manifest["reviewer_reliability"] == "reviewer_reliability.json"
     assert manifest["reviewer_reliability_report"] == "reviewer_reliability.md"
+    assert manifest["validation_claim_readiness"] == "validation_claim_readiness.json"
+    assert manifest["validation_claim_readiness_report"] == "validation_claim_readiness.md"
     assert set(manifest["source_hashes"]) == {
         "corpus_manifest_sha256",
         "judge_scores_sha256",
@@ -693,12 +701,17 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert stratified["evidence_status"] == "independent_clinician_review"
     assert reviewer_reliability["coverage"]["reliability_pair_count"] == 600
     assert reviewer_reliability["readiness"]["is_ready_for_independent_validation"] is True
+    assert claim_readiness["is_ready_for_validation_claim"] is True
+    assert not claim_readiness["failed_checks"]
     assert "Weighted kappa" in (bundle_dir / "calibration_report.md").read_text()
     assert "Judge vs Consensus Agreement" in (
         bundle_dir / "consensus_calibration_report.md"
     ).read_text()
     assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
     assert "Reviewer Reliability" in (bundle_dir / "reviewer_reliability.md").read_text()
+    assert "Validation Claim Readiness" in (
+        bundle_dir / "validation_claim_readiness.md"
+    ).read_text()
 
 
 def test_validation_judge_score_exporter_writes_importable_scores(
@@ -857,6 +870,64 @@ def test_consensus_validation_ratings_build_importable_pairs(
     assert {agreement.dimension for agreement in compute_agreement(pairs_for_agreement)} == set(
         REQUIRED_CLINICIAN_REVIEW_DIMENSIONS
     )
+
+
+def test_validation_claim_readiness_accepts_generated_bundle(tmp_path: Path) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output_dir = tmp_path / "evidence_runs"
+    output_json = tmp_path / "claim_readiness.json"
+    output_md = tmp_path / "claim_readiness.md"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_validation_evidence_bundle.py",
+            "--run-id",
+            "qualified_fixture_v1",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/assess_validation_claim_readiness.py",
+            "--evidence-manifest",
+            str(output_dir / "qualified_fixture_v1" / "evidence_manifest.json"),
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+            "--fail-on-not-ready",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    report = json.loads(output_json.read_text())
+    assert "Validation claim readiness: ready" in result.stdout
+    assert report["is_ready_for_validation_claim"] is True
+    assert not report["failed_checks"]
+    assert report["coverage"]["case_count"] == 20
+    assert report["coverage"]["submission_count"] == 100
+    assert "Validation Claim Readiness" in output_md.read_text()
 
 
 def test_evidence_run_audit_accepts_empty_directory(tmp_path: Path) -> None:

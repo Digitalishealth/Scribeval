@@ -42,11 +42,27 @@
     ],
     "conflict_of_interest": "none"
   },
+  "validation_claim_thresholds": {
+    "required_evidence_status": "independent_clinician_review",
+    "minimum_case_count": 20,
+    "minimum_submission_count": 100,
+    "minimum_qualified_reviewers": 2,
+    "maximum_consensus_adjudication_required_count": 0,
+    "minimum_reviewer_reliability_weighted_kappa": 0.6,
+    "minimum_consensus_weighted_kappa": 0.6,
+    "required_strata": [
+      "specialty",
+      "note_source",
+      "prompt_strategy",
+      "failure_mode"
+    ]
+  },
   "assignment_builder_command": "python scripts/build_reviewer_assignments.py --reviewer-registry <reviewer_registry.csv> --output-dir <reviewer_assignments_dir>",
   "readiness_audit_command": "python scripts/audit_clinician_review_readiness.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --output-json <readiness_report.json> --output-md <readiness_report.md> --fail-on-not-ready",
   "judge_score_export_command": "python scripts/export_validation_judge_scores.py --output <scribeval_scores.json> --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote",
   "reviewer_reliability_command": "python scripts/summarize_reviewer_reliability.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --output-json <reviewer_reliability.json> --output-md <reviewer_reliability.md> --fail-on-not-ready",
   "consensus_rating_command": "python scripts/build_consensus_validation_ratings.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --judge-scores <scribeval_scores.json> --output <consensus_calibration_pairs.json> --output-summary-json <consensus_summary.json> --output-summary-md <consensus_summary.md>",
+  "validation_claim_readiness_command": "python scripts/assess_validation_claim_readiness.py --evidence-manifest <evidence_manifest.json> --output-json <validation_claim_readiness.json> --output-md <validation_claim_readiness.md> --fail-on-not-ready",
   "evidence_import_command": "python scripts/import_validation_ratings.py --worksheet <filled_worksheet.csv> --judge-scores <scribeval_scores.json> --reviewer-registry <reviewer_registry.csv> --require-qualified-reviewers --output <calibration_pairs.json>",
   "evidence_bundle_command": "python scripts/build_validation_evidence_bundle.py --run-id <review_run_id> --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --judge-scores <scribeval_scores.json> --output-dir validation_pack/evidence_runs",
   "clinical_validation_claim": "Do not claim independent clinical validation until the synthetic worksheet is replaced by qualified clinician ratings imported with reviewer provenance."
