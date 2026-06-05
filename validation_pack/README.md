@@ -119,6 +119,13 @@ python scripts/build_validation_evidence_bundle.py \
   --output-dir validation_pack/evidence_runs
 ```
 
+Audit generated evidence bundles before publishing or committing them:
+
+```bash
+python scripts/audit_validation_evidence_runs.py \
+  --evidence-runs validation_pack/evidence_runs
+```
+
 11. Run:
 
 ```bash
@@ -151,6 +158,6 @@ instructions, more cases, or adjudication by a second clinician.
 | `reviewer_assignments/` | Optional generated reviewer-specific assignment worksheets |
 | `evidence/` | Worksheet, score, calibration-pair, and report evidence trail |
 | `evidence/stratified_summary_v0.json` | Agreement coverage by specialty, source, prompt strategy, and failure mode |
-| `evidence_runs/` | Optional generated independent clinician evidence bundles |
+| `evidence_runs/` | Optional generated independent clinician evidence bundles; do not commit raw reviewer CSV inputs |
 | `results/example_calibration_pairs.json` | Example judge-vs-human calibration input |
 | `results/example_calibration_report.md` | Example rendered interpretation |

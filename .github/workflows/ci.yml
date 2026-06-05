@@ -42,3 +42,6 @@ jobs:
 
       - name: Validation pack audit
         run: python scripts/validation_pack_audit.py
+
+      - name: Validation evidence run audit
+        run: python scripts/audit_validation_evidence_runs.py

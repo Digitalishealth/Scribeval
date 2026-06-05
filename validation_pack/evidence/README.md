@@ -61,6 +61,15 @@ python scripts/build_validation_evidence_bundle.py \
   --output-dir validation_pack/evidence_runs
 ```
 
+Before publishing or committing generated run bundles, audit that they contain
+only publishable evidence artifacts and source hashes, not raw clinician CSV
+inputs:
+
+```bash
+python scripts/audit_validation_evidence_runs.py \
+  --evidence-runs validation_pack/evidence_runs
+```
+
 ## Files
 
 | File | Purpose |
@@ -83,4 +92,5 @@ python scripts/import_validation_ratings.py \
 python scripts/summarize_validation_evidence.py
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 python scripts/validation_pack_audit.py
+python scripts/audit_validation_evidence_runs.py
 ```

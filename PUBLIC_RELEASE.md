@@ -33,6 +33,8 @@ transcripts.
       reviewers per blinded case-submission before calibration import.
 - [x] Versioned evidence bundle builder produces readiness, calibration,
       agreement, stratified summary, manifest, and source-hash artifacts.
+- [x] Evidence-run audit verifies publishable bundles and rejects raw clinician
+      CSV inputs.
 - [x] Stratified validation evidence summary included across specialty, note
       source, prompt strategy, and safety-critical failure mode.
 - [x] Validation corpus audit verifies case packets and evidence references
@@ -67,6 +69,7 @@ pip install -e ".[dev]"
 pytest -q
 ruff check src tests
 python scripts/public_release_audit.py
+python scripts/audit_validation_evidence_runs.py
 scribeval list-dimensions
 scribeval benchmark samples/benchmark_manifest.json \
     --dimensions omission,hallucination \

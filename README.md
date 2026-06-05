@@ -176,6 +176,7 @@ python scripts/summarize_validation_evidence.py
 scribeval calibrate validation_pack/results/example_calibration_pairs.json
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 python scripts/validation_pack_audit.py
+python scripts/audit_validation_evidence_runs.py
 ```
 
 The pack is intended to produce evidence about agreement with clinicians
@@ -193,6 +194,8 @@ audit checks that every blinded case-submission has two qualified reviewers and
 complete required dimension ratings before calibration import. For a completed
 review run, `scripts/build_validation_evidence_bundle.py` orchestrates these
 steps into one versioned bundle with source hashes.
+`scripts/audit_validation_evidence_runs.py` checks generated bundles before
+publication and rejects raw clinician CSV inputs.
 
 ## Choosing a Scribe Product
 

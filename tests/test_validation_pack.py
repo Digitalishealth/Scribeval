@@ -666,6 +666,124 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
 
 
+def test_evidence_run_audit_accepts_empty_directory(tmp_path: Path) -> None:
+    evidence_runs = tmp_path / "evidence_runs"
+    evidence_runs.mkdir()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/audit_validation_evidence_runs.py",
+            "--evidence-runs",
+            str(evidence_runs),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Evidence run audit passed." in result.stdout
+    assert "Bundles: 0" in result.stdout
+    assert "Calibration pairs: 0" in result.stdout
+
+
+def test_evidence_run_audit_accepts_generated_bundle(tmp_path: Path) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output_dir = tmp_path / "evidence_runs"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_validation_evidence_bundle.py",
+            "--run-id",
+            "qualified_fixture_v1",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/audit_validation_evidence_runs.py",
+            "--evidence-runs",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Evidence run audit passed." in result.stdout
+    assert "Bundles: 1" in result.stdout
+    assert "Calibration pairs: 1200" in result.stdout
+
+
+def test_evidence_run_audit_rejects_raw_clinician_csv(tmp_path: Path) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output_dir = tmp_path / "evidence_runs"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_validation_evidence_bundle.py",
+            "--run-id",
+            "qualified_fixture_v1",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    (output_dir / "qualified_fixture_v1" / "reviewer_worksheet.csv").write_text(
+        "reviewer_id,case_id\nreviewer_clinician_001,val_gp_respiratory_001\n"
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/audit_validation_evidence_runs.py",
+            "--evidence-runs",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 1
+    assert "raw clinician CSV input" in result.stderr
+
+
 def test_stratified_evidence_summary_reproduces_committed_artifacts(tmp_path: Path) -> None:
     output_json = tmp_path / "stratified_summary_v0.json"
     output_md = tmp_path / "stratified_summary_v0.md"
