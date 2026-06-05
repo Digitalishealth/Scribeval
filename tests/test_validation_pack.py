@@ -191,6 +191,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert protocol["benchmark_unit"] == "whole transcript -> final note quality score"
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
+    assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
     requirements = protocol["minimum_independent_review_requirements"]
     assert requirements["reviewers_per_case"] == 2
     assert requirements["reviewers_per_case_submission"] == 2
@@ -660,6 +661,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     readiness = json.loads((bundle_dir / "readiness_report.json").read_text())
     pairs = json.loads((bundle_dir / "calibration_pairs.json").read_text())
     stratified = json.loads((bundle_dir / "stratified_summary.json").read_text())
+    reviewer_reliability = json.loads((bundle_dir / "reviewer_reliability.json").read_text())
 
     assert "Wrote validation evidence bundle" in result.stdout
     assert manifest["status"] == "independent_clinician_review"
@@ -667,6 +669,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["coverage"]["complete_case_submission_count"] == 100
     assert manifest["coverage"]["qualified_reviewer_count"] == 2
     assert manifest["coverage"]["calibration_pair_count"] == 1200
+    assert manifest["coverage"]["reviewer_reliability_pair_count"] == 600
+    assert manifest["reviewer_reliability"] == "reviewer_reliability.json"
+    assert manifest["reviewer_reliability_report"] == "reviewer_reliability.md"
     assert set(manifest["source_hashes"]) == {
         "corpus_manifest_sha256",
         "judge_scores_sha256",
@@ -678,8 +683,11 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert len(pairs) == 1200
     assert stratified["coverage"]["pair_count"] == 1200
     assert stratified["evidence_status"] == "independent_clinician_review"
+    assert reviewer_reliability["coverage"]["reliability_pair_count"] == 600
+    assert reviewer_reliability["readiness"]["is_ready_for_independent_validation"] is True
     assert "Weighted kappa" in (bundle_dir / "calibration_report.md").read_text()
     assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
+    assert "Reviewer Reliability" in (bundle_dir / "reviewer_reliability.md").read_text()
 
 
 def test_validation_judge_score_exporter_writes_importable_scores(
@@ -729,6 +737,52 @@ def test_validation_judge_score_exporter_writes_importable_scores(
     load_judge_scores = load_script_module("import_validation_ratings").load_judge_scores
     imported = load_judge_scores(output)
     assert ("val_gp_respiratory_001", "submission_a", "omission") in imported
+
+
+def test_reviewer_reliability_summary_accepts_complete_qualified_inputs(
+    tmp_path: Path,
+) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output_json = tmp_path / "reviewer_reliability.json"
+    output_md = tmp_path / "reviewer_reliability.md"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/summarize_reviewer_reliability.py",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+            "--fail-on-not-ready",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    summary = json.loads(output_json.read_text())
+    assert "Reviewer reliability pairs: 600" in result.stdout
+    assert summary["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert summary["readiness"]["is_ready_for_independent_validation"] is True
+    assert summary["coverage"]["case_count"] == 20
+    assert summary["coverage"]["submission_count"] == 100
+    assert summary["coverage"]["reviewer_pair_count"] == 1
+    assert summary["coverage"]["reliability_pair_count"] == 600
+    assert {row["dimension"] for row in summary["dimension_agreement"]} == set(
+        REQUIRED_CLINICIAN_REVIEW_DIMENSIONS
+    )
+    assert all(row["weighted_kappa"] == 1.0 for row in summary["dimension_agreement"])
+    assert "Clinician Reviewer Reliability Report" in output_md.read_text()
 
 
 def test_evidence_run_audit_accepts_empty_directory(tmp_path: Path) -> None:

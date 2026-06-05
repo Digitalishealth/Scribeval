@@ -40,6 +40,12 @@ Then use the stricter import path:
 python scripts/export_validation_judge_scores.py \
   --output <scribeval_scores.json> \
   --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote
+python scripts/summarize_reviewer_reliability.py \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --output-json <reviewer_reliability.json> \
+  --output-md <reviewer_reliability.md> \
+  --fail-on-not-ready
 python scripts/import_validation_ratings.py \
   --worksheet <filled_worksheet.csv> \
   --judge-scores <scribeval_scores.json> \
@@ -52,8 +58,8 @@ python scripts/summarize_validation_evidence.py \
 ```
 
 For a completed independent clinician run, prefer the bundle builder because it
-keeps the readiness report, calibration pairs, agreement report, stratified
-summary, manifest, and source hashes together:
+keeps the readiness report, reviewer reliability report, calibration pairs,
+agreement report, stratified summary, manifest, and source hashes together:
 
 ```bash
 python scripts/build_validation_evidence_bundle.py \

@@ -102,6 +102,7 @@ def bundle_manifest(
     bundle_dir: Path,
     readiness_report: dict[str, Any],
     pair_count: int,
+    reviewer_reliability_pair_count: int,
 ) -> dict[str, Any]:
     return {
         "schema_version": "1.0.0",
@@ -122,6 +123,8 @@ def bundle_manifest(
         "readiness_report_markdown": "readiness_report.md",
         "stratified_summary": "stratified_summary.json",
         "stratified_summary_report": "stratified_summary.md",
+        "reviewer_reliability": "reviewer_reliability.json",
+        "reviewer_reliability_report": "reviewer_reliability.md",
         "generated_by": "python scripts/build_validation_evidence_bundle.py",
         "source_hashes": {
             "reviewer_worksheet_sha256": sha256_file(worksheet),
@@ -141,6 +144,7 @@ def bundle_manifest(
                 "qualified_reviewer_count"
             ],
             "calibration_pair_count": pair_count,
+            "reviewer_reliability_pair_count": reviewer_reliability_pair_count,
         },
     }
 
@@ -163,6 +167,8 @@ def build_bundle(
         load_judge_scores,
         load_reviewer_registry,
     )
+    from summarize_reviewer_reliability import report_markdown as reliability_report_markdown
+    from summarize_reviewer_reliability import summarize_reviewer_reliability
     from summarize_validation_evidence import report_markdown as stratified_report_markdown
     from summarize_validation_evidence import summarize
 
@@ -191,6 +197,12 @@ def build_bundle(
         load_blind_label_map(corpus_manifest),
         registry,
     )
+    reviewer_reliability = summarize_reviewer_reliability(
+        worksheet=worksheet,
+        reviewer_registry=reviewer_registry,
+        corpus_manifest=corpus_manifest,
+        protocol=protocol,
+    )
     manifest = bundle_manifest(
         run_id=run_id,
         evidence_status=evidence_status,
@@ -202,6 +214,9 @@ def build_bundle(
         bundle_dir=bundle_dir,
         readiness_report=readiness,
         pair_count=len(pairs),
+        reviewer_reliability_pair_count=reviewer_reliability["coverage"][
+            "reliability_pair_count"
+        ],
     )
 
     write_json(bundle_dir / "readiness_report.json", readiness)
@@ -211,6 +226,10 @@ def build_bundle(
         calibration_report_markdown(run_id=run_id, pairs=pairs)
     )
     write_json(bundle_dir / "evidence_manifest.json", manifest)
+    write_json(bundle_dir / "reviewer_reliability.json", reviewer_reliability)
+    (bundle_dir / "reviewer_reliability.md").write_text(
+        reliability_report_markdown(reviewer_reliability)
+    )
 
     summary = summarize(bundle_dir / "evidence_manifest.json")
     write_json(bundle_dir / "stratified_summary.json", summary)

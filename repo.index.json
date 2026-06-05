@@ -20,6 +20,7 @@
       "scripts/build_reviewer_assignments.py",
       "scripts/audit_clinician_review_readiness.py",
       "scripts/export_validation_judge_scores.py",
+      "scripts/summarize_reviewer_reliability.py",
       "scripts/audit_validation_evidence_runs.py",
       "scripts/build_validation_evidence_bundle.py",
       "frontend/README.md"

@@ -175,6 +175,12 @@ python scripts/import_validation_ratings.py \
 python scripts/export_validation_judge_scores.py \
     --output <scribeval_scores.json> \
     --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote
+python scripts/summarize_reviewer_reliability.py \
+    --worksheet <filled_worksheet.csv> \
+    --reviewer-registry <reviewer_registry.csv> \
+    --output-json <reviewer_reliability.json> \
+    --output-md <reviewer_reliability.md> \
+    --fail-on-not-ready
 python scripts/summarize_validation_evidence.py
 scribeval calibrate validation_pack/results/example_calibration_pairs.json
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -188,16 +194,19 @@ included example data is synthetic and illustrative only; it is not clinical
 validation evidence. For independent clinician ratings, run
 `scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets,
 run `scripts/audit_clinician_review_readiness.py`, export Scribeval scores with
-`scripts/export_validation_judge_scores.py`, then run
+`scripts/export_validation_judge_scores.py`, check clinician inter-rater
+agreement with `scripts/summarize_reviewer_reliability.py`, then run
 `scripts/import_validation_ratings.py` with `--reviewer-registry` and
 `--require-qualified-reviewers` so the calibration pairs carry reviewer
 eligibility provenance without exposing direct identifiers. The generated
 stratified summary shows whether agreement evidence spans specialties, note
 sources, prompting strategies, and safety-critical failure modes. The readiness
 audit checks that every blinded case-submission has two qualified reviewers and
-complete required dimension ratings before calibration import. For a completed
-review run, `scripts/build_validation_evidence_bundle.py` orchestrates these
-steps into one versioned bundle with source hashes.
+complete required dimension ratings before calibration import. The reviewer
+reliability report shows whether clinician reviewers agree enough for their
+ratings to be a defensible comparator. For a completed review run,
+`scripts/build_validation_evidence_bundle.py` orchestrates these steps into one
+versioned bundle with source hashes.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
 publication and rejects raw clinician CSV inputs.
 

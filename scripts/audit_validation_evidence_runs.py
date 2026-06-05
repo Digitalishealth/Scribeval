@@ -30,6 +30,8 @@ REQUIRED_MANIFEST_FILES = (
     "calibration_report",
     "stratified_summary",
     "stratified_summary_report",
+    "reviewer_reliability",
+    "reviewer_reliability_report",
 )
 REQUIRED_SOURCE_HASHES = {
     "corpus_manifest_sha256",
@@ -162,10 +164,12 @@ def audit_pairs_and_summary(
     bundle_name: str,
     pairs_path: Path,
     summary_path: Path,
+    reviewer_reliability_path: Path,
     manifest: dict[str, Any],
 ) -> int:
     pairs = load_json(pairs_path)
     summary = load_json(summary_path)
+    reviewer_reliability = load_json(reviewer_reliability_path)
     manifest_coverage = manifest.get("coverage", {})
     require(isinstance(pairs, list) and pairs, f"{bundle_name} has no calibration pairs")
     pair_count = len(pairs)
@@ -187,6 +191,29 @@ def audit_pairs_and_summary(
     for stratum in REQUIRED_STRATA:
         rows = strata[stratum]
         require(isinstance(rows, list) and rows, f"{bundle_name} missing {stratum} rows")
+    require(
+        reviewer_reliability.get("benchmark_unit") == BENCHMARK_UNIT,
+        f"{bundle_name} reviewer reliability has invalid benchmark_unit",
+    )
+    reliability_coverage = reviewer_reliability.get("coverage", {})
+    require(
+        reliability_coverage.get("reliability_pair_count")
+        == manifest_coverage.get("reviewer_reliability_pair_count"),
+        f"{bundle_name} reviewer reliability pair_count drift",
+    )
+    require(
+        reliability_coverage.get("reliability_pair_count", 0) > 0,
+        f"{bundle_name} reviewer reliability has no pairs",
+    )
+    reliability_strata = reviewer_reliability.get("strata")
+    require(
+        isinstance(reliability_strata, dict),
+        f"{bundle_name} reviewer reliability missing strata",
+    )
+    require(
+        set(reliability_strata) >= REQUIRED_STRATA,
+        f"{bundle_name} reviewer reliability strata drift",
+    )
     return pair_count
 
 
@@ -208,6 +235,7 @@ def audit_bundle(bundle_dir: Path) -> int:
         bundle_dir.name,
         paths["calibration_pairs"],
         paths["stratified_summary"],
+        paths["reviewer_reliability"],
         manifest,
     )
 

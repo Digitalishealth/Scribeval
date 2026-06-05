@@ -91,7 +91,22 @@ python scripts/export_validation_judge_scores.py \
    intentionally omits transcript text, note text, raw judge responses,
    reasoning, and excerpts.
 
-10. Convert reviewer ratings and Scribeval scores into calibration pairs:
+10. Summarise inter-rater reliability between clinician reviewers:
+
+```bash
+python scripts/summarize_reviewer_reliability.py \
+  --worksheet <filled_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --output-json <reviewer_reliability.json> \
+  --output-md <reviewer_reliability.md> \
+  --fail-on-not-ready
+```
+
+   Low clinician reviewer agreement weakens judge-vs-clinician validation
+   claims and should trigger rubric clarification, reviewer retraining, or
+   adjudication.
+
+11. Convert reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -136,7 +151,7 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-11. Run:
+12. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
