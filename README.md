@@ -157,6 +157,22 @@ release.
 For repository-publication status and the release smoke test, see
 [`PUBLIC_RELEASE.md`](PUBLIC_RELEASE.md).
 
+## Clinician Validation Pack
+
+The [`validation_pack/`](validation_pack/) directory contains a clinician-facing
+pilot protocol for testing Scribeval against independent human reviewers. It
+includes a 20-case synthetic review manifest, a blinded reviewer worksheet, and
+example calibration inputs/results for:
+
+```bash
+scribeval calibrate validation_pack/results/example_calibration_pairs.json
+```
+
+The pack is intended to produce evidence about agreement with clinicians
+(weighted kappa for severity ratings and ICC(2,1) for continuous scores). The
+included example data is synthetic and illustrative only; it is not clinical
+validation evidence.
+
 ## Choosing a Scribe Product
 
 For product selection, run each candidate note against the same de-identified
@@ -214,7 +230,8 @@ case-level results for audit.
 
 A static dashboard in [`frontend/`](frontend/) shows synthetic benchmark outputs
 for Nurse + CDSS versus four product-agnostic model candidates, including
-variation across prompting strategies.
+variation across prompting strategies and an example clinician calibration
+view.
 
 Live demo: <https://digitalishealth.github.io/Scribeval/>
 

@@ -19,6 +19,8 @@ transcripts.
       `scribeval benchmark`.
 - [x] Static demo frontend available for synthetic Nurse + CDSS versus model
       comparison outputs.
+- [x] Clinician validation pilot pack included with blinded reviewer worksheet
+      and example calibration output.
 - [x] JSON and Markdown outputs available for audit and governance review.
 - [x] Tests and lint pass locally.
 - [x] Public release audit script scans for obvious committed secrets and

@@ -7,6 +7,15 @@
   "primary_domains": ["ai-scribe", "benchmark", "evaluation", "clinical-documentation"],
   "self_index": {"machine": "repo.index.json", "human": "REPOSITORY_INDEX.md"},
   "related_indexes": [],
-  "known_entrypoints": {"docs": [], "skills": [], "agents": []},
+  "known_entrypoints": {
+    "docs": [
+      "README.md",
+      "METHODOLOGY.md",
+      "validation_pack/README.md",
+      "frontend/README.md"
+    ],
+    "skills": [],
+    "agents": []
+  },
   "discovery_rules": ["Read repo.index.json first.", "Use REPOSITORY_INDEX.md for human context.", "Do not rely on directory enumeration for skill discovery."]
 }

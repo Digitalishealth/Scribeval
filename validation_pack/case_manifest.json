@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.0.0",
+  "pack_id": "scribeval_clinician_validation_pilot_001",
+  "title": "Scribeval Clinician Validation Pilot",
+  "status": "synthetic_protocol_pack",
+  "case_count": 20,
+  "disclaimer": "Synthetic validation design only. No real patient data. Not clinical validation evidence until completed with independent clinician reviewers.",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "dimensions": [
+    "omission",
+    "hallucination",
+    "medicolegal",
+    "ahpra",
+    "pdqi9",
+    "qnote",
+    "medication_terminology"
+  ],
+  "submission_slots": [
+    {
+      "blind_label": "Submission A",
+      "default_role": "Nurse + CDSS baseline",
+      "prompt_strategy": "clinical decision support checklist"
+    },
+    {
+      "blind_label": "Submission B",
+      "default_role": "Candidate note",
+      "prompt_strategy": "standard transcript-to-note prompt"
+    },
+    {
+      "blind_label": "Submission C",
+      "default_role": "Candidate note",
+      "prompt_strategy": "structured SOAP prompt"
+    },
+    {
+      "blind_label": "Submission D",
+      "default_role": "Candidate note",
+      "prompt_strategy": "safety-first prompt"
+    },
+    {
+      "blind_label": "Submission E",
+      "default_role": "Candidate note",
+      "prompt_strategy": "CDSS-informed prompt"
+    }
+  ],
+  "review_rules": {
+    "blind_review": true,
+    "max_scored_submissions_per_case": 5,
+    "score_range": "0.0 to 1.0",
+    "severity_categories": ["none", "low", "moderate", "high", "critical"],
+    "reference_note_policy": "A reference or adjudicated note may be supplied to reviewers only as optional context after primary scoring. It is not treated as the default gold standard."
+  },
+  "cases": [
+    {
+      "case_id": "val_gp_respiratory_001",
+      "setting": "general_practice",
+      "scenario": "Adult cough with asthma history and antibiotic expectation",
+      "acuity": "routine",
+      "review_focus": ["omission", "qnote", "ahpra"],
+      "prompting_contrast": "standard versus safety-first safety-netting"
+    },
+    {
+      "case_id": "val_gp_diabetes_002",
+      "setting": "general_practice",
+      "scenario": "Type 2 diabetes review with medication adherence issues",
+      "acuity": "routine",
+      "review_focus": ["medication_terminology", "omission", "pdqi9"],
+      "prompting_contrast": "structured SOAP versus CDSS-informed medication reconciliation"
+    },
+    {
+      "case_id": "val_urgent_chest_pain_003",
+      "setting": "urgent_care",
+      "scenario": "Chest pain with conflicting risk history and escalation threshold",
+      "acuity": "urgent",
+      "review_focus": ["hallucination", "omission", "medicolegal"],
+      "prompting_contrast": "standard versus safety-first red flag handling"
+    },
+    {
+      "case_id": "val_paeds_fever_004",
+      "setting": "paediatrics",
+      "scenario": "Fever in a toddler with dosing and return-advice risk",
+      "acuity": "moderate",
+      "review_focus": ["medication_terminology", "omission", "ahpra"],
+      "prompting_contrast": "standard versus CDSS-informed dosing checks"
+    },
+    {
+      "case_id": "val_psych_review_005",
+      "setting": "mental_health",
+      "scenario": "Depression review with passive suicidal ideation and safety plan",
+      "acuity": "moderate",
+      "review_focus": ["medicolegal", "omission", "qnote"],
+      "prompting_contrast": "structured SOAP versus safety-first risk documentation"
+    },
+    {
+      "case_id": "val_palliative_pain_006",
+      "setting": "palliative_care",
+      "scenario": "Cancer pain review with opioid titration and carer concerns",
+      "acuity": "moderate",
+      "review_focus": ["medication_terminology", "medicolegal", "omission"],
+      "prompting_contrast": "standard versus CDSS-informed medication safety"
+    },
+    {
+      "case_id": "val_telehealth_rash_007",
+      "setting": "telehealth",
+      "scenario": "Remote rash assessment with uncertain visual findings",
+      "acuity": "routine",
+      "review_focus": ["hallucination", "ahpra", "pdqi9"],
+      "prompting_contrast": "standard versus safety-first uncertainty handling"
+    },
+    {
+      "case_id": "val_aged_care_falls_008",
+      "setting": "aged_care",
+      "scenario": "Falls review with anticoagulant use and head-strike ambiguity",
+      "acuity": "urgent",
+      "review_focus": ["omission", "medication_terminology", "medicolegal"],
+      "prompting_contrast": "structured SOAP versus CDSS-informed escalation cues"
+    },
+    {
+      "case_id": "val_antenatal_bleeding_009",
+      "setting": "general_practice",
+      "scenario": "Early pregnancy bleeding with ectopic risk questions",
+      "acuity": "urgent",
+      "review_focus": ["omission", "hallucination", "ahpra"],
+      "prompting_contrast": "standard versus safety-first red flag handling"
+    },
+    {
+      "case_id": "val_msk_back_pain_010",
+      "setting": "general_practice",
+      "scenario": "Back pain with red flag negatives and work certificate request",
+      "acuity": "routine",
+      "review_focus": ["qnote", "medicolegal", "pdqi9"],
+      "prompting_contrast": "structured SOAP versus standard summarisation"
+    },
+    {
+      "case_id": "val_respiratory_copd_011",
+      "setting": "general_practice",
+      "scenario": "COPD exacerbation with steroid plan and antibiotic threshold",
+      "acuity": "moderate",
+      "review_focus": ["medication_terminology", "omission", "qnote"],
+      "prompting_contrast": "standard versus CDSS-informed action plan"
+    },
+    {
+      "case_id": "val_abdo_pain_012",
+      "setting": "urgent_care",
+      "scenario": "Abdominal pain with evolving appendicitis differential",
+      "acuity": "urgent",
+      "review_focus": ["hallucination", "omission", "medicolegal"],
+      "prompting_contrast": "standard versus safety-first differential discipline"
+    },
+    {
+      "case_id": "val_skin_lesion_013",
+      "setting": "general_practice",
+      "scenario": "Pigmented lesion review with referral and photo documentation",
+      "acuity": "routine",
+      "review_focus": ["ahpra", "medicolegal", "pdqi9"],
+      "prompting_contrast": "structured SOAP versus CDSS-informed documentation prompts"
+    },
+    {
+      "case_id": "val_renal_polypharmacy_014",
+      "setting": "chronic_disease",
+      "scenario": "CKD review with NSAID risk and medication interaction concern",
+      "acuity": "moderate",
+      "review_focus": ["medication_terminology", "omission", "hallucination"],
+      "prompting_contrast": "standard versus CDSS-informed medication reconciliation"
+    },
+    {
+      "case_id": "val_indigenous_health_015",
+      "setting": "general_practice",
+      "scenario": "Aboriginal health check with preventive care and follow-up needs",
+      "acuity": "routine",
+      "review_focus": ["qnote", "ahpra", "omission"],
+      "prompting_contrast": "structured SOAP versus safety-first continuity prompts"
+    },
+    {
+      "case_id": "val_substance_use_016",
+      "setting": "general_practice",
+      "scenario": "Alcohol use review with withdrawal risk and confidentiality issues",
+      "acuity": "moderate",
+      "review_focus": ["medicolegal", "ahpra", "omission"],
+      "prompting_contrast": "standard versus safety-first risk framing"
+    },
+    {
+      "case_id": "val_womens_health_017",
+      "setting": "general_practice",
+      "scenario": "Contraception review with migraine history and thrombotic risk",
+      "acuity": "routine",
+      "review_focus": ["medication_terminology", "hallucination", "qnote"],
+      "prompting_contrast": "standard versus CDSS-informed contraindication prompts"
+    },
+    {
+      "case_id": "val_elder_confusion_018",
+      "setting": "urgent_care",
+      "scenario": "Older adult confusion with UTI possibility and delirium risk",
+      "acuity": "urgent",
+      "review_focus": ["omission", "hallucination", "medicolegal"],
+      "prompting_contrast": "safety-first versus standard risk synthesis"
+    },
+    {
+      "case_id": "val_child_asthma_019",
+      "setting": "paediatrics",
+      "scenario": "Child asthma flare with spacer technique and written action plan",
+      "acuity": "moderate",
+      "review_focus": ["omission", "medication_terminology", "ahpra"],
+      "prompting_contrast": "structured SOAP versus CDSS-informed action-plan cues"
+    },
+    {
+      "case_id": "val_results_followup_020",
+      "setting": "general_practice",
+      "scenario": "Abnormal pathology result discussion with follow-up ownership",
+      "acuity": "moderate",
+      "review_focus": ["medicolegal", "qnote", "pdqi9"],
+      "prompting_contrast": "standard versus safety-first follow-up accountability"
+    }
+  ]
+}

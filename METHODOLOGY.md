@@ -138,6 +138,37 @@ The Physician Documentation Quality Instrument is a 9-item rating tool validated
 
 QNOTE assesses 8 clinical note domains: presenting complaint, history of presenting illness, past medical history, medications & allergies, review of systems, physical examination, assessment & plan, and overall impression. Two domains (medications/allergies, assessment/plan) are flagged safety-critical and receive elevated sub-weights. Domains marked N/A are excluded from the per-note score.
 
+## Clinician Calibration
+
+Scribeval includes a calibration workflow so its LLM-as-judge outputs can be
+compared with qualified human reviewers. This is the main mechanism for
+strengthening the benchmark against clinical critique.
+
+The recommended validation unit is a blinded case-submission pair:
+
+```text
+case transcript + blinded final note -> clinician dimension ratings
+```
+
+For each pair, Scribeval records the judge score and severity rating, then
+compares them with clinician ratings using:
+
+- Cohen's weighted kappa for ordered severity categories
+- ICC(2,1) absolute agreement for continuous 0-1 dimension scores
+- mean absolute score difference for operational interpretability
+
+The validation pack in `validation_pack/` defines a synthetic 20-case pilot
+manifest and reviewer worksheet. It deliberately treats Nurse + CDSS, clinician
+notes, and model or scribe outputs as comparable submissions when they are
+passed through the same blinded review path. A GP or adjudicated reference note
+may still be supplied as optional context, but it is not the default gold
+standard.
+
+Calibration results should be interpreted as benchmark-governance evidence, not
+as medical-device validation. Low-agreement dimensions require rubric review,
+reviewer instruction tightening, additional cases, or clinician adjudication
+before use in high-stakes procurement or safety decisions.
+
 ## References
 
 - Burke HB, Hoang A, Becher D, et al. "QNOTE: an instrument for measuring the quality of EHR clinical notes." *JAMIA* 2014;21(5):910-916.

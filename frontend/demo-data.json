@@ -232,5 +232,75 @@
       "severity": "none",
       "finding": "Medication names and strengths validated across all medication-bearing cases."
     }
-  ]
+  ],
+  "validation_pilot": {
+    "case_count": 20,
+    "submissions_per_case": 5,
+    "clinician_reviewers": 2,
+    "disclaimer": "Synthetic example metrics only. Not clinical validation evidence.",
+    "summary": {
+      "median_weighted_kappa": 0.84,
+      "kappa_interpretation": "Substantial to almost-perfect agreement",
+      "median_icc": 0.955,
+      "mean_abs_difference": 0.036
+    },
+    "agreement": [
+      {
+        "dimension": "ahpra",
+        "n_pairs": 8,
+        "weighted_kappa": 0.886,
+        "icc_2_1": 0.956,
+        "mean_abs_difference": 0.031
+      },
+      {
+        "dimension": "hallucination",
+        "n_pairs": 8,
+        "weighted_kappa": 0.915,
+        "icc_2_1": 0.971,
+        "mean_abs_difference": 0.033
+      },
+      {
+        "dimension": "medicolegal",
+        "n_pairs": 8,
+        "weighted_kappa": 0.795,
+        "icc_2_1": 0.953,
+        "mean_abs_difference": 0.041
+      },
+      {
+        "dimension": "omission",
+        "n_pairs": 8,
+        "weighted_kappa": 0.714,
+        "icc_2_1": 0.956,
+        "mean_abs_difference": 0.036
+      },
+      {
+        "dimension": "pdqi9",
+        "n_pairs": 8,
+        "weighted_kappa": 0.750,
+        "icc_2_1": 0.942,
+        "mean_abs_difference": 0.036
+      },
+      {
+        "dimension": "qnote",
+        "n_pairs": 8,
+        "weighted_kappa": 0.902,
+        "icc_2_1": 0.953,
+        "mean_abs_difference": 0.040
+      }
+    ],
+    "workflow": [
+      {
+        "label": "Blinded submissions",
+        "detail": "Nurse + CDSS and four candidate notes are labelled Submission A to E before review."
+      },
+      {
+        "label": "Transcript-grounded ratings",
+        "detail": "Clinicians score each final note against the whole consultation transcript, not against another note."
+      },
+      {
+        "label": "Calibration output",
+        "detail": "Scribeval reports weighted kappa for severity and ICC(2,1) for continuous 0-1 scores."
+      }
+    ]
+  }
 }

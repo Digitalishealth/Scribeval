@@ -30,6 +30,9 @@
           <button class="tab-button" data-view="findings" role="tab" aria-selected="false">
             Findings
           </button>
+          <button class="tab-button" data-view="validation" role="tab" aria-selected="false">
+            Validation
+          </button>
         </div>
         <label class="select-label">
           Dimension
@@ -85,6 +88,32 @@
               <span class="panel-note">Synthetic examples across candidates and prompts</span>
             </div>
             <div id="findings-list" class="findings-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="validation-view" class="view" aria-labelledby="validation-title">
+        <div class="content-grid single">
+          <section class="panel wide">
+            <div class="panel-header">
+              <h2 id="validation-title">Clinician validation pilot</h2>
+              <span class="panel-note">Synthetic example agreement metrics</span>
+            </div>
+            <div id="validation-summary" class="metrics-row"></div>
+          </section>
+          <section class="panel wide">
+            <div class="panel-header">
+              <h2>Agreement by dimension</h2>
+              <span class="panel-note">Judge versus clinician reviewer</span>
+            </div>
+            <div id="agreement-table" class="matrix"></div>
+          </section>
+          <section class="panel wide">
+            <div class="panel-header">
+              <h2>Review design</h2>
+              <span class="panel-note">Blinded, transcript-grounded scoring</span>
+            </div>
+            <div id="validation-workflow" class="case-list"></div>
           </section>
         </div>
       </section>

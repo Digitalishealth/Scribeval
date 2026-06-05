@@ -112,7 +112,7 @@ h3 {
 
 .segmented {
   display: inline-grid;
-  grid-template-columns: repeat(3, minmax(92px, 1fr));
+  grid-template-columns: repeat(4, minmax(92px, 1fr));
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);

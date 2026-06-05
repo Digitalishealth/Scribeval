@@ -62,6 +62,7 @@ function render() {
   renderStrategyMatrix();
   renderPromptLift();
   renderFindings();
+  renderValidation();
 }
 
 function renderHeader() {
@@ -203,6 +204,88 @@ function renderFindings() {
             <span class="pill">${escapeHtml(finding.strategy)}</span>
           </p>
           <p>${escapeHtml(finding.finding)}</p>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderValidation() {
+  const pilot = state.data.validation_pilot;
+  if (!pilot) {
+    return;
+  }
+
+  const summary = [
+    {
+      label: "Pilot cases",
+      value: String(pilot.case_count),
+      detail: `${pilot.submissions_per_case} blinded submissions per case`,
+    },
+    {
+      label: "Reviewers",
+      value: String(pilot.clinician_reviewers),
+      detail: "Independent human ratings for calibration",
+    },
+    {
+      label: "Median kappa",
+      value: formatScore(pilot.summary.median_weighted_kappa),
+      detail: pilot.summary.kappa_interpretation,
+    },
+    {
+      label: "Median ICC",
+      value: formatScore(pilot.summary.median_icc),
+      detail: "Absolute score agreement",
+    },
+  ];
+
+  document.querySelector("#validation-summary").innerHTML = summary
+    .map(
+      (metric) => `
+        <article class="metric">
+          <div class="metric-label">${escapeHtml(metric.label)}</div>
+          <div class="metric-value">${escapeHtml(metric.value)}</div>
+          <p class="metric-detail">${escapeHtml(metric.detail)}</p>
+        </article>
+      `,
+    )
+    .join("");
+
+  document.querySelector("#agreement-table").innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>N</th>
+          <th>Weighted kappa</th>
+          <th>ICC(2,1)</th>
+          <th>Mean diff</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${pilot.agreement
+          .map(
+            (item) => `
+              <tr>
+                <th scope="row">${escapeHtml(dimensionLabels[item.dimension] || titleCase(item.dimension))}</th>
+                <td>${escapeHtml(item.n_pairs)}</td>
+                <td>${formatScore(item.weighted_kappa)}</td>
+                <td>${formatScore(item.icc_2_1)}</td>
+                <td>${formatScore(item.mean_abs_difference)}</td>
+              </tr>
+            `,
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
+
+  document.querySelector("#validation-workflow").innerHTML = pilot.workflow
+    .map(
+      (item) => `
+        <article class="case-item">
+          <h3>${escapeHtml(item.label)}</h3>
+          <p>${escapeHtml(item.detail)}</p>
         </article>
       `,
     )
