@@ -84,8 +84,8 @@ def test_bootstrap_corpus_has_traceable_case_packets() -> None:
 
     assert manifest["benchmark_unit"] == "whole transcript -> final note quality score"
     assert manifest["target_case_count"] == 20
-    assert manifest["current_case_count"] == 8
-    assert len(manifest["case_files"]) == 8
+    assert manifest["current_case_count"] == 12
+    assert len(manifest["case_files"]) == 12
 
     specialties: set[str] = set()
     prompt_strategies: set[str] = set()
@@ -122,6 +122,9 @@ def test_bootstrap_corpus_has_traceable_case_packets() -> None:
     assert "unsupported_hallucination" in failure_modes
     assert "suicide_risk_documentation_gap" in failure_modes
     assert "renal_medication_interaction" in failure_modes
+    assert "ectopic_pregnancy_escalation_gap" in failure_modes
+    assert "asthma_action_plan_gap" in failure_modes
+    assert "results_followup_ownership_gap" in failure_modes
 
 
 def test_evidence_pairs_reference_corpus_and_are_computable() -> None:
@@ -192,7 +195,7 @@ def test_reviewer_import_reproduces_evidence_pairs(tmp_path: Path) -> None:
         text=True,
     )
 
-    assert "Wrote 46 calibration pairs" in result.stdout
+    assert "Wrote 70 calibration pairs" in result.stdout
     assert json.loads(output.read_text()) == json.loads(
         (EVIDENCE / "calibration_pairs_v0.json").read_text()
     )
@@ -203,8 +206,8 @@ def test_frontend_exposes_validation_pilot_summary() -> None:
     pilot = demo_data["validation_pilot"]
 
     assert pilot["case_count"] == 20
-    assert pilot["corpus_case_packets"] == 8
+    assert pilot["corpus_case_packets"] == 12
     assert pilot["submissions_per_case"] == 5
-    assert pilot["evidence_pairs"] == 46
+    assert pilot["evidence_pairs"] == 70
     assert len(pilot["agreement"]) == 7
     assert pilot["summary"]["median_weighted_kappa"] >= 0.70

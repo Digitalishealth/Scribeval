@@ -4,7 +4,7 @@
   "status": "bootstrap_subset",
   "disclaimer": "Synthetic case packets only. No real patient data. Not clinical validation evidence until rated by independent clinicians.",
   "target_case_count": 20,
-  "current_case_count": 8,
+  "current_case_count": 12,
   "benchmark_unit": "whole transcript -> final note quality score",
   "required_submission_range": [2, 5],
   "case_files": [
@@ -15,7 +15,11 @@
     "cases/val_palliative_pain_006.json",
     "cases/val_telehealth_rash_007.json",
     "cases/val_aged_care_falls_008.json",
-    "cases/val_renal_polypharmacy_014.json"
+    "cases/val_antenatal_bleeding_009.json",
+    "cases/val_abdo_pain_012.json",
+    "cases/val_renal_polypharmacy_014.json",
+    "cases/val_child_asthma_019.json",
+    "cases/val_results_followup_020.json"
   ],
   "coverage": {
     "specialties": [
@@ -47,7 +51,10 @@
       "suicide_risk_documentation_gap",
       "opioid_safety_net_gap",
       "anticoagulant_head_injury_escalation_gap",
-      "renal_medication_interaction"
+      "renal_medication_interaction",
+      "ectopic_pregnancy_escalation_gap",
+      "asthma_action_plan_gap",
+      "results_followup_ownership_gap"
     ]
   }
 }
