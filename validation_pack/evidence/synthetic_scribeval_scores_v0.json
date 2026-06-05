@@ -488,5 +488,341 @@
     "dimension": "ahpra",
     "judge_score": 0.89,
     "judge_severity": "low"
+  },
+  {
+    "case_id": "val_gp_diabetes_002",
+    "submission_id": "submission_a",
+    "dimension": "medication_terminology",
+    "judge_score": 0.91,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_gp_diabetes_002",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.58,
+    "judge_severity": "high"
+  },
+  {
+    "case_id": "val_gp_diabetes_002",
+    "submission_id": "submission_b",
+    "dimension": "medication_terminology",
+    "judge_score": 0.63,
+    "judge_severity": "high"
+  },
+  {
+    "case_id": "val_gp_diabetes_002",
+    "submission_id": "submission_c",
+    "dimension": "medicolegal",
+    "judge_score": 0.73,
+    "judge_severity": "moderate"
+  },
+  {
+    "case_id": "val_gp_diabetes_002",
+    "submission_id": "submission_d",
+    "dimension": "qnote",
+    "judge_score": 0.88,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_gp_diabetes_002",
+    "submission_id": "submission_e",
+    "dimension": "ahpra",
+    "judge_score": 0.9,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_msk_back_pain_010",
+    "submission_id": "submission_a",
+    "dimension": "omission",
+    "judge_score": 0.93,
+    "judge_severity": "none"
+  },
+  {
+    "case_id": "val_msk_back_pain_010",
+    "submission_id": "submission_b",
+    "dimension": "hallucination",
+    "judge_score": 0.57,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_msk_back_pain_010",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.6,
+    "judge_severity": "high"
+  },
+  {
+    "case_id": "val_msk_back_pain_010",
+    "submission_id": "submission_c",
+    "dimension": "medicolegal",
+    "judge_score": 0.76,
+    "judge_severity": "moderate"
+  },
+  {
+    "case_id": "val_msk_back_pain_010",
+    "submission_id": "submission_d",
+    "dimension": "qnote",
+    "judge_score": 0.89,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_msk_back_pain_010",
+    "submission_id": "submission_e",
+    "dimension": "pdqi9",
+    "judge_score": 0.88,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_respiratory_copd_011",
+    "submission_id": "submission_a",
+    "dimension": "medication_terminology",
+    "judge_score": 0.9,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_respiratory_copd_011",
+    "submission_id": "submission_b",
+    "dimension": "hallucination",
+    "judge_score": 0.62,
+    "judge_severity": "high"
+  },
+  {
+    "case_id": "val_respiratory_copd_011",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.59,
+    "judge_severity": "high"
+  },
+  {
+    "case_id": "val_respiratory_copd_011",
+    "submission_id": "submission_c",
+    "dimension": "medicolegal",
+    "judge_score": 0.75,
+    "judge_severity": "moderate"
+  },
+  {
+    "case_id": "val_respiratory_copd_011",
+    "submission_id": "submission_d",
+    "dimension": "qnote",
+    "judge_score": 0.87,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_respiratory_copd_011",
+    "submission_id": "submission_e",
+    "dimension": "ahpra",
+    "judge_score": 0.88,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_skin_lesion_013",
+    "submission_id": "submission_a",
+    "dimension": "medicolegal",
+    "judge_score": 0.91,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_skin_lesion_013",
+    "submission_id": "submission_b",
+    "dimension": "hallucination",
+    "judge_score": 0.55,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_skin_lesion_013",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.5,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_skin_lesion_013",
+    "submission_id": "submission_c",
+    "dimension": "medicolegal",
+    "judge_score": 0.7,
+    "judge_severity": "moderate"
+  },
+  {
+    "case_id": "val_skin_lesion_013",
+    "submission_id": "submission_d",
+    "dimension": "qnote",
+    "judge_score": 0.88,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_skin_lesion_013",
+    "submission_id": "submission_e",
+    "dimension": "pdqi9",
+    "judge_score": 0.87,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_indigenous_health_015",
+    "submission_id": "submission_a",
+    "dimension": "qnote",
+    "judge_score": 0.9,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_indigenous_health_015",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.61,
+    "judge_severity": "high"
+  },
+  {
+    "case_id": "val_indigenous_health_015",
+    "submission_id": "submission_b",
+    "dimension": "ahpra",
+    "judge_score": 0.64,
+    "judge_severity": "high"
+  },
+  {
+    "case_id": "val_indigenous_health_015",
+    "submission_id": "submission_c",
+    "dimension": "medicolegal",
+    "judge_score": 0.74,
+    "judge_severity": "moderate"
+  },
+  {
+    "case_id": "val_indigenous_health_015",
+    "submission_id": "submission_d",
+    "dimension": "pdqi9",
+    "judge_score": 0.88,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_indigenous_health_015",
+    "submission_id": "submission_e",
+    "dimension": "qnote",
+    "judge_score": 0.89,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_substance_use_016",
+    "submission_id": "submission_a",
+    "dimension": "medicolegal",
+    "judge_score": 0.9,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_substance_use_016",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.52,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_substance_use_016",
+    "submission_id": "submission_b",
+    "dimension": "medicolegal",
+    "judge_score": 0.56,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_substance_use_016",
+    "submission_id": "submission_c",
+    "dimension": "ahpra",
+    "judge_score": 0.72,
+    "judge_severity": "moderate"
+  },
+  {
+    "case_id": "val_substance_use_016",
+    "submission_id": "submission_d",
+    "dimension": "qnote",
+    "judge_score": 0.89,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_substance_use_016",
+    "submission_id": "submission_e",
+    "dimension": "pdqi9",
+    "judge_score": 0.87,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_womens_health_017",
+    "submission_id": "submission_a",
+    "dimension": "medication_terminology",
+    "judge_score": 0.91,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_womens_health_017",
+    "submission_id": "submission_b",
+    "dimension": "hallucination",
+    "judge_score": 0.5,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_womens_health_017",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.48,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_womens_health_017",
+    "submission_id": "submission_c",
+    "dimension": "medicolegal",
+    "judge_score": 0.75,
+    "judge_severity": "moderate"
+  },
+  {
+    "case_id": "val_womens_health_017",
+    "submission_id": "submission_d",
+    "dimension": "qnote",
+    "judge_score": 0.88,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_womens_health_017",
+    "submission_id": "submission_e",
+    "dimension": "ahpra",
+    "judge_score": 0.9,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_elder_confusion_018",
+    "submission_id": "submission_a",
+    "dimension": "omission",
+    "judge_score": 0.92,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_elder_confusion_018",
+    "submission_id": "submission_b",
+    "dimension": "hallucination",
+    "judge_score": 0.54,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_elder_confusion_018",
+    "submission_id": "submission_b",
+    "dimension": "omission",
+    "judge_score": 0.45,
+    "judge_severity": "critical"
+  },
+  {
+    "case_id": "val_elder_confusion_018",
+    "submission_id": "submission_c",
+    "dimension": "medicolegal",
+    "judge_score": 0.86,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_elder_confusion_018",
+    "submission_id": "submission_d",
+    "dimension": "qnote",
+    "judge_score": 0.9,
+    "judge_severity": "low"
+  },
+  {
+    "case_id": "val_elder_confusion_018",
+    "submission_id": "submission_e",
+    "dimension": "pdqi9",
+    "judge_score": 0.88,
+    "judge_severity": "low"
   }
 ]

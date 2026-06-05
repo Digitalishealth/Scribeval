@@ -21,6 +21,8 @@ transcripts.
       comparison outputs.
 - [x] Clinician validation pilot pack included with blinded reviewer worksheet
       and example calibration output.
+- [x] Full 20-case synthetic validation corpus included with traceable
+      transcript/note packets.
 - [x] Validation corpus audit verifies case packets and evidence references
       without API keys.
 - [x] JSON and Markdown outputs available for audit and governance review.

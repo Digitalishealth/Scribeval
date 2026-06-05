@@ -235,66 +235,66 @@
   ],
   "validation_pilot": {
     "case_count": 20,
-    "corpus_case_packets": 12,
+    "corpus_case_packets": 20,
     "submissions_per_case": 5,
     "clinician_reviewers": 2,
-    "evidence_pairs": 70,
+    "evidence_pairs": 118,
     "disclaimer": "Synthetic example metrics only. Not clinical validation evidence.",
     "summary": {
       "median_weighted_kappa": 1.0,
       "kappa_interpretation": "Synthetic bootstrap agreement fixture",
-      "median_icc": 0.975,
-      "mean_abs_difference": 0.030
+      "median_icc": 0.965,
+      "mean_abs_difference": 0.031
     },
     "agreement": [
       {
         "dimension": "ahpra",
-        "n_pairs": 8,
+        "n_pairs": 13,
         "weighted_kappa": 1.0,
-        "icc_2_1": 0.869,
-        "mean_abs_difference": 0.031
+        "icc_2_1": 0.938,
+        "mean_abs_difference": 0.032
       },
       {
         "dimension": "hallucination",
-        "n_pairs": 8,
+        "n_pairs": 13,
         "weighted_kappa": 1.0,
-        "icc_2_1": 0.991,
-        "mean_abs_difference": 0.026
+        "icc_2_1": 0.984,
+        "mean_abs_difference": 0.031
       },
       {
         "dimension": "medication_terminology",
-        "n_pairs": 5,
+        "n_pairs": 9,
         "weighted_kappa": 1.0,
-        "icc_2_1": 0.987,
+        "icc_2_1": 0.982,
         "mean_abs_difference": 0.030
       },
       {
         "dimension": "medicolegal",
-        "n_pairs": 15,
-        "weighted_kappa": 1.0,
-        "icc_2_1": 0.975,
-        "mean_abs_difference": 0.035
+        "n_pairs": 25,
+        "weighted_kappa": 0.961,
+        "icc_2_1": 0.965,
+        "mean_abs_difference": 0.036
       },
       {
         "dimension": "omission",
-        "n_pairs": 16,
-        "weighted_kappa": 0.844,
-        "icc_2_1": 0.989,
-        "mean_abs_difference": 0.031
+        "n_pairs": 26,
+        "weighted_kappa": 0.870,
+        "icc_2_1": 0.985,
+        "mean_abs_difference": 0.033
       },
       {
         "dimension": "pdqi9",
-        "n_pairs": 6,
+        "n_pairs": 11,
         "weighted_kappa": 1.0,
-        "icc_2_1": 0.233,
+        "icc_2_1": 0.160,
         "mean_abs_difference": 0.030
       },
       {
         "dimension": "qnote",
-        "n_pairs": 12,
+        "n_pairs": 21,
         "weighted_kappa": 1.0,
-        "icc_2_1": 0.948,
-        "mean_abs_difference": 0.027
+        "icc_2_1": 0.909,
+        "mean_abs_difference": 0.028
       }
     ],
     "workflow": [

@@ -16,13 +16,13 @@ scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 
 | Dimension | N | Weighted kappa | Kappa interpretation | ICC(2,1) | Mean absolute difference |
 |---|---:|---:|---|---:|---:|
-| ahpra | 8 | 1.000 | almost perfect | 0.869 | 0.031 |
-| hallucination | 8 | 1.000 | almost perfect | 0.991 | 0.026 |
-| medication_terminology | 5 | 1.000 | almost perfect | 0.987 | 0.030 |
-| medicolegal | 15 | 1.000 | almost perfect | 0.975 | 0.035 |
-| omission | 16 | 0.844 | almost perfect | 0.989 | 0.031 |
-| pdqi9 | 6 | 1.000 | almost perfect | 0.233 | 0.030 |
-| qnote | 12 | 1.000 | almost perfect | 0.948 | 0.027 |
+| ahpra | 13 | 1.000 | almost perfect | 0.938 | 0.032 |
+| hallucination | 13 | 1.000 | almost perfect | 0.984 | 0.031 |
+| medication_terminology | 9 | 1.000 | almost perfect | 0.982 | 0.030 |
+| medicolegal | 25 | 0.961 | almost perfect | 0.965 | 0.036 |
+| omission | 26 | 0.870 | almost perfect | 0.985 | 0.033 |
+| pdqi9 | 11 | 1.000 | almost perfect | 0.160 | 0.030 |
+| qnote | 21 | 1.000 | almost perfect | 0.909 | 0.028 |
 
 ## Interpretation
 
@@ -36,8 +36,8 @@ statistics and the underlying score distribution before drawing conclusions.
 
 ## Coverage
 
-- 12 synthetic case packets
-- 60 blinded submissions
+- 20 synthetic case packets
+- 100 blinded submissions
 - Nurse + CDSS and model-candidate note sources
 - Standard, structured SOAP, safety-first, CDSS-informed, and checklist prompt
   strategies

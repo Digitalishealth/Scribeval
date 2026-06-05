@@ -4,8 +4,7 @@ This directory is the public, versioned corpus layer for Scribeval validation.
 It turns the protocol in `validation_pack/README.md` into concrete case packets
 that can be scored, reviewed, and re-run.
 
-The current corpus is a bootstrap subset. It contains twelve complete synthetic
-case packets and is designed to grow to the 20-case manifest in
+The current corpus contains all 20 complete synthetic case packets from
 `validation_pack/case_manifest.json`.
 
 ## Corpus Unit

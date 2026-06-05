@@ -162,7 +162,7 @@ For repository-publication status and the release smoke test, see
 The [`validation_pack/`](validation_pack/) directory contains a clinician-facing
 pilot protocol for testing Scribeval against independent human reviewers. It
 includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
-12-case bootstrap corpus of complete synthetic transcript/note packets, and example
+20-case synthetic corpus of complete transcript/note packets, and example
 calibration inputs/results for:
 
 ```bash
