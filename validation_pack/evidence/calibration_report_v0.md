@@ -16,12 +16,13 @@ scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 
 | Dimension | N | Weighted kappa | Kappa interpretation | ICC(2,1) | Mean absolute difference |
 |---|---:|---:|---|---:|---:|
-| ahpra | 3 | 1.000 | almost perfect | 0.937 | 0.033 |
-| hallucination | 4 | 1.000 | almost perfect | 0.993 | 0.025 |
-| medicolegal | 4 | 1.000 | almost perfect | 0.970 | 0.033 |
-| omission | 5 | 0.783 | substantial | 0.992 | 0.028 |
-| pdqi9 | 3 | 1.000 | almost perfect | 0.342 | 0.030 |
-| qnote | 4 | 1.000 | almost perfect | 0.969 | 0.022 |
+| ahpra | 5 | 1.000 | almost perfect | 0.908 | 0.032 |
+| hallucination | 6 | 1.000 | almost perfect | 0.993 | 0.023 |
+| medication_terminology | 3 | 1.000 | almost perfect | 0.987 | 0.030 |
+| medicolegal | 10 | 1.000 | almost perfect | 0.971 | 0.035 |
+| omission | 10 | 0.817 | almost perfect | 0.988 | 0.031 |
+| pdqi9 | 4 | 1.000 | almost perfect | 0.270 | 0.030 |
+| qnote | 8 | 1.000 | almost perfect | 0.916 | 0.026 |
 
 ## Interpretation
 
@@ -35,10 +36,10 @@ statistics and the underlying score distribution before drawing conclusions.
 
 ## Coverage
 
-- 4 synthetic case packets
-- 20 blinded submissions
+- 8 synthetic case packets
+- 40 blinded submissions
 - Nurse + CDSS and model-candidate note sources
 - Standard, structured SOAP, safety-first, CDSS-informed, and checklist prompt
   strategies
-- Omission, hallucination, medicolegal, AHPRA, PDQI-9, and QNOTE dimensions
-
+- Omission, hallucination, medication terminology, medicolegal, AHPRA, PDQI-9,
+  and QNOTE dimensions

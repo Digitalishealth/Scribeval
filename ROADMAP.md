@@ -59,7 +59,7 @@ change.
 ### Corpus expansion
 
 - [ ] 20+ full transcript/note synthetic cases across specialties (sample
-      runnable corpus current: 5; validation corpus current: 4; validation
+      runnable corpus current: 5; validation corpus current: 8; validation
       pilot manifest current: 20)
 - [ ] Multi-speaker cases with recorded audio alignment
 - [ ] Paediatric, palliative, remote/telehealth cases

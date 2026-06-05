@@ -84,8 +84,8 @@ def test_bootstrap_corpus_has_traceable_case_packets() -> None:
 
     assert manifest["benchmark_unit"] == "whole transcript -> final note quality score"
     assert manifest["target_case_count"] == 20
-    assert manifest["current_case_count"] == 4
-    assert len(manifest["case_files"]) == 4
+    assert manifest["current_case_count"] == 8
+    assert len(manifest["case_files"]) == 8
 
     specialties: set[str] = set()
     prompt_strategies: set[str] = set()
@@ -106,11 +106,22 @@ def test_bootstrap_corpus_has_traceable_case_packets() -> None:
             failure_modes.update(note["seeded_failure_modes"])
             assert note["note"]
 
-    assert specialties == {"general_practice", "paediatrics", "telehealth", "urgent_care"}
+    assert specialties == {
+        "aged_care",
+        "chronic_disease",
+        "general_practice",
+        "mental_health",
+        "paediatrics",
+        "palliative_care",
+        "telehealth",
+        "urgent_care",
+    }
     assert {"nurse_cdss", "model_candidate"} <= note_sources
     assert {"standard", "structured_soap", "safety_first", "cdss_informed"} <= prompt_strategies
     assert "clinically_significant_omission" in failure_modes
     assert "unsupported_hallucination" in failure_modes
+    assert "suicide_risk_documentation_gap" in failure_modes
+    assert "renal_medication_interaction" in failure_modes
 
 
 def test_evidence_pairs_reference_corpus_and_are_computable() -> None:
@@ -141,6 +152,7 @@ def test_evidence_pairs_reference_corpus_and_are_computable() -> None:
     assert {agreement.dimension for agreement in agreements} == {
         "ahpra",
         "hallucination",
+        "medication_terminology",
         "medicolegal",
         "omission",
         "pdqi9",
@@ -180,7 +192,7 @@ def test_reviewer_import_reproduces_evidence_pairs(tmp_path: Path) -> None:
         text=True,
     )
 
-    assert "Wrote 23 calibration pairs" in result.stdout
+    assert "Wrote 46 calibration pairs" in result.stdout
     assert json.loads(output.read_text()) == json.loads(
         (EVIDENCE / "calibration_pairs_v0.json").read_text()
     )
@@ -191,8 +203,8 @@ def test_frontend_exposes_validation_pilot_summary() -> None:
     pilot = demo_data["validation_pilot"]
 
     assert pilot["case_count"] == 20
-    assert pilot["corpus_case_packets"] == 4
+    assert pilot["corpus_case_packets"] == 8
     assert pilot["submissions_per_case"] == 5
-    assert pilot["evidence_pairs"] == 23
-    assert len(pilot["agreement"]) == 6
+    assert pilot["evidence_pairs"] == 46
+    assert len(pilot["agreement"]) == 7
     assert pilot["summary"]["median_weighted_kappa"] >= 0.70

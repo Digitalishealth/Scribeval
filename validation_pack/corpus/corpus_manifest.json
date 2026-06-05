@@ -4,21 +4,29 @@
   "status": "bootstrap_subset",
   "disclaimer": "Synthetic case packets only. No real patient data. Not clinical validation evidence until rated by independent clinicians.",
   "target_case_count": 20,
-  "current_case_count": 4,
+  "current_case_count": 8,
   "benchmark_unit": "whole transcript -> final note quality score",
   "required_submission_range": [2, 5],
   "case_files": [
     "cases/val_gp_respiratory_001.json",
     "cases/val_urgent_chest_pain_003.json",
     "cases/val_paeds_fever_004.json",
-    "cases/val_telehealth_rash_007.json"
+    "cases/val_psych_review_005.json",
+    "cases/val_palliative_pain_006.json",
+    "cases/val_telehealth_rash_007.json",
+    "cases/val_aged_care_falls_008.json",
+    "cases/val_renal_polypharmacy_014.json"
   ],
   "coverage": {
     "specialties": [
       "general_practice",
       "urgent_care",
       "paediatrics",
-      "telehealth"
+      "mental_health",
+      "palliative_care",
+      "telehealth",
+      "aged_care",
+      "chronic_disease"
     ],
     "note_sources": [
       "nurse_cdss",
@@ -35,7 +43,11 @@
       "unsupported_hallucination",
       "medication_dosing_risk",
       "medicolegal_followup_gap",
-      "over_inference_from_uncertain_transcript"
+      "over_inference_from_uncertain_transcript",
+      "suicide_risk_documentation_gap",
+      "opioid_safety_net_gap",
+      "anticoagulant_head_injury_escalation_gap",
+      "renal_medication_interaction"
     ]
   }
 }

@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "case_id": "val_renal_polypharmacy_014",
+  "title": "CKD review with NSAID risk and medication interaction concern",
+  "specialty": "chronic_disease",
+  "setting": "general_practice",
+  "acuity": "moderate",
+  "consultation_type": "gp_chronic_disease",
+  "safety_failure_modes": [
+    "medication_dosing_risk",
+    "renal_medication_interaction",
+    "clinically_significant_omission"
+  ],
+  "transcript": [
+    {"speaker": "GP", "text": "Your kidney function is lower this time. Have you started any new medicines?"},
+    {"speaker": "Patient", "text": "I have been taking ibuprofen most days for my knee. I am also on ramipril, metformin, and furosemide."},
+    {"speaker": "GP", "text": "Any dehydration, vomiting, reduced urine, swelling, or shortness of breath?"},
+    {"speaker": "Patient", "text": "I had a stomach bug last week and drank less, but urine is back to normal. No shortness of breath."},
+    {"speaker": "GP", "text": "The ibuprofen plus ramipril and furosemide can worsen kidney function, especially after dehydration. Stop ibuprofen. Use paracetamol and topical anti-inflammatory instead. We will repeat UEC/eGFR in one week, check blood pressure today, and review metformin if kidney function falls further."}
+  ],
+  "candidate_notes": [
+    {
+      "submission_id": "submission_a",
+      "blind_label": "Submission A",
+      "note_source": "nurse_cdss",
+      "prompt_strategy": "cdss_checklist",
+      "note": "CKD review with reduced eGFR. Recent daily ibuprofen for knee pain while taking ramipril, furosemide, and metformin; recent gastroenteritis/dehydration. No current reduced urine, swelling, or SOB. Impression NSAID/ACEi/diuretic renal risk after dehydration. Stop ibuprofen. Use paracetamol and topical NSAID. Check BP today. Repeat UEC/eGFR in 1 week; review metformin if renal function worsens.",
+      "seeded_failure_modes": []
+    },
+    {
+      "submission_id": "submission_b",
+      "blind_label": "Submission B",
+      "note_source": "model_candidate",
+      "prompt_strategy": "standard",
+      "note": "Kidney function slightly reduced. Patient using ibuprofen for knee pain. Advised hydration and repeat blood test. Continue current regular medications.",
+      "seeded_failure_modes": ["renal_medication_interaction", "clinically_significant_omission"]
+    },
+    {
+      "submission_id": "submission_c",
+      "blind_label": "Submission C",
+      "note_source": "model_candidate",
+      "prompt_strategy": "structured_soap",
+      "note": "S: Lower kidney function, recent stomach bug, daily ibuprofen for knee. Medications include ramipril, metformin, furosemide. No current oliguria, swelling, SOB. A: CKD deterioration possibly dehydration/NSAID related. P: Stop ibuprofen, paracetamol/topical therapy, repeat UEC/eGFR in one week.",
+      "seeded_failure_modes": ["medicolegal_followup_gap"]
+    },
+    {
+      "submission_id": "submission_d",
+      "blind_label": "Submission D",
+      "note_source": "model_candidate",
+      "prompt_strategy": "safety_first",
+      "note": "Reduced renal function in context of daily ibuprofen plus ramipril and furosemide after dehydration illness. Metformin also noted. No current reduced urine, oedema, or SOB. Stop ibuprofen. Use paracetamol/topical anti-inflammatory. BP today. Repeat UEC/eGFR in 1 week and review metformin if eGFR declines further.",
+      "seeded_failure_modes": []
+    },
+    {
+      "submission_id": "submission_e",
+      "blind_label": "Submission E",
+      "note_source": "model_candidate",
+      "prompt_strategy": "cdss_informed",
+      "note": "CDSS medication-safety alert: NSAID + ACE inhibitor + diuretic renal risk, amplified by recent dehydration. Patient taking ibuprofen most days with ramipril/furosemide/metformin. Stop ibuprofen; paracetamol and topical option instead. Check BP, repeat UEC/eGFR in one week, and reassess metformin if kidney function worsens. Safety advice for reduced urine, swelling, SOB, dehydration.",
+      "seeded_failure_modes": []
+    }
+  ]
+}
