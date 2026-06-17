@@ -65,5 +65,6 @@
   "validation_claim_readiness_command": "python scripts/assess_validation_claim_readiness.py --evidence-manifest <evidence_manifest.json> --output-json <validation_claim_readiness.json> --output-md <validation_claim_readiness.md> --fail-on-not-ready",
   "evidence_import_command": "python scripts/import_validation_ratings.py --worksheet <filled_worksheet.csv> --judge-scores <scribeval_scores.json> --reviewer-registry <reviewer_registry.csv> --require-qualified-reviewers --output <calibration_pairs.json>",
   "evidence_bundle_command": "python scripts/build_validation_evidence_bundle.py --run-id <review_run_id> --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --judge-scores <scribeval_scores.json> --output-dir validation_pack/evidence_runs",
+  "evidence_run_index_command": "python scripts/index_validation_evidence_runs.py --evidence-runs validation_pack/evidence_runs --output-json validation_pack/evidence_runs/index.json --output-md validation_pack/evidence_runs/index.md",
   "clinical_validation_claim": "Do not claim independent clinical validation until the synthetic worksheet is replaced by qualified clinician ratings imported with reviewer provenance."
 }

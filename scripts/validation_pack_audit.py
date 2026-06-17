@@ -349,6 +349,11 @@ def audit_clinician_review_protocol() -> None:
         in protocol.get("validation_claim_readiness_command", ""),
         "clinician review protocol missing validation claim readiness command",
     )
+    require(
+        "index_validation_evidence_runs.py"
+        in protocol.get("evidence_run_index_command", ""),
+        "clinician review protocol missing evidence run index command",
+    )
     thresholds = protocol.get("validation_claim_thresholds", {})
     require(
         thresholds.get("minimum_case_count") == 20,

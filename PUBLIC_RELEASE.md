@@ -43,6 +43,8 @@ transcripts.
       agreement, stratified summary, manifest, and source-hash artifacts.
 - [x] Evidence-run audit verifies publishable bundles and rejects raw clinician
       CSV inputs.
+- [x] Evidence-run index summarizes bundle coverage, claim readiness, and
+      agreement minima for public review.
 - [x] Stratified validation evidence summary included across specialty, note
       source, prompt strategy, and safety-critical failure mode.
 - [x] Validation corpus audit verifies case packets and evidence references

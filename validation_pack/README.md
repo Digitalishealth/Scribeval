@@ -167,7 +167,16 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-13. Assess whether the bundle is ready for validation claims:
+13. Index generated evidence runs for public review:
+
+```bash
+python scripts/index_validation_evidence_runs.py \
+  --evidence-runs validation_pack/evidence_runs \
+  --output-json validation_pack/evidence_runs/index.json \
+  --output-md validation_pack/evidence_runs/index.md
+```
+
+14. Assess whether the bundle is ready for validation claims:
 
 ```bash
 python scripts/assess_validation_claim_readiness.py \
@@ -177,7 +186,7 @@ python scripts/assess_validation_claim_readiness.py \
   --fail-on-not-ready
 ```
 
-14. Run:
+15. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json

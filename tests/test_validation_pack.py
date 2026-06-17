@@ -196,6 +196,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert "assess_validation_claim_readiness.py" in protocol[
         "validation_claim_readiness_command"
     ]
+    assert "index_validation_evidence_runs.py" in protocol["evidence_run_index_command"]
     assert protocol["validation_claim_thresholds"]["minimum_case_count"] == 20
     assert protocol["validation_claim_thresholds"]["minimum_submission_count"] == 100
     requirements = protocol["minimum_independent_review_requirements"]
@@ -952,6 +953,37 @@ def test_evidence_run_audit_accepts_empty_directory(tmp_path: Path) -> None:
     assert "Calibration pairs: 0" in result.stdout
 
 
+def test_evidence_run_indexer_accepts_empty_directory(tmp_path: Path) -> None:
+    evidence_runs = tmp_path / "evidence_runs"
+    output_json = tmp_path / "index.json"
+    output_md = tmp_path / "index.md"
+    evidence_runs.mkdir()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/index_validation_evidence_runs.py",
+            "--evidence-runs",
+            str(evidence_runs),
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    index = json.loads(output_json.read_text())
+    assert "Indexed validation evidence runs: 0" in result.stdout
+    assert index["run_count"] == 0
+    assert index["claim_ready_run_count"] == 0
+    assert index["runs"] == []
+    assert "Validation Evidence Run Index" in output_md.read_text()
+
+
 def test_evidence_run_audit_accepts_generated_bundle(tmp_path: Path) -> None:
     worksheet = tmp_path / "complete_worksheet.csv"
     registry = tmp_path / "reviewer_registry.csv"
@@ -997,6 +1029,74 @@ def test_evidence_run_audit_accepts_generated_bundle(tmp_path: Path) -> None:
     assert "Evidence run audit passed." in result.stdout
     assert "Bundles: 1" in result.stdout
     assert "Calibration pairs: 1200" in result.stdout
+
+
+def test_evidence_run_indexer_summarizes_generated_bundle(tmp_path: Path) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output_dir = tmp_path / "evidence_runs"
+    output_json = tmp_path / "index.json"
+    output_md = tmp_path / "index.md"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_validation_evidence_bundle.py",
+            "--run-id",
+            "qualified_fixture_v1",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/index_validation_evidence_runs.py",
+            "--evidence-runs",
+            str(output_dir),
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    index = json.loads(output_json.read_text())
+    run = index["runs"][0]
+    assert "Indexed validation evidence runs: 1" in result.stdout
+    assert index["run_count"] == 1
+    assert index["claim_ready_run_count"] == 1
+    assert run["evidence_id"] == "qualified_fixture_v1"
+    assert run["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert run["is_ready_for_validation_claim"] is True
+    assert run["failed_check_count"] == 0
+    assert run["case_count"] == 20
+    assert run["submission_count"] == 100
+    assert run["individual_calibration_pair_count"] == 1200
+    assert run["consensus_calibration_pair_count"] == 600
+    assert run["reviewer_reliability_pair_count"] == 600
+    assert run["adjudication_required_count"] == 0
+    assert run["min_reviewer_reliability_weighted_kappa"] == 1.0
+    assert run["min_consensus_weighted_kappa"] == 1.0
+    assert "qualified_fixture_v1" in output_md.read_text()
 
 
 def test_evidence_run_audit_rejects_raw_clinician_csv(tmp_path: Path) -> None:

@@ -92,6 +92,16 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
+Publish a compact index of generated evidence runs so readers can see coverage,
+claim-readiness status, and agreement minima across bundles:
+
+```bash
+python scripts/index_validation_evidence_runs.py \
+  --evidence-runs validation_pack/evidence_runs \
+  --output-json validation_pack/evidence_runs/index.json \
+  --output-md validation_pack/evidence_runs/index.md
+```
+
 ## Files
 
 | File | Purpose |

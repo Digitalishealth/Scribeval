@@ -198,6 +198,10 @@ scribeval calibrate validation_pack/results/example_calibration_pairs.json
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
 python scripts/validation_pack_audit.py
 python scripts/audit_validation_evidence_runs.py
+python scripts/index_validation_evidence_runs.py \
+    --evidence-runs validation_pack/evidence_runs \
+    --output-json validation_pack/evidence_runs/index.json \
+    --output-md validation_pack/evidence_runs/index.md
 ```
 
 The pack is intended to produce evidence about agreement with clinicians
@@ -224,7 +228,9 @@ thresholds before treating the bundle as evidence for validation claims. For a
 completed review run, `scripts/build_validation_evidence_bundle.py` orchestrates
 these steps into one versioned bundle with source hashes.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
-publication and rejects raw clinician CSV inputs.
+publication and rejects raw clinician CSV inputs. Use
+`scripts/index_validation_evidence_runs.py` to publish a compact run index with
+coverage, claim-readiness status, and agreement minima across evidence bundles.
 
 ## Choosing a Scribe Product
 
