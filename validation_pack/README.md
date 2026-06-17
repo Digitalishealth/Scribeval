@@ -122,7 +122,20 @@ python scripts/build_consensus_validation_ratings.py \
    severity label. Rows with score or severity disagreement are flagged for
    adjudication before strong validation claims are made.
 
-12. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
+12. Build focused adjudication packets if consensus rows are disputed:
+
+```bash
+python scripts/build_adjudication_packets.py \
+  --consensus-pairs <consensus_calibration_pairs.json> \
+  --output-dir <adjudication_packets_dir>
+```
+
+   The adjudication worksheet and packets show only blinded submission labels,
+   disputed dimensions, reviewer score ranges, and reviewer severity values.
+   They omit reviewer IDs, source labels, prompt strategies, and seeded failure
+   metadata.
+
+13. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -167,7 +180,7 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-13. Index generated evidence runs for public review:
+14. Index generated evidence runs for public review:
 
 ```bash
 python scripts/index_validation_evidence_runs.py \
@@ -176,7 +189,7 @@ python scripts/index_validation_evidence_runs.py \
   --output-md validation_pack/evidence_runs/index.md
 ```
 
-14. Assess whether the bundle is ready for validation claims:
+15. Assess whether the bundle is ready for validation claims:
 
 ```bash
 python scripts/assess_validation_claim_readiness.py \
@@ -186,7 +199,7 @@ python scripts/assess_validation_claim_readiness.py \
   --fail-on-not-ready
 ```
 
-15. Run:
+16. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json

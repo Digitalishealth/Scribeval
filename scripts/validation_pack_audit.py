@@ -345,6 +345,10 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol missing consensus rating command",
     )
     require(
+        "build_adjudication_packets.py" in protocol.get("adjudication_packet_command", ""),
+        "clinician review protocol missing adjudication packet command",
+    )
+    require(
         "assess_validation_claim_readiness.py"
         in protocol.get("validation_claim_readiness_command", ""),
         "clinician review protocol missing validation claim readiness command",

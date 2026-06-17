@@ -53,6 +53,9 @@ python scripts/build_consensus_validation_ratings.py \
   --output <consensus_calibration_pairs.json> \
   --output-summary-json <consensus_summary.json> \
   --output-summary-md <consensus_summary.md>
+python scripts/build_adjudication_packets.py \
+  --consensus-pairs <consensus_calibration_pairs.json> \
+  --output-dir <adjudication_packets_dir>
 python scripts/assess_validation_claim_readiness.py \
   --evidence-manifest <evidence_manifest.json> \
   --output-json <validation_claim_readiness.json> \

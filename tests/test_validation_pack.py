@@ -193,6 +193,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
     assert "build_consensus_validation_ratings.py" in protocol["consensus_rating_command"]
+    assert "build_adjudication_packets.py" in protocol["adjudication_packet_command"]
     assert "assess_validation_claim_readiness.py" in protocol[
         "validation_claim_readiness_command"
     ]
@@ -871,6 +872,132 @@ def test_consensus_validation_ratings_build_importable_pairs(
     assert {agreement.dimension for agreement in compute_agreement(pairs_for_agreement)} == set(
         REQUIRED_CLINICIAN_REVIEW_DIMENSIONS
     )
+
+
+def test_adjudication_packet_builder_accepts_clean_consensus_pairs(
+    tmp_path: Path,
+) -> None:
+    consensus_pairs = tmp_path / "consensus_pairs.json"
+    output_dir = tmp_path / "adjudication_packets"
+    consensus_pairs.write_text(
+        json.dumps(
+            [
+                {
+                    "case_id": "val_gp_respiratory_001",
+                    "submission_id": "submission_a",
+                    "blind_label": "Submission A",
+                    "dimension": "omission",
+                    "reviewer_count": 2,
+                    "reviewer_score_min": 0.9,
+                    "reviewer_score_max": 0.9,
+                    "reviewer_score_range": 0.0,
+                    "reviewer_severity_values": ["low"],
+                    "reviewer_severity_gap": 0,
+                    "adjudication_required": False,
+                }
+            ],
+            indent=2,
+        )
+        + "\n"
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_adjudication_packets.py",
+            "--consensus-pairs",
+            str(consensus_pairs),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    manifest = json.loads((output_dir / "adjudication_manifest.json").read_text())
+    with (output_dir / "adjudication_worksheet.csv").open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    assert "Adjudication items: 0" in result.stdout
+    assert manifest["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert manifest["adjudication_item_count"] == 0
+    assert manifest["packet_files"] == []
+    assert rows == []
+    assert "Adjudication Packets" in (output_dir / "README.md").read_text()
+
+
+def test_adjudication_packet_builder_writes_blinded_dispute_materials(
+    tmp_path: Path,
+) -> None:
+    consensus_pairs = tmp_path / "consensus_pairs.json"
+    output_dir = tmp_path / "adjudication_packets"
+    consensus_pairs.write_text(
+        json.dumps(
+            [
+                {
+                    "case_id": "val_gp_respiratory_001",
+                    "submission_id": "submission_b",
+                    "blind_label": "Submission B",
+                    "dimension": "medicolegal",
+                    "reviewer_count": 2,
+                    "reviewer_ids": [
+                        "reviewer_clinician_001",
+                        "reviewer_clinician_002",
+                    ],
+                    "reviewer_score_min": 0.35,
+                    "reviewer_score_max": 0.75,
+                    "reviewer_score_range": 0.4,
+                    "reviewer_severity_values": ["low", "moderate"],
+                    "reviewer_severity_gap": 1,
+                    "adjudication_required": True,
+                }
+            ],
+            indent=2,
+        )
+        + "\n"
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_adjudication_packets.py",
+            "--consensus-pairs",
+            str(consensus_pairs),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    manifest = json.loads((output_dir / "adjudication_manifest.json").read_text())
+    with (output_dir / "adjudication_worksheet.csv").open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    packet_text = (output_dir / "cases" / "val_gp_respiratory_001.md").read_text()
+    lower_packet_text = packet_text.lower()
+    worksheet_text = (output_dir / "adjudication_worksheet.csv").read_text()
+
+    assert "Adjudication items: 1" in result.stdout
+    assert manifest["adjudication_item_count"] == 1
+    assert manifest["case_count"] == 1
+    assert manifest["submission_count"] == 1
+    assert manifest["dimensions"] == ["medicolegal"]
+    assert manifest["packet_files"] == ["cases/val_gp_respiratory_001.md"]
+    assert rows[0]["case_id"] == "val_gp_respiratory_001"
+    assert rows[0]["blinded_submission"] == "Submission B"
+    assert rows[0]["dimension"] == "medicolegal"
+    assert rows[0]["reviewer_severity_values"] == "low;moderate"
+    assert rows[0]["adjudicator_score"] == ""
+    assert "Submission B" in packet_text
+    assert "Six-day cough and sore throat" in packet_text
+    assert "medicolegal" in packet_text
+    assert "reviewer_clinician_001" not in worksheet_text
+    assert "reviewer_clinician_001" not in packet_text
+    for token in FORBIDDEN_REVIEWER_PACKET_TOKENS:
+        assert token not in lower_packet_text
 
 
 def test_validation_claim_readiness_accepts_generated_bundle(tmp_path: Path) -> None:

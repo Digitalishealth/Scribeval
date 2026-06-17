@@ -37,6 +37,8 @@ transcripts.
       before judge-vs-clinician calibration claims.
 - [x] Consensus clinician rating builder produces judge-vs-consensus pairs and
       adjudication flags for reviewer disagreement.
+- [x] Adjudication packet builder creates blinded dispute worksheets without
+      reviewer IDs or candidate source metadata.
 - [x] Validation-claim readiness assessment applies protocol thresholds before
       treating a completed bundle as validation evidence.
 - [x] Versioned evidence bundle builder produces readiness, calibration,
