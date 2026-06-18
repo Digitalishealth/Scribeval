@@ -349,6 +349,11 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol missing adjudication packet command",
     )
     require(
+        "import_adjudication_decisions.py"
+        in protocol.get("adjudication_import_command", ""),
+        "clinician review protocol missing adjudication import command",
+    )
+    require(
         "assess_validation_claim_readiness.py"
         in protocol.get("validation_claim_readiness_command", ""),
         "clinician review protocol missing validation claim readiness command",

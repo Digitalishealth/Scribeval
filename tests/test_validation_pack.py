@@ -114,6 +114,38 @@ def write_qualified_reviewer_registry(path: Path) -> None:
         )
 
 
+def write_qualified_adjudicator_registry(path: Path) -> None:
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "reviewer_id",
+                "profession",
+                "country",
+                "registration_status",
+                "years_post_registration",
+                "specialty",
+                "review_role",
+                "conflict_of_interest",
+                "training_completed",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "reviewer_id": "reviewer_adjudicator_001",
+                "profession": "general_practitioner",
+                "country": "AU",
+                "registration_status": "current",
+                "years_post_registration": "15",
+                "specialty": "general_practice",
+                "review_role": "adjudicator",
+                "conflict_of_interest": "none",
+                "training_completed": "yes",
+            }
+        )
+
+
 def write_complete_review_worksheet_and_judge_scores(
     worksheet: Path,
     judge_scores: Path,
@@ -194,6 +226,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
     assert "build_consensus_validation_ratings.py" in protocol["consensus_rating_command"]
     assert "build_adjudication_packets.py" in protocol["adjudication_packet_command"]
+    assert "import_adjudication_decisions.py" in protocol["adjudication_import_command"]
     assert "assess_validation_claim_readiness.py" in protocol[
         "validation_claim_readiness_command"
     ]
@@ -998,6 +1031,182 @@ def test_adjudication_packet_builder_writes_blinded_dispute_materials(
     assert "reviewer_clinician_001" not in packet_text
     for token in FORBIDDEN_REVIEWER_PACKET_TOKENS:
         assert token not in lower_packet_text
+
+
+def test_adjudication_decision_importer_resolves_disputed_consensus_pair(
+    tmp_path: Path,
+) -> None:
+    consensus_pairs = tmp_path / "consensus_pairs.json"
+    adjudication_worksheet = tmp_path / "adjudication_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    output = tmp_path / "adjudicated_consensus_pairs.json"
+    output_summary_json = tmp_path / "adjudicated_consensus_summary.json"
+    output_summary_md = tmp_path / "adjudicated_consensus_summary.md"
+    write_qualified_adjudicator_registry(registry)
+    consensus_pairs.write_text(
+        json.dumps(
+            [
+                {
+                    "case_id": "val_gp_respiratory_001",
+                    "submission_id": "submission_b",
+                    "blind_label": "Submission B",
+                    "dimension": "medicolegal",
+                    "judge_score": 0.6,
+                    "human_score": 0.55,
+                    "judge_severity": "moderate",
+                    "human_severity": "moderate",
+                    "consensus_method": "mean_score_and_consensus_severity",
+                    "severity_consensus_method": "conservative_tie",
+                    "reviewer_count": 2,
+                    "reviewer_ids": [
+                        "reviewer_clinician_001",
+                        "reviewer_clinician_002",
+                    ],
+                    "reviewer_score_min": 0.35,
+                    "reviewer_score_max": 0.75,
+                    "reviewer_score_range": 0.4,
+                    "reviewer_severity_values": ["low", "moderate"],
+                    "reviewer_severity_gap": 1,
+                    "adjudication_required": True,
+                }
+            ],
+            indent=2,
+        )
+        + "\n"
+    )
+    with adjudication_worksheet.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "case_id",
+                "blinded_submission",
+                "dimension",
+                "adjudicator_score",
+                "adjudicator_severity",
+                "adjudication_decision",
+                "adjudicator_comments",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "case_id": "val_gp_respiratory_001",
+                "blinded_submission": "Submission B",
+                "dimension": "medicolegal",
+                "adjudicator_score": "0.72",
+                "adjudicator_severity": "low",
+                "adjudication_decision": "adjudicator_override",
+                "adjudicator_comments": "Resolved after transcript review.",
+            }
+        )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/import_adjudication_decisions.py",
+            "--consensus-pairs",
+            str(consensus_pairs),
+            "--adjudication-worksheet",
+            str(adjudication_worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--adjudicator-id",
+            "reviewer_adjudicator_001",
+            "--require-qualified-adjudicator",
+            "--output",
+            str(output),
+            "--output-summary-json",
+            str(output_summary_json),
+            "--output-summary-md",
+            str(output_summary_md),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    pairs = json.loads(output.read_text())
+    summary = json.loads(output_summary_json.read_text())
+    assert "Resolved adjudication decisions: 1" in result.stdout
+    assert pairs[0]["human_score"] == 0.72
+    assert pairs[0]["human_severity"] == "low"
+    assert pairs[0]["pre_adjudication_human_score"] == 0.55
+    assert pairs[0]["pre_adjudication_human_severity"] == "moderate"
+    assert pairs[0]["consensus_method"] == "adjudicator_resolved_consensus"
+    assert pairs[0]["adjudication_required"] is False
+    assert pairs[0]["adjudicated"] is True
+    assert pairs[0]["adjudicator_id"] == "reviewer_adjudicator_001"
+    assert pairs[0]["adjudicator_comments_present"] is True
+    assert summary["coverage"]["adjudication_required_count"] == 0
+    assert "Judge vs Consensus Agreement" in output_summary_md.read_text()
+
+
+def test_adjudication_decision_importer_rejects_missing_disputed_decision(
+    tmp_path: Path,
+) -> None:
+    consensus_pairs = tmp_path / "consensus_pairs.json"
+    adjudication_worksheet = tmp_path / "adjudication_worksheet.csv"
+    output = tmp_path / "adjudicated_consensus_pairs.json"
+    output_summary_json = tmp_path / "adjudicated_consensus_summary.json"
+    output_summary_md = tmp_path / "adjudicated_consensus_summary.md"
+    consensus_pairs.write_text(
+        json.dumps(
+            [
+                {
+                    "case_id": "val_gp_respiratory_001",
+                    "submission_id": "submission_b",
+                    "blind_label": "Submission B",
+                    "dimension": "medicolegal",
+                    "judge_score": 0.6,
+                    "human_score": 0.55,
+                    "judge_severity": "moderate",
+                    "human_severity": "moderate",
+                    "reviewer_count": 2,
+                    "adjudication_required": True,
+                }
+            ],
+            indent=2,
+        )
+        + "\n"
+    )
+    with adjudication_worksheet.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "case_id",
+                "blinded_submission",
+                "dimension",
+                "adjudicator_score",
+                "adjudicator_severity",
+            ],
+        )
+        writer.writeheader()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/import_adjudication_decisions.py",
+            "--consensus-pairs",
+            str(consensus_pairs),
+            "--adjudication-worksheet",
+            str(adjudication_worksheet),
+            "--output",
+            str(output),
+            "--output-summary-json",
+            str(output_summary_json),
+            "--output-summary-md",
+            str(output_summary_md),
+        ],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 1
+    assert "Missing adjudication decision" in result.stderr
+    assert not output.exists()
 
 
 def test_validation_claim_readiness_accepts_generated_bundle(tmp_path: Path) -> None:

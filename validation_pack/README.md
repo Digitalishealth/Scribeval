@@ -135,7 +135,24 @@ python scripts/build_adjudication_packets.py \
    They omit reviewer IDs, source labels, prompt strategies, and seeded failure
    metadata.
 
-13. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
+13. Import adjudicator decisions back into consensus evidence:
+
+```bash
+python scripts/import_adjudication_decisions.py \
+  --consensus-pairs <consensus_calibration_pairs.json> \
+  --adjudication-worksheet <filled_adjudication_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --adjudicator-id <adjudicator_reviewer_id> \
+  --require-qualified-adjudicator \
+  --output <adjudicated_consensus_calibration_pairs.json> \
+  --output-summary-json <adjudicated_consensus_summary.json> \
+  --output-summary-md <adjudicated_consensus_summary.md>
+```
+
+   This resolves disputed consensus rows only after a qualified adjudicator has
+   supplied a complete score and severity decision.
+
+14. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -180,7 +197,7 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-14. Index generated evidence runs for public review:
+15. Index generated evidence runs for public review:
 
 ```bash
 python scripts/index_validation_evidence_runs.py \
@@ -189,7 +206,7 @@ python scripts/index_validation_evidence_runs.py \
   --output-md validation_pack/evidence_runs/index.md
 ```
 
-15. Assess whether the bundle is ready for validation claims:
+16. Assess whether the bundle is ready for validation claims:
 
 ```bash
 python scripts/assess_validation_claim_readiness.py \
@@ -199,7 +216,7 @@ python scripts/assess_validation_claim_readiness.py \
   --fail-on-not-ready
 ```
 
-16. Run:
+17. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json

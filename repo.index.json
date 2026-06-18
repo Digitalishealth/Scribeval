@@ -23,6 +23,7 @@
       "scripts/summarize_reviewer_reliability.py",
       "scripts/build_consensus_validation_ratings.py",
       "scripts/build_adjudication_packets.py",
+      "scripts/import_adjudication_decisions.py",
       "scripts/assess_validation_claim_readiness.py",
       "scripts/audit_validation_evidence_runs.py",
       "scripts/index_validation_evidence_runs.py",

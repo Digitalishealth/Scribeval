@@ -39,6 +39,8 @@ transcripts.
       adjudication flags for reviewer disagreement.
 - [x] Adjudication packet builder creates blinded dispute worksheets without
       reviewer IDs or candidate source metadata.
+- [x] Adjudication decision importer resolves disputed consensus rows with
+      qualified adjudicator provenance.
 - [x] Validation-claim readiness assessment applies protocol thresholds before
       treating a completed bundle as validation evidence.
 - [x] Versioned evidence bundle builder produces readiness, calibration,

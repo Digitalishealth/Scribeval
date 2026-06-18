@@ -56,6 +56,15 @@ python scripts/build_consensus_validation_ratings.py \
 python scripts/build_adjudication_packets.py \
   --consensus-pairs <consensus_calibration_pairs.json> \
   --output-dir <adjudication_packets_dir>
+python scripts/import_adjudication_decisions.py \
+  --consensus-pairs <consensus_calibration_pairs.json> \
+  --adjudication-worksheet <filled_adjudication_worksheet.csv> \
+  --reviewer-registry <reviewer_registry.csv> \
+  --adjudicator-id <adjudicator_reviewer_id> \
+  --require-qualified-adjudicator \
+  --output <adjudicated_consensus_calibration_pairs.json> \
+  --output-summary-json <adjudicated_consensus_summary.json> \
+  --output-summary-md <adjudicated_consensus_summary.md>
 python scripts/assess_validation_claim_readiness.py \
   --evidence-manifest <evidence_manifest.json> \
   --output-json <validation_claim_readiness.json> \
