@@ -416,6 +416,10 @@ def audit_clinician_review_protocol() -> None:
         in protocol.get("evidence_bundle_command", ""),
         "clinician review protocol bundle command missing adjudicated consensus input",
     )
+    require(
+        "--reviewer-assignments-dir" in protocol.get("evidence_bundle_command", ""),
+        "clinician review protocol bundle command missing reviewer assignments input",
+    )
     thresholds = protocol.get("validation_claim_thresholds", {})
     require(
         thresholds.get("minimum_case_count") == 20,

@@ -814,9 +814,24 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     worksheet = tmp_path / "complete_worksheet.csv"
     registry = tmp_path / "reviewer_registry.csv"
     judge_scores = tmp_path / "judge_scores.json"
+    assignments_dir = tmp_path / "reviewer_assignments"
     output_dir = tmp_path / "evidence_runs"
     write_qualified_reviewer_registry(registry)
     write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_reviewer_assignments.py",
+            "--reviewer-registry",
+            str(registry),
+            "--output-dir",
+            str(assignments_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
     result = subprocess.run(
         [
@@ -830,6 +845,8 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
             str(registry),
             "--judge-scores",
             str(judge_scores),
+            "--reviewer-assignments-dir",
+            str(assignments_dir),
             "--output-dir",
             str(output_dir),
         ],
@@ -866,10 +883,12 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["reviewer_reliability_report"] == "reviewer_reliability.md"
     assert manifest["validation_claim_readiness"] == "validation_claim_readiness.json"
     assert manifest["validation_claim_readiness_report"] == "validation_claim_readiness.md"
+    assert manifest["reviewer_assignments_manifest_source"] == "assignment_manifest.json"
     assert set(manifest["source_hashes"]) == {
         "corpus_manifest_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
+        "reviewer_assignments_manifest_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
     }
@@ -882,6 +901,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_run_status["coverage"]["judge_score_count"] == 700
     assert review_run_status["coverage"]["raw_judge_score_row_count"] == 600
     assert review_run_status["coverage"]["required_judge_score_count"] == 700
+    assert review_run_status["inputs"]["assignments"]["provided"] is True
+    assert review_run_status["inputs"]["assignments"]["ready"] is True
+    assert review_run_status["inputs"]["assignments"]["assignment_count"] == 200
     assert len(pairs) == 1400
     assert len(consensus_pairs) == 700
     assert all(not pair["adjudication_required"] for pair in consensus_pairs)
@@ -1567,9 +1589,24 @@ def test_evidence_run_audit_accepts_generated_bundle(tmp_path: Path) -> None:
     worksheet = tmp_path / "complete_worksheet.csv"
     registry = tmp_path / "reviewer_registry.csv"
     judge_scores = tmp_path / "judge_scores.json"
+    assignments_dir = tmp_path / "reviewer_assignments"
     output_dir = tmp_path / "evidence_runs"
     write_qualified_reviewer_registry(registry)
     write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_reviewer_assignments.py",
+            "--reviewer-registry",
+            str(registry),
+            "--output-dir",
+            str(assignments_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
     subprocess.run(
         [
@@ -1583,6 +1620,8 @@ def test_evidence_run_audit_accepts_generated_bundle(tmp_path: Path) -> None:
             str(registry),
             "--judge-scores",
             str(judge_scores),
+            "--reviewer-assignments-dir",
+            str(assignments_dir),
             "--output-dir",
             str(output_dir),
         ],
@@ -1725,6 +1764,55 @@ def test_evidence_run_audit_rejects_raw_clinician_csv(tmp_path: Path) -> None:
 
     assert result.returncode == 1
     assert "raw clinician CSV input" in result.stderr
+
+
+def test_evidence_run_audit_rejects_raw_assignment_manifest(tmp_path: Path) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    output_dir = tmp_path / "evidence_runs"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_validation_evidence_bundle.py",
+            "--run-id",
+            "qualified_fixture_v1",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    (output_dir / "qualified_fixture_v1" / "assignment_manifest.json").write_text(
+        json.dumps({"reviewer_ids": ["reviewer_clinician_001"]}) + "\n"
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/audit_validation_evidence_runs.py",
+            "--evidence-runs",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 1
+    assert "raw reviewer assignment file" in result.stderr
 
 
 def test_stratified_evidence_summary_reproduces_committed_artifacts(tmp_path: Path) -> None:

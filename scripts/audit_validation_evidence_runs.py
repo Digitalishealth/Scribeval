@@ -94,6 +94,11 @@ def audit_no_raw_clinician_inputs(bundle_dir: Path) -> None:
             and "reviewer_registry" not in lower_name,
             f"{bundle_dir.name} contains raw reviewer input file: {path.name}",
         )
+        require(
+            "assignment_manifest" not in lower_name
+            and "reviewer_assignments" not in lower_name,
+            f"{bundle_dir.name} contains raw reviewer assignment file: {path.name}",
+        )
 
 
 def audit_source_hashes(bundle_name: str, manifest: dict[str, Any]) -> None:
@@ -106,6 +111,13 @@ def audit_source_hashes(bundle_name: str, manifest: dict[str, Any]) -> None:
             isinstance(manifest.get("adjudicated_consensus_pairs_source"), str)
             and manifest.get("adjudicated_consensus_pairs_source"),
             f"{bundle_name} missing adjudicated_consensus_pairs_source",
+        )
+    if "reviewer_assignments_manifest_source" in manifest:
+        expected_hashes.add("reviewer_assignments_manifest_sha256")
+        require(
+            isinstance(manifest.get("reviewer_assignments_manifest_source"), str)
+            and manifest.get("reviewer_assignments_manifest_source"),
+            f"{bundle_name} missing reviewer_assignments_manifest_source",
         )
     require(
         set(source_hashes) == expected_hashes,
@@ -226,6 +238,28 @@ def audit_review_run_status(
         readiness.get("ready_for_evidence_bundle") is True,
         f"{bundle_name} review run status is not ready for evidence bundle",
     )
+    assignments = status.get("inputs", {}).get("assignments", {})
+    if "reviewer_assignments_manifest_source" in manifest:
+        required_reviewers = status.get("requirements", {}).get(
+            "reviewers_per_case_submission"
+        )
+        require(
+            isinstance(required_reviewers, int) and required_reviewers > 0,
+            f"{bundle_name} review run status missing reviewer assignment requirement",
+        )
+        require(
+            assignments.get("provided") is True,
+            f"{bundle_name} review run status missing assignment provenance",
+        )
+        require(
+            assignments.get("ready") is True,
+            f"{bundle_name} reviewer assignments are not ready",
+        )
+        require(
+            assignments.get("assignment_count")
+            == coverage.get("case_submission_count") * required_reviewers,
+            f"{bundle_name} reviewer assignment count drift",
+        )
     privacy_note = status.get("privacy_note", "")
     require(
         isinstance(privacy_note, str) and "aggregate" in privacy_note.lower(),

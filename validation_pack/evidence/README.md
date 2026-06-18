@@ -108,13 +108,14 @@ python scripts/build_validation_evidence_bundle.py \
   --worksheet <filled_worksheet.csv> \
   --reviewer-registry <reviewer_registry.csv> \
   --judge-scores <scribeval_scores.json> \
+  --reviewer-assignments-dir <reviewer_assignments_dir> \
   --adjudicated-consensus-pairs <adjudicated_consensus_calibration_pairs.json> \
   --output-dir validation_pack/evidence_runs
 ```
 
 Before publishing or committing generated run bundles, audit that they contain
 only publishable evidence artifacts and source hashes, not raw clinician CSV
-inputs:
+inputs or reviewer-specific assignment worksheets:
 
 ```bash
 python scripts/audit_validation_evidence_runs.py \

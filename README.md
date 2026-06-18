@@ -219,6 +219,7 @@ python scripts/build_validation_evidence_bundle.py \
     --worksheet <filled_worksheet.csv> \
     --reviewer-registry <reviewer_registry.csv> \
     --judge-scores <scribeval_scores.json> \
+    --reviewer-assignments-dir <reviewer_assignments_dir> \
     --adjudicated-consensus-pairs <adjudicated_consensus_calibration_pairs.json> \
     --output-dir validation_pack/evidence_runs
 python scripts/assess_validation_claim_readiness.py \
@@ -269,8 +270,8 @@ adjudication flags. The validation-claim readiness report applies explicit
 protocol thresholds before treating the bundle as evidence for validation
 claims. For a completed review run, `scripts/build_validation_evidence_bundle.py`
 orchestrates these steps into one versioned bundle with the aggregate review-run
-status, source hashes, and the adjudicated consensus-pair source hash when
-supplied.
+status, source hashes, the reviewer assignment manifest hash when supplied, and
+the adjudicated consensus-pair source hash when supplied.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
 publication and rejects raw clinician CSV inputs. Use
 `scripts/index_validation_evidence_runs.py` to publish a compact run index with
