@@ -38,6 +38,8 @@ transcripts.
       included for independent rating provenance.
 - [x] Reviewer intake checklist included to separate private coordinator
       eligibility records from publishable pseudonymous evidence artifacts.
+- [x] Reviewer attestation template included for private consent,
+      registration, conflict, blinding, and independent-judgement records.
 - [x] Validation collection plan included to show planned reviewer-rating,
       calibration-pair, and stratum coverage before clinician recruitment.
 - [x] Statistical analysis plan included with pre-specified endpoints,

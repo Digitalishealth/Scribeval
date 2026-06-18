@@ -14,6 +14,7 @@ DEFAULT_INDEPENDENT_REVIEW_RUNBOOK = (
     ROOT / "validation_pack" / "independent_review_runbook.json"
 )
 DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
+DEFAULT_REVIEWER_ATTESTATION = ROOT / "validation_pack" / "reviewer_attestation_template.json"
 DEFAULT_REVIEWER_INTAKE = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_TRAINING = ROOT / "validation_pack" / "reviewer_training_guide.json"
 DEFAULT_SAP = ROOT / "validation_pack" / "statistical_analysis_plan.json"
@@ -51,6 +52,7 @@ def summarize_goal_status(
     collection_plan: Path,
     independent_review_runbook: Path,
     protocol: Path,
+    reviewer_attestation: Path,
     reviewer_intake: Path,
     reviewer_training: Path,
     statistical_analysis_plan: Path,
@@ -60,6 +62,7 @@ def summarize_goal_status(
     collection = load_json(collection_plan)
     runbook = load_json(independent_review_runbook)
     review_protocol = load_json(protocol)
+    attestation = load_json(reviewer_attestation)
     intake = load_json(reviewer_intake)
     training = load_json(reviewer_training)
     sap = load_json(statistical_analysis_plan)
@@ -118,6 +121,14 @@ def summarize_goal_status(
                 "status": runbook.get("status"),
             },
             note="Coordinator workflow and private collection paths are defined.",
+        ),
+        "reviewer_attestation_template_defined": component_status(
+            passed=attestation.get("status") == "required_private_record_before_scoring",
+            evidence={
+                "template_id": attestation.get("template_id"),
+                "status": attestation.get("status"),
+            },
+            note="Private reviewer attestation requirements are defined.",
         ),
         "reviewer_intake_ready": component_status(
             passed=intake.get("status") == "ready_for_independent_review",
@@ -220,6 +231,7 @@ def summarize_goal_status(
             "collection_plan": display_path(collection_plan),
             "independent_review_runbook": display_path(independent_review_runbook),
             "clinician_review_protocol": display_path(protocol),
+            "reviewer_attestation_template": display_path(reviewer_attestation),
             "reviewer_intake_checklist": display_path(reviewer_intake),
             "reviewer_training_guide": display_path(reviewer_training),
             "statistical_analysis_plan": display_path(statistical_analysis_plan),
@@ -299,6 +311,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_INDEPENDENT_REVIEW_RUNBOOK,
     )
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
+    parser.add_argument(
+        "--reviewer-attestation",
+        type=Path,
+        default=DEFAULT_REVIEWER_ATTESTATION,
+    )
     parser.add_argument("--reviewer-intake", type=Path, default=DEFAULT_REVIEWER_INTAKE)
     parser.add_argument("--reviewer-training", type=Path, default=DEFAULT_REVIEWER_TRAINING)
     parser.add_argument(
@@ -320,6 +337,7 @@ def main() -> int:
             collection_plan=args.collection_plan,
             independent_review_runbook=args.independent_review_runbook,
             protocol=args.protocol,
+            reviewer_attestation=args.reviewer_attestation,
             reviewer_intake=args.reviewer_intake,
             reviewer_training=args.reviewer_training,
             statistical_analysis_plan=args.statistical_analysis_plan,

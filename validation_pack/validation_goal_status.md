@@ -14,6 +14,7 @@ Prepared validation materials and synthetic bootstrap evidence are not independe
 | collection_plan_complete | pass | `{"planned_consensus_pairs": 700, "underpowered_stratum_values": 0}` |
 | statistical_analysis_plan_prespecified | pass | `{"plan_id": "scribeval_statistical_analysis_plan_v1", "status": "prespecified_for_independent_clinician_review"}` |
 | independent_review_runbook_ready | pass | `{"runbook_id": "scribeval_independent_review_runbook_v1", "status": "ready_for_external_collection"}` |
+| reviewer_attestation_template_defined | pass | `{"status": "required_private_record_before_scoring", "template_id": "scribeval_reviewer_attestation_template_v1"}` |
 | reviewer_intake_ready | pass | `{"checklist_id": "scribeval_reviewer_intake_checklist_v1", "status": "ready_for_independent_review"}` |
 | reviewer_training_defined | pass | `{"status": "required_before_independent_scoring", "training_id": "scribeval_clinician_reviewer_training_v1"}` |
 | evidence_index_present | pass | `{"claim_ready_run_count": 0, "run_count": 1}` |

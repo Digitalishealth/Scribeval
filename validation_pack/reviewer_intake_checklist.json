@@ -29,6 +29,7 @@
       "source registration verification record",
       "contact details for scheduling and payment",
       "conflict-of-interest declaration source document",
+      "completed reviewer attestation",
       "training completion record"
     ],
     "public_release_rule": "Do not commit direct reviewer identifiers, contact details, registration numbers, payment details, or raw source verification documents."

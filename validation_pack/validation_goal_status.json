@@ -37,6 +37,14 @@
       },
       "note": "Coordinator workflow and private collection paths are defined."
     },
+    "reviewer_attestation_template_defined": {
+      "passed": true,
+      "evidence": {
+        "template_id": "scribeval_reviewer_attestation_template_v1",
+        "status": "required_private_record_before_scoring"
+      },
+      "note": "Private reviewer attestation requirements are defined."
+    },
     "reviewer_intake_ready": {
       "passed": true,
       "evidence": {
@@ -139,6 +147,7 @@
     "collection_plan": "validation_pack/collection_plan.json",
     "independent_review_runbook": "validation_pack/independent_review_runbook.json",
     "clinician_review_protocol": "validation_pack/clinician_review_protocol.json",
+    "reviewer_attestation_template": "validation_pack/reviewer_attestation_template.json",
     "reviewer_intake_checklist": "validation_pack/reviewer_intake_checklist.json",
     "reviewer_training_guide": "validation_pack/reviewer_training_guide.json",
     "statistical_analysis_plan": "validation_pack/statistical_analysis_plan.json",

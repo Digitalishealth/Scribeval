@@ -21,6 +21,9 @@ DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
 DEFAULT_INDEPENDENT_REVIEW_RUNBOOK = (
     ROOT / "validation_pack" / "independent_review_runbook.json"
 )
+DEFAULT_REVIEWER_ATTESTATION_TEMPLATE = (
+    ROOT / "validation_pack" / "reviewer_attestation_template.json"
+)
 DEFAULT_REVIEWER_INTAKE_CHECKLIST = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_PACKETS = ROOT / "validation_pack" / "reviewer_packets"
 DEFAULT_REVIEWER_SCORING_GUIDE = ROOT / "validation_pack" / "reviewer_scoring_guide.md"
@@ -168,6 +171,7 @@ def build_review_materials_provenance(
     *,
     reviewer_packets_dir: Path,
     independent_review_runbook: Path,
+    reviewer_attestation_template: Path,
     reviewer_intake_checklist: Path,
     reviewer_scoring_guide: Path,
     reviewer_training_guide: Path,
@@ -194,6 +198,10 @@ def build_review_materials_provenance(
         raise ValueError(
             f"Independent review runbook is missing: {independent_review_runbook}"
         )
+    if not reviewer_attestation_template.exists():
+        raise ValueError(
+            f"Reviewer attestation template is missing: {reviewer_attestation_template}"
+        )
     if not reviewer_intake_checklist.exists():
         raise ValueError(f"Reviewer intake checklist is missing: {reviewer_intake_checklist}")
     if not reviewer_scoring_guide.exists():
@@ -216,6 +224,13 @@ def build_review_materials_provenance(
             bundle_dir,
         ),
         "independent_review_runbook_sha256": sha256_file(independent_review_runbook),
+        "reviewer_attestation_template": relative_to_base(
+            reviewer_attestation_template,
+            bundle_dir,
+        ),
+        "reviewer_attestation_template_sha256": sha256_file(
+            reviewer_attestation_template
+        ),
         "reviewer_intake_checklist": relative_to_base(
             reviewer_intake_checklist,
             bundle_dir,
@@ -236,9 +251,10 @@ def build_review_materials_provenance(
         "privacy_note": (
             "Reviewer material hashes identify the blinded packet files, intake "
             "checklist, scoring guide, training guide, independent review runbook, "
-            "and statistical analysis plan used for clinician review. They do not "
-            "include reviewer identifiers, assignment worksheets, reviewer "
-            "comments, or completed ratings."
+            "reviewer attestation template, and statistical analysis plan used for "
+            "clinician review. They do not include reviewer identifiers, completed "
+            "attestations, assignment worksheets, reviewer comments, or completed "
+            "ratings."
         ),
     }
 
@@ -270,6 +286,9 @@ def bundle_manifest(
         "protocol_sha256": sha256_file(protocol),
         "independent_review_runbook_sha256": review_materials[
             "independent_review_runbook_sha256"
+        ],
+        "reviewer_attestation_template_sha256": review_materials[
+            "reviewer_attestation_template_sha256"
         ],
         "reviewer_packet_manifest_sha256": review_materials[
             "reviewer_packet_manifest_sha256"
@@ -383,6 +402,7 @@ def build_bundle(
     reviewer_assignments_dir: Path | None = None,
     reviewer_packets_dir: Path = DEFAULT_REVIEWER_PACKETS,
     independent_review_runbook: Path = DEFAULT_INDEPENDENT_REVIEW_RUNBOOK,
+    reviewer_attestation_template: Path = DEFAULT_REVIEWER_ATTESTATION_TEMPLATE,
     reviewer_intake_checklist: Path = DEFAULT_REVIEWER_INTAKE_CHECKLIST,
     reviewer_scoring_guide: Path = DEFAULT_REVIEWER_SCORING_GUIDE,
     reviewer_training_guide: Path = DEFAULT_REVIEWER_TRAINING_GUIDE,
@@ -414,6 +434,7 @@ def build_bundle(
     review_materials = build_review_materials_provenance(
         reviewer_packets_dir=reviewer_packets_dir,
         independent_review_runbook=independent_review_runbook,
+        reviewer_attestation_template=reviewer_attestation_template,
         reviewer_intake_checklist=reviewer_intake_checklist,
         reviewer_scoring_guide=reviewer_scoring_guide,
         reviewer_training_guide=reviewer_training_guide,
@@ -553,6 +574,11 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_INDEPENDENT_REVIEW_RUNBOOK,
     )
+    parser.add_argument(
+        "--reviewer-attestation-template",
+        type=Path,
+        default=DEFAULT_REVIEWER_ATTESTATION_TEMPLATE,
+    )
     parser.add_argument("--reviewer-packets-dir", type=Path, default=DEFAULT_REVIEWER_PACKETS)
     parser.add_argument(
         "--reviewer-intake-checklist",
@@ -616,6 +642,7 @@ def main() -> int:
             reviewer_assignments_dir=args.reviewer_assignments_dir,
             reviewer_packets_dir=args.reviewer_packets_dir,
             independent_review_runbook=args.independent_review_runbook,
+            reviewer_attestation_template=args.reviewer_attestation_template,
             reviewer_intake_checklist=args.reviewer_intake_checklist,
             reviewer_scoring_guide=args.reviewer_scoring_guide,
             reviewer_training_guide=args.reviewer_training_guide,

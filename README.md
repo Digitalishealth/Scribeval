@@ -171,10 +171,10 @@ includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
 20-case synthetic corpus of complete transcript/note packets, generated blinded
 reviewer packets, a clinician reviewer scoring guide, a pseudonymous reviewer
 registry template, a reviewer intake checklist for public/private evidence
-boundaries, a reviewer training guide, an independent-review runbook with
-private workspace guardrails, a collection plan for planned stratum coverage, a
-pre-specified statistical analysis plan, and example calibration inputs/results
-for:
+boundaries, a private reviewer attestation template, a reviewer training guide,
+an independent-review runbook with private workspace guardrails, a collection
+plan for planned stratum coverage, a pre-specified statistical analysis plan,
+and example calibration inputs/results for:
 
 ```bash
 python scripts/build_reviewer_packets.py
@@ -257,7 +257,8 @@ validation evidence. For independent clinician ratings, follow
 `validation_pack/independent_review_runbook.json`, run
 `scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets
 under an ignored private workspace, complete the coordinator-side
-`validation_pack/reviewer_intake_checklist.json`, check
+`validation_pack/reviewer_intake_checklist.json` and
+`validation_pack/reviewer_attestation_template.json`, check
 `validation_pack/collection_plan.json` for planned coverage across
 specialty, note source, prompt strategy, and safety-critical failure mode,
 preserve `validation_pack/statistical_analysis_plan.json` as the pre-specified

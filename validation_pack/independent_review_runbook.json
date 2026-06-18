@@ -9,6 +9,7 @@
     "collection_plan.json",
     "statistical_analysis_plan.json",
     "reviewer_intake_checklist.json",
+    "reviewer_attestation_template.json",
     "reviewer_training_guide.json",
     "reviewer_scoring_guide.md",
     "reviewer_packets/",
@@ -68,6 +69,7 @@
       "commands": [],
       "exit_evidence": [
         "reviewer_intake_checklist.json stages completed by coordinator",
+        "reviewer_attestation_template.json completed and retained privately",
         "reviewer_training_guide.json completed before training_completed=yes",
         "private eligibility records retained outside the public repository"
       ],

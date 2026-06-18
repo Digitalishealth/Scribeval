@@ -64,6 +64,10 @@ python scripts/build_reviewer_packets.py
    signed consent, source registration verification, contact details, payment
    details, and training records outside the public repository; only the
    pseudonymous registry fields belong in the publishable evidence trail.
+   Use `reviewer_attestation_template.json` and
+   `reviewer_attestation_template.md` for the private consent, registration,
+   conflict, blinding, no-identifier comment, and independent-judgement
+   attestations that support those registry fields.
 7. Review or regenerate the collection plan to confirm planned case,
    submission, reviewer-rating, calibration-pair, and stratum coverage:
 
@@ -322,6 +326,7 @@ instructions, more cases, or adjudication by a second clinician.
 | `statistical_analysis_plan.json` / `statistical_analysis_plan.md` | Pre-specified validation endpoints, thresholds, handling rules, and claim boundary |
 | `validation_goal_status.json` / `validation_goal_status.md` | Current prepared/claim-ready status and blocking validation gaps |
 | `independent_review_runbook.json` / `independent_review_runbook.md` | Coordinator workflow for private collection, public outputs, and claim boundaries |
+| `reviewer_attestation_template.json` / `reviewer_attestation_template.md` | Private reviewer consent, eligibility, blinding, and independence attestation template |
 | `reviewer_training_guide.json` / `reviewer_training_guide.md` | Minimum reviewer training, anchor-case, and public-record requirements |
 | `reviewer_intake_checklist.json` | Coordinator intake controls and public/private evidence boundaries |
 | `reviewer_scoring_guide.md` | Clinician-facing score, severity, and dimension anchors |

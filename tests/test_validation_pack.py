@@ -81,6 +81,17 @@ REQUIRED_REVIEWER_TRAINING_STEPS = {
     "read_scoring_guide",
     "review_score_and_severity_anchors",
 }
+REQUIRED_REVIEWER_ATTESTATIONS = {
+    "adjudication_escalation_understood",
+    "blinding_understood",
+    "conflict_of_interest_none",
+    "current_registration_verified",
+    "independent_judgement_confirmed",
+    "minimum_experience_confirmed",
+    "no_identifier_comment_policy_understood",
+    "participation_and_publication_consent",
+    "training_completed_before_scoring",
+}
 REQUIRED_INDEPENDENT_REVIEW_RUNBOOK_STAGES = {
     "assess_goal_status",
     "build_consensus_and_adjudicate",
@@ -300,6 +311,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert protocol["review_materials"]["independent_review_runbook"] == (
         "independent_review_runbook.json"
     )
+    assert protocol["review_materials"]["reviewer_attestation_template"] == (
+        "reviewer_attestation_template.json"
+    )
     assert protocol["review_materials"]["reviewer_training_guide"] == (
         "reviewer_training_guide.json"
     )
@@ -400,6 +414,36 @@ def test_reviewer_training_guide_defines_required_training() -> None:
     assert "Claim Boundary" in guide_report
 
 
+def test_reviewer_attestation_template_defines_private_provenance_record() -> None:
+    template = json.loads(
+        (VALIDATION_PACK / "reviewer_attestation_template.json").read_text()
+    )
+    template_report = (VALIDATION_PACK / "reviewer_attestation_template.md").read_text()
+
+    assert template["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert template["template_id"] == "scribeval_reviewer_attestation_template_v1"
+    assert template["status"] == "required_private_record_before_scoring"
+    assert {
+        attestation["attestation_id"]
+        for attestation in template["required_attestations"]
+        if attestation["required"] is True
+    } == REQUIRED_REVIEWER_ATTESTATIONS
+    policy = template["private_record_policy"]
+    assert policy["retain_completed_attestations_outside_public_repository"] is True
+    assert policy["completed_forms_must_not_be_committed"] is True
+    assert set(policy["public_projection_fields"]) >= REQUIRED_REVIEWER_REGISTRY_FIELDS
+    assert {
+        "reviewer_name",
+        "contact_details",
+        "registration_number",
+    } <= set(policy["forbidden_public_fields"])
+    assert set(policy["public_projection_fields"]).isdisjoint(
+        policy["forbidden_public_fields"]
+    )
+    assert "not itself validation evidence" in template["claim_boundary"]
+    assert "Private Record Policy" in template_report
+
+
 def test_independent_review_runbook_defines_collection_workflow() -> None:
     runbook = json.loads((VALIDATION_PACK / "independent_review_runbook.json").read_text())
     runbook_report = (VALIDATION_PACK / "independent_review_runbook.md").read_text()
@@ -411,6 +455,7 @@ def test_independent_review_runbook_defines_collection_workflow() -> None:
     assert set(runbook["required_public_materials"]) >= {
         "clinician_review_protocol.json",
         "statistical_analysis_plan.json",
+        "reviewer_attestation_template.json",
         "reviewer_training_guide.json",
         "reviewer_packets/",
         "corpus/corpus_manifest.json",
@@ -572,8 +617,14 @@ def test_validation_goal_status_tracks_missing_independent_evidence() -> None:
     assert status["prepared_components"]["independent_review_runbook_ready"][
         "evidence"
     ]["runbook_id"] == "scribeval_independent_review_runbook_v1"
+    assert status["prepared_components"]["reviewer_attestation_template_defined"][
+        "evidence"
+    ]["template_id"] == "scribeval_reviewer_attestation_template_v1"
     assert status["source_files"]["independent_review_runbook"] == (
         "validation_pack/independent_review_runbook.json"
+    )
+    assert status["source_files"]["reviewer_attestation_template"] == (
+        "validation_pack/reviewer_attestation_template.json"
     )
     assert {gap["gap_id"] for gap in status["blocking_gaps"]} >= {
         "current_evidence_run_failed_checks",
@@ -1269,6 +1320,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "independent_review_runbook_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
+        "reviewer_attestation_template_sha256",
         "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
         "reviewer_scoring_guide_sha256",
@@ -1288,6 +1340,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_materials["independent_review_runbook_sha256"] == manifest[
         "source_hashes"
     ]["independent_review_runbook_sha256"]
+    assert review_materials["reviewer_attestation_template_sha256"] == manifest[
+        "source_hashes"
+    ]["reviewer_attestation_template_sha256"]
     assert review_materials["reviewer_scoring_guide_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_scoring_guide_sha256"]
@@ -1305,6 +1360,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     )
     assert review_materials["independent_review_runbook"].endswith(
         "validation_pack/independent_review_runbook.json"
+    )
+    assert review_materials["reviewer_attestation_template"].endswith(
+        "validation_pack/reviewer_attestation_template.json"
     )
     assert review_materials["reviewer_intake_checklist"].endswith(
         "validation_pack/reviewer_intake_checklist.json"
@@ -1423,6 +1481,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "independent_review_runbook_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
+        "reviewer_attestation_template_sha256",
         "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
         "reviewer_scoring_guide_sha256",

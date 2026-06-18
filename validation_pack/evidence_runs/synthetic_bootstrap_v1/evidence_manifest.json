@@ -32,14 +32,15 @@
     "reviewer_registry_sha256": "8158f3402e9f1812ab41cc1afe6be96968e9f7ccd624853e47f4388a310fd5e8",
     "judge_scores_sha256": "6b4b88ad47ce3c5da88fabda7ab21c256b9f6b85f928bb95ea162dafcc48e10f",
     "corpus_manifest_sha256": "a34d0e9611329a41977ee1b7fbac22ff054ec573c0fc6ca3adeca08d1ed546d6",
-    "protocol_sha256": "25a8d44f0d04b6d54b01c75268dc720ceb9134af8b6c79a9a3b70c6dacd028f0",
-    "independent_review_runbook_sha256": "6f237fc2ea6031783420aa4b00d60fdf4d289817345065190d26f87d06192ad4",
+    "protocol_sha256": "dd284aa089942277728a3c729986bd69e184e5d0b11a55417303fb2ab2ce96c1",
+    "independent_review_runbook_sha256": "255c1efa45c968c0ce93646551dcb761dd58d244230bf63f46348a814208be7f",
+    "reviewer_attestation_template_sha256": "be412eaa3102137853daf66f13013a3080419c6e6220e5192b87f57b04c7b376",
     "reviewer_packet_manifest_sha256": "9a0411ec2983747de5634a01710e94dd32fea864818fe359a69f408a8c0d1ae0",
-    "reviewer_intake_checklist_sha256": "682c9de6d9cce5288b3a1c32843ecd691d7d41579c8efeb4c3594825c8c3220e",
+    "reviewer_intake_checklist_sha256": "eb22b12cd6a564d5932d6e968db8f434e596e37cab52a869c69524f893be9cc1",
     "reviewer_scoring_guide_sha256": "b41be7ff7108c35f7e7bc35be1a812751eb891d4e89e5cdf1a20b6ff3d82955e",
     "reviewer_training_guide_sha256": "f410251050471cb109b3d9f580736a323035049dd2937f7d13c04def6ecf480f",
     "statistical_analysis_plan_sha256": "0882349ddc58f4f28ac92087d77a5acb55bceab7c4a073faaeecccf6bafaab40",
-    "reviewer_assignments_manifest_sha256": "7b634752a2e97955a24bc2e018e46038d964e5239eb705809767c4434cca2d86"
+    "reviewer_assignments_manifest_sha256": "f710e4dc59b40c5e808f4ca09e5e666969caedc6051ce2203a26e814e7a6487d"
   },
   "coverage": {
     "case_submission_count": 100,

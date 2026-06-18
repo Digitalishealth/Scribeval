@@ -35,7 +35,7 @@ evidence-run indexes.
 | Stage | Exit Evidence |
 |---|---|
 | prepare public materials | `validation_pack_audit.py` passes and the collection plan has no underpowered stratum values |
-| onboard reviewers | reviewer intake and training are complete, with private eligibility records retained outside the public repository |
+| onboard reviewers | reviewer intake, attestation, and training are complete, with private eligibility records retained outside the public repository |
 | generate private assignments | `assignment_manifest.json` records two qualified reviewers per case-submission in an ignored private path |
 | collect blinded ratings | all assigned worksheets are returned with overall and required dimension ratings complete |
 | export judge scores | Scribeval score JSON covers every required case-submission and contains no raw transcript or note text |

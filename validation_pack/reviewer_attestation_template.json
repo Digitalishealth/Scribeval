@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "template_id": "scribeval_reviewer_attestation_template_v1",
+  "status": "required_private_record_before_scoring",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "purpose": "Define the private reviewer attestation record coordinators must complete before accepting independent clinician ratings into a validation evidence run.",
+  "private_record_policy": {
+    "retain_completed_attestations_outside_public_repository": true,
+    "completed_forms_must_not_be_committed": true,
+    "public_projection_fields": [
+      "reviewer_id",
+      "profession",
+      "country",
+      "registration_status",
+      "years_post_registration",
+      "specialty",
+      "review_role",
+      "conflict_of_interest",
+      "training_completed"
+    ],
+    "private_fields": [
+      "reviewer_name",
+      "contact_details",
+      "registration_number",
+      "registration_verification_source",
+      "signed_consent_record",
+      "attestation_signature",
+      "attestation_date",
+      "coordinator_name"
+    ],
+    "forbidden_public_fields": [
+      "reviewer_name",
+      "contact_details",
+      "registration_number",
+      "registration_verification_source",
+      "signed_consent_record",
+      "attestation_signature",
+      "attestation_date",
+      "coordinator_name"
+    ]
+  },
+  "required_attestations": [
+    {
+      "attestation_id": "participation_and_publication_consent",
+      "required": true,
+      "private_evidence": "signed consent retained by coordinator"
+    },
+    {
+      "attestation_id": "current_registration_verified",
+      "required": true,
+      "private_evidence": "source registration check retained by coordinator"
+    },
+    {
+      "attestation_id": "minimum_experience_confirmed",
+      "required": true,
+      "private_evidence": "years_post_registration recorded in pseudonymous registry"
+    },
+    {
+      "attestation_id": "conflict_of_interest_none",
+      "required": true,
+      "private_evidence": "conflict declaration retained by coordinator"
+    },
+    {
+      "attestation_id": "training_completed_before_scoring",
+      "required": true,
+      "private_evidence": "training and anchor-case completion retained by coordinator"
+    },
+    {
+      "attestation_id": "blinding_understood",
+      "required": true,
+      "private_evidence": "reviewer confirms candidate source and prompt strategy are hidden"
+    },
+    {
+      "attestation_id": "no_identifier_comment_policy_understood",
+      "required": true,
+      "private_evidence": "reviewer confirms comments must not include patient, clinician, reviewer, provider, registration, phone, or email identifiers"
+    },
+    {
+      "attestation_id": "independent_judgement_confirmed",
+      "required": true,
+      "private_evidence": "reviewer confirms ratings are independent and based on the transcript plus blinded final note only"
+    },
+    {
+      "attestation_id": "adjudication_escalation_understood",
+      "required": true,
+      "private_evidence": "reviewer confirms disputed or ambiguous scoring should follow the adjudication workflow"
+    }
+  ],
+  "coordinator_completion_rule": "Set training_completed=yes and conflict_of_interest=none in the pseudonymous registry only after every required attestation is complete and retained privately.",
+  "claim_boundary": "A completed reviewer attestation supports reviewer provenance and governance only. It is not itself validation evidence; validation claims require completed independent clinician ratings, reliability analysis, adjudicated consensus, and claim-readiness checks."
+}

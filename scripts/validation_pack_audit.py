@@ -90,6 +90,17 @@ REQUIRED_REVIEWER_TRAINING_STEPS = {
     "read_scoring_guide",
     "review_score_and_severity_anchors",
 }
+REQUIRED_REVIEWER_ATTESTATIONS = {
+    "adjudication_escalation_understood",
+    "blinding_understood",
+    "conflict_of_interest_none",
+    "current_registration_verified",
+    "independent_judgement_confirmed",
+    "minimum_experience_confirmed",
+    "no_identifier_comment_policy_understood",
+    "participation_and_publication_consent",
+    "training_completed_before_scoring",
+}
 REQUIRED_INDEPENDENT_REVIEW_RUNBOOK_STAGES = {
     "assess_goal_status",
     "build_consensus_and_adjudicate",
@@ -494,6 +505,11 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol missing independent review runbook",
     )
     require(
+        review_materials.get("reviewer_attestation_template")
+        == "reviewer_attestation_template.json",
+        "clinician review protocol missing reviewer attestation template",
+    )
+    require(
         review_materials.get("reviewer_training_guide")
         == "reviewer_training_guide.json",
         "clinician review protocol missing reviewer training guide",
@@ -761,6 +777,67 @@ def audit_reviewer_training_guide() -> None:
     )
 
 
+def audit_reviewer_attestation_template() -> None:
+    template_path = PACK / "reviewer_attestation_template.json"
+    report_path = PACK / "reviewer_attestation_template.md"
+    require(template_path.exists(), "missing reviewer attestation template JSON")
+    require(report_path.exists(), "missing reviewer attestation template report")
+    template = load_json(template_path)
+    require(
+        template.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "reviewer attestation template has invalid benchmark_unit",
+    )
+    require(
+        template.get("template_id") == "scribeval_reviewer_attestation_template_v1",
+        "reviewer attestation template has invalid template_id",
+    )
+    require(
+        template.get("status") == "required_private_record_before_scoring",
+        "reviewer attestation template status drift",
+    )
+    required_ids = {
+        attestation.get("attestation_id")
+        for attestation in template.get("required_attestations", [])
+        if attestation.get("required") is True
+    }
+    require(
+        required_ids == REQUIRED_REVIEWER_ATTESTATIONS,
+        "reviewer attestation template required attestations drift",
+    )
+    policy = template.get("private_record_policy", {})
+    require(
+        policy.get("retain_completed_attestations_outside_public_repository") is True,
+        "reviewer attestation template must keep completed attestations private",
+    )
+    require(
+        policy.get("completed_forms_must_not_be_committed") is True,
+        "reviewer attestation template must forbid committed completed forms",
+    )
+    public_fields = set(policy.get("public_projection_fields", []))
+    forbidden_fields = set(policy.get("forbidden_public_fields", []))
+    require(
+        public_fields >= REQUIRED_REVIEWER_REGISTRY_FIELDS,
+        "reviewer attestation template missing public registry projection fields",
+    )
+    require(
+        forbidden_fields >= {"reviewer_name", "contact_details", "registration_number"},
+        "reviewer attestation template missing forbidden private fields",
+    )
+    require(
+        public_fields.isdisjoint(forbidden_fields),
+        "reviewer attestation template mixes public and forbidden private fields",
+    )
+    require(
+        "not itself validation evidence" in template.get("claim_boundary", ""),
+        "reviewer attestation template must preserve validation claim boundary",
+    )
+    report_text = report_path.read_text()
+    require(
+        "Private Record Policy" in report_text,
+        "reviewer attestation template report missing private record policy",
+    )
+
+
 def audit_independent_review_runbook() -> None:
     runbook_path = PACK / "independent_review_runbook.json"
     report_path = PACK / "independent_review_runbook.md"
@@ -785,6 +862,7 @@ def audit_independent_review_runbook() -> None:
         >= {
             "clinician_review_protocol.json",
             "statistical_analysis_plan.json",
+            "reviewer_attestation_template.json",
             "reviewer_training_guide.json",
             "reviewer_packets/",
             "corpus/corpus_manifest.json",
@@ -890,11 +968,20 @@ def audit_validation_goal_status(corpus_refs: dict[str, set[str]]) -> None:
         components.get("independent_review_runbook_ready", {}).get("passed") is True,
         "validation goal status missing prepared runbook component",
     )
+    require(
+        components.get("reviewer_attestation_template_defined", {}).get("passed") is True,
+        "validation goal status missing reviewer attestation component",
+    )
     source_files = status.get("source_files", {})
     require(
         source_files.get("independent_review_runbook")
         == "validation_pack/independent_review_runbook.json",
         "validation goal status missing independent review runbook source",
+    )
+    require(
+        source_files.get("reviewer_attestation_template")
+        == "validation_pack/reviewer_attestation_template.json",
+        "validation goal status missing reviewer attestation template source",
     )
     require(
         "not independent clinical validation" in status.get("claim_boundary", ""),
@@ -967,6 +1054,7 @@ def main() -> int:
         audit_corpus_benchmark_manifest(corpus_refs)
         audit_collection_plan(corpus_refs)
         audit_statistical_analysis_plan()
+        audit_reviewer_attestation_template()
         audit_reviewer_training_guide()
         audit_independent_review_runbook()
         audit_validation_goal_status(corpus_refs)
@@ -984,6 +1072,7 @@ def main() -> int:
     print(f"Reviewer packets: {packet_count}")
     print("Validation collection plan: ready")
     print("Statistical analysis plan: prespecified")
+    print("Reviewer attestation template: required_private_record_before_scoring")
     print("Reviewer training guide: required_before_independent_scoring")
     print("Independent review runbook: ready_for_external_collection")
     print("Validation goal status: tracked")
