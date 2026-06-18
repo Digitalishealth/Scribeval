@@ -200,6 +200,13 @@ python scripts/import_adjudication_decisions.py \
     --output <adjudicated_consensus_calibration_pairs.json> \
     --output-summary-json <adjudicated_consensus_summary.json> \
     --output-summary-md <adjudicated_consensus_summary.md>
+python scripts/build_validation_evidence_bundle.py \
+    --run-id <review_run_id> \
+    --worksheet <filled_worksheet.csv> \
+    --reviewer-registry <reviewer_registry.csv> \
+    --judge-scores <scribeval_scores.json> \
+    --adjudicated-consensus-pairs <adjudicated_consensus_calibration_pairs.json> \
+    --output-dir validation_pack/evidence_runs
 python scripts/assess_validation_claim_readiness.py \
     --evidence-manifest <evidence_manifest.json> \
     --output-json <validation_claim_readiness.json> \
@@ -242,7 +249,8 @@ adjudicator's decisions back to the consensus evidence and clears resolved
 adjudication flags. The validation-claim readiness report applies explicit
 protocol thresholds before treating the bundle as evidence for validation
 claims. For a completed review run, `scripts/build_validation_evidence_bundle.py`
-orchestrates these steps into one versioned bundle with source hashes.
+orchestrates these steps into one versioned bundle with source hashes, including
+the adjudicated consensus-pair source hash when supplied.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
 publication and rejects raw clinician CSV inputs. Use
 `scripts/index_validation_evidence_runs.py` to publish a compact run index with

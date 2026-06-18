@@ -92,6 +92,7 @@ python scripts/build_validation_evidence_bundle.py \
   --worksheet <filled_worksheet.csv> \
   --reviewer-registry <reviewer_registry.csv> \
   --judge-scores <scribeval_scores.json> \
+  --adjudicated-consensus-pairs <adjudicated_consensus_calibration_pairs.json> \
   --output-dir validation_pack/evidence_runs
 ```
 

@@ -45,6 +45,13 @@ def write_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, indent=2) + "\n")
 
 
+def load_json(path: Path) -> Any:
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"{path} is not valid JSON: {exc}") from exc
+
+
 def validate_run_id(run_id: str) -> None:
     if not RUN_ID_RE.fullmatch(run_id):
         raise ValueError(
@@ -102,6 +109,51 @@ def consensus_report_markdown(*, run_id: str, pairs: list[dict[str, Any]]) -> st
     )
 
 
+def consensus_pair_key(pair: dict[str, Any]) -> tuple[str, str, str, str]:
+    return (
+        str(pair.get("case_id", "")),
+        str(pair.get("submission_id", "")),
+        str(pair.get("blind_label", "")),
+        str(pair.get("dimension", "")),
+    )
+
+
+def load_adjudicated_consensus_pairs(
+    *,
+    adjudicated_consensus_pairs: Path,
+    computed_consensus_pairs: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    raw_pairs = load_json(adjudicated_consensus_pairs)
+    if not isinstance(raw_pairs, list) or not raw_pairs:
+        raise ValueError("--adjudicated-consensus-pairs must be a non-empty JSON list")
+    pairs = [dict(pair) for pair in raw_pairs]
+    computed_keys = {consensus_pair_key(pair) for pair in computed_consensus_pairs}
+    adjudicated_keys = {consensus_pair_key(pair) for pair in pairs}
+    if adjudicated_keys != computed_keys:
+        missing = sorted(computed_keys - adjudicated_keys)
+        extra = sorted(adjudicated_keys - computed_keys)
+        if missing:
+            key = missing[0]
+            raise ValueError(
+                "Adjudicated consensus pairs are missing "
+                f"{key[0]}/{key[1]}/{key[3]}"
+            )
+        key = extra[0]
+        raise ValueError(
+            "Adjudicated consensus pairs contain unknown "
+            f"{key[0]}/{key[1]}/{key[3]}"
+        )
+    for index, pair in enumerate(pairs, start=1):
+        if "adjudication_required" not in pair:
+            raise ValueError(f"Adjudicated consensus pair {index} missing adjudication flag")
+        if pair.get("adjudication_required") is True:
+            raise ValueError(
+                "Adjudicated consensus pairs still contain unresolved adjudication "
+                f"at row {index}"
+            )
+    return pairs
+
+
 def bundle_manifest(
     *,
     run_id: str,
@@ -117,8 +169,21 @@ def bundle_manifest(
     consensus_pair_count: int,
     consensus_adjudication_required_count: int,
     reviewer_reliability_pair_count: int,
+    adjudicated_consensus_pairs: Path | None,
 ) -> dict[str, Any]:
-    return {
+    source_hashes = {
+        "reviewer_worksheet_sha256": sha256_file(worksheet),
+        "reviewer_registry_sha256": sha256_file(reviewer_registry),
+        "judge_scores_sha256": sha256_file(judge_scores),
+        "corpus_manifest_sha256": sha256_file(corpus_manifest),
+        "protocol_sha256": sha256_file(protocol),
+    }
+    if adjudicated_consensus_pairs is not None:
+        source_hashes["adjudicated_consensus_pairs_sha256"] = sha256_file(
+            adjudicated_consensus_pairs
+        )
+
+    manifest = {
         "schema_version": "1.0.0",
         "evidence_id": run_id,
         "status": evidence_status,
@@ -135,6 +200,11 @@ def bundle_manifest(
         "calibration_report": "calibration_report.md",
         "consensus_calibration_pairs": "consensus_calibration_pairs.json",
         "consensus_calibration_report": "consensus_calibration_report.md",
+        "consensus_source": (
+            "adjudicated_consensus_pairs"
+            if adjudicated_consensus_pairs is not None
+            else "computed_from_reviewer_worksheet"
+        ),
         "readiness_report": "readiness_report.json",
         "readiness_report_markdown": "readiness_report.md",
         "stratified_summary": "stratified_summary.json",
@@ -144,13 +214,7 @@ def bundle_manifest(
         "validation_claim_readiness": "validation_claim_readiness.json",
         "validation_claim_readiness_report": "validation_claim_readiness.md",
         "generated_by": "python scripts/build_validation_evidence_bundle.py",
-        "source_hashes": {
-            "reviewer_worksheet_sha256": sha256_file(worksheet),
-            "reviewer_registry_sha256": sha256_file(reviewer_registry),
-            "judge_scores_sha256": sha256_file(judge_scores),
-            "corpus_manifest_sha256": sha256_file(corpus_manifest),
-            "protocol_sha256": sha256_file(protocol),
-        },
+        "source_hashes": source_hashes,
         "coverage": {
             "case_submission_count": readiness_report["coverage"][
                 "expected_case_submission_count"
@@ -167,6 +231,11 @@ def bundle_manifest(
             "reviewer_reliability_pair_count": reviewer_reliability_pair_count,
         },
     }
+    if adjudicated_consensus_pairs is not None:
+        manifest["adjudicated_consensus_pairs_source"] = relative_or_name(
+            adjudicated_consensus_pairs
+        )
+    return manifest
 
 
 def build_bundle(
@@ -179,6 +248,7 @@ def build_bundle(
     corpus_manifest: Path,
     protocol: Path,
     evidence_status: str,
+    adjudicated_consensus_pairs: Path | None = None,
 ) -> Path:
     from assess_validation_claim_readiness import assess_claim_readiness
     from assess_validation_claim_readiness import report_markdown as claim_report_markdown
@@ -226,12 +296,20 @@ def build_bundle(
         corpus_manifest=corpus_manifest,
         protocol=protocol,
     )
-    consensus_pairs = build_consensus_pairs(
+    computed_consensus_pairs = build_consensus_pairs(
         worksheet=worksheet,
         reviewer_registry=reviewer_registry,
         judge_scores_path=judge_scores,
         corpus_manifest=corpus_manifest,
         protocol=protocol,
+    )
+    consensus_pairs = (
+        load_adjudicated_consensus_pairs(
+            adjudicated_consensus_pairs=adjudicated_consensus_pairs,
+            computed_consensus_pairs=computed_consensus_pairs,
+        )
+        if adjudicated_consensus_pairs is not None
+        else computed_consensus_pairs
     )
     manifest = bundle_manifest(
         run_id=run_id,
@@ -251,6 +329,7 @@ def build_bundle(
         reviewer_reliability_pair_count=reviewer_reliability["coverage"][
             "reliability_pair_count"
         ],
+        adjudicated_consensus_pairs=adjudicated_consensus_pairs,
     )
 
     write_json(bundle_dir / "readiness_report.json", readiness)
@@ -304,6 +383,15 @@ def parse_args() -> argparse.Namespace:
         default="independent_clinician_review",
         help="Evidence status to write into evidence_manifest.json.",
     )
+    parser.add_argument(
+        "--adjudicated-consensus-pairs",
+        type=Path,
+        help=(
+            "Optional full consensus_calibration_pairs JSON after qualified "
+            "adjudication decisions have been imported. The pair keyset must match "
+            "the computed consensus pairs from the worksheet."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -319,6 +407,7 @@ def main() -> int:
             corpus_manifest=args.corpus_manifest,
             protocol=args.protocol,
             evidence_status=args.status,
+            adjudicated_consensus_pairs=args.adjudicated_consensus_pairs,
         )
     except ValueError as exc:
         print(f"Bundle build failed: {exc}", file=sys.stderr)

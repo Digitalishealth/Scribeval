@@ -97,8 +97,16 @@ def audit_no_raw_clinician_inputs(bundle_dir: Path) -> None:
 def audit_source_hashes(bundle_name: str, manifest: dict[str, Any]) -> None:
     source_hashes = manifest.get("source_hashes")
     require(isinstance(source_hashes, dict), f"{bundle_name} missing source_hashes")
+    expected_hashes = set(REQUIRED_SOURCE_HASHES)
+    if manifest.get("consensus_source") == "adjudicated_consensus_pairs":
+        expected_hashes.add("adjudicated_consensus_pairs_sha256")
+        require(
+            isinstance(manifest.get("adjudicated_consensus_pairs_source"), str)
+            and manifest.get("adjudicated_consensus_pairs_source"),
+            f"{bundle_name} missing adjudicated_consensus_pairs_source",
+        )
     require(
-        set(source_hashes) == REQUIRED_SOURCE_HASHES,
+        set(source_hashes) == expected_hashes,
         f"{bundle_name} source_hashes drift",
     )
     for key, value in source_hashes.items():
@@ -198,6 +206,11 @@ def audit_pairs_and_summary(
         all("adjudication_required" in pair for pair in consensus_pairs),
         f"{bundle_name} consensus pairs missing adjudication flags",
     )
+    if manifest.get("consensus_source") == "adjudicated_consensus_pairs":
+        require(
+            all(pair["adjudication_required"] is False for pair in consensus_pairs),
+            f"{bundle_name} adjudicated consensus contains unresolved flags",
+        )
     require(
         manifest_coverage.get("consensus_adjudication_required_count")
         == sum(1 for pair in consensus_pairs if pair["adjudication_required"]),

@@ -231,6 +231,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
         "validation_claim_readiness_command"
     ]
     assert "index_validation_evidence_runs.py" in protocol["evidence_run_index_command"]
+    assert "--adjudicated-consensus-pairs" in protocol["evidence_bundle_command"]
     assert protocol["validation_claim_thresholds"]["minimum_case_count"] == 20
     assert protocol["validation_claim_thresholds"]["minimum_submission_count"] == 100
     requirements = protocol["minimum_independent_review_requirements"]
@@ -747,6 +748,90 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert "Validation Claim Readiness" in (
         bundle_dir / "validation_claim_readiness.md"
     ).read_text()
+
+
+def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
+    tmp_path: Path,
+) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    adjudicated_consensus = tmp_path / "adjudicated_consensus_pairs.json"
+    output_dir = tmp_path / "evidence_runs"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+
+    consensus_module = load_script_module("build_consensus_validation_ratings")
+    consensus_pairs = consensus_module.build_consensus_pairs(
+        worksheet=worksheet,
+        reviewer_registry=registry,
+        judge_scores_path=judge_scores,
+        corpus_manifest=CORPUS / "corpus_manifest.json",
+        protocol=VALIDATION_PACK / "clinician_review_protocol.json",
+    )
+    consensus_pairs[0]["adjudicated"] = True
+    consensus_pairs[0]["consensus_method"] = "adjudicator_resolved_consensus"
+    adjudicated_consensus.write_text(json.dumps(consensus_pairs, indent=2) + "\n")
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_validation_evidence_bundle.py",
+            "--run-id",
+            "adjudicated_fixture_v1",
+            "--worksheet",
+            str(worksheet),
+            "--reviewer-registry",
+            str(registry),
+            "--judge-scores",
+            str(judge_scores),
+            "--adjudicated-consensus-pairs",
+            str(adjudicated_consensus),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    bundle_dir = output_dir / "adjudicated_fixture_v1"
+    manifest = json.loads((bundle_dir / "evidence_manifest.json").read_text())
+    consensus_output = json.loads(
+        (bundle_dir / "consensus_calibration_pairs.json").read_text()
+    )
+    claim_readiness = json.loads((bundle_dir / "validation_claim_readiness.json").read_text())
+    assert "Wrote validation evidence bundle" in result.stdout
+    assert manifest["consensus_source"] == "adjudicated_consensus_pairs"
+    assert manifest["adjudicated_consensus_pairs_source"] == adjudicated_consensus.name
+    assert set(manifest["source_hashes"]) == {
+        "adjudicated_consensus_pairs_sha256",
+        "corpus_manifest_sha256",
+        "judge_scores_sha256",
+        "protocol_sha256",
+        "reviewer_registry_sha256",
+        "reviewer_worksheet_sha256",
+    }
+    assert manifest["coverage"]["consensus_adjudication_required_count"] == 0
+    assert consensus_output[0]["adjudicated"] is True
+    assert consensus_output[0]["consensus_method"] == "adjudicator_resolved_consensus"
+    assert claim_readiness["is_ready_for_validation_claim"] is True
+
+    audit = subprocess.run(
+        [
+            sys.executable,
+            "scripts/audit_validation_evidence_runs.py",
+            "--evidence-runs",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "Evidence run audit passed." in audit.stdout
+    assert "Bundles: 1" in audit.stdout
 
 
 def test_validation_judge_score_exporter_writes_importable_scores(
