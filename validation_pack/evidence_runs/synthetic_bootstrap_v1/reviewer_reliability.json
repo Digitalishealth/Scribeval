@@ -3,8 +3,8 @@
   "report_id": "clinician_reviewer_reliability_v1",
   "benchmark_unit": "whole transcript -> final note quality score",
   "source_files": {
-    "worksheet": "/private/var/folders/z6/2y7kn7hn395dpdy5_4ys90840000gn/T/scribeval-synthetic-bundle-ky82lb4s/synthetic_bootstrap_worksheet.csv",
-    "reviewer_registry": "/private/var/folders/z6/2y7kn7hn395dpdy5_4ys90840000gn/T/scribeval-synthetic-bundle-ky82lb4s/synthetic_bootstrap_reviewer_registry.csv",
+    "worksheet": "synthetic_bootstrap_worksheet.csv",
+    "reviewer_registry": "synthetic_bootstrap_reviewer_registry.csv",
     "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
     "protocol": "validation_pack/clinician_review_protocol.json"
   },

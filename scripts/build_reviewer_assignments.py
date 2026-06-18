@@ -33,6 +33,13 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def display_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.name
+
+
 def safe_filename(value: str) -> str:
     filename = SAFE_FILENAME_RE.sub("_", value).strip("._")
     if not filename:
@@ -199,8 +206,8 @@ def assignment_manifest(
         "reviewer_ids": reviewer_ids,
         "worksheet_files": worksheet_files,
         "source_files": {
-            "corpus_manifest": corpus_manifest.as_posix(),
-            "clinician_review_protocol": protocol.as_posix(),
+            "corpus_manifest": display_path(corpus_manifest),
+            "clinician_review_protocol": display_path(protocol),
             "reviewer_registry": reviewer_registry.name,
         },
         "source_hashes": {

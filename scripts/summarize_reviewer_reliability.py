@@ -60,7 +60,7 @@ def display_path(path: Path) -> str:
     try:
         return path.resolve().relative_to(ROOT).as_posix()
     except ValueError:
-        return path.resolve().as_posix()
+        return path.name
 
 
 def parse_dimensions(raw_dimensions: str | None, protocol_path: Path) -> tuple[str, ...]:
