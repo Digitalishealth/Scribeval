@@ -61,6 +61,8 @@ transcripts.
       agreement minima for public review.
 - [x] Synthetic evidence-run bundle committed as a reproducible workflow
       artifact with raw reviewer inputs excluded and claim-readiness set false.
+- [x] Evidence bundles include aggregate adjudication-burden summaries by
+      dimension, specialty, note source, prompt strategy, and failure mode.
 - [x] Stratified validation evidence summary included across specialty, note
       source, prompt strategy, and safety-critical failure mode, including
       kappa/ICC agreement metrics where enough pairs exist.

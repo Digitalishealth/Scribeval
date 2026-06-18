@@ -272,6 +272,8 @@ def bundle_manifest(
         "stratified_summary_report": "stratified_summary.md",
         "reviewer_reliability": "reviewer_reliability.json",
         "reviewer_reliability_report": "reviewer_reliability.md",
+        "adjudication_burden": "adjudication_burden.json",
+        "adjudication_burden_report": "adjudication_burden.md",
         "validation_claim_readiness": "validation_claim_readiness.json",
         "validation_claim_readiness_report": "validation_claim_readiness.md",
         "generated_by": "python scripts/build_validation_evidence_bundle.py",
@@ -337,6 +339,8 @@ def build_bundle(
         load_judge_scores,
         load_reviewer_registry,
     )
+    from summarize_adjudication_burden import report_markdown as burden_report_markdown
+    from summarize_adjudication_burden import summarize_from_manifest as burden_summary
     from summarize_reviewer_reliability import report_markdown as reliability_report_markdown
     from summarize_reviewer_reliability import summarize_reviewer_reliability
     from summarize_validation_evidence import report_markdown as stratified_report_markdown
@@ -451,6 +455,9 @@ def build_bundle(
     summary = summarize(bundle_dir / "evidence_manifest.json")
     write_json(bundle_dir / "stratified_summary.json", summary)
     (bundle_dir / "stratified_summary.md").write_text(stratified_report_markdown(summary))
+    burden = burden_summary(bundle_dir / "evidence_manifest.json")
+    write_json(bundle_dir / "adjudication_burden.json", burden)
+    (bundle_dir / "adjudication_burden.md").write_text(burden_report_markdown(burden))
     claim_readiness = assess_claim_readiness(
         evidence_manifest_path=bundle_dir / "evidence_manifest.json",
         protocol_path=protocol,

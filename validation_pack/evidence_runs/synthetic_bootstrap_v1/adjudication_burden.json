@@ -1,0 +1,581 @@
+{
+  "schema_version": "1.0.0",
+  "summary_id": "adjudication_burden_summary_v1",
+  "evidence_id": "synthetic_bootstrap_v1",
+  "evidence_status": "synthetic_bootstrap",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "source_files": {
+    "evidence_manifest": "validation_pack/evidence_runs/synthetic_bootstrap_v1/evidence_manifest.json",
+    "consensus_calibration_pairs": "validation_pack/evidence_runs/synthetic_bootstrap_v1/consensus_calibration_pairs.json",
+    "corpus_manifest": "validation_pack/corpus/corpus_manifest.json"
+  },
+  "privacy_note": "This summary contains aggregate adjudication counts only. It excludes reviewer identifiers, reviewer comments, transcript text, and candidate note text.",
+  "coverage": {
+    "value": "overall",
+    "case_count": 20,
+    "submission_count": 100,
+    "consensus_pair_count": 700,
+    "adjudication_required_count": 47,
+    "adjudication_required_rate": 0.0671,
+    "mean_reviewer_score_range_when_required": 0.02,
+    "reviewer_severity_gap_counts": {
+      "1": 47
+    }
+  },
+  "strata": {
+    "dimension": [
+      {
+        "value": "ahpra",
+        "case_count": 20,
+        "submission_count": 100,
+        "consensus_pair_count": 100,
+        "adjudication_required_count": 7,
+        "adjudication_required_rate": 0.07,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 7
+        }
+      },
+      {
+        "value": "hallucination",
+        "case_count": 20,
+        "submission_count": 100,
+        "consensus_pair_count": 100,
+        "adjudication_required_count": 9,
+        "adjudication_required_rate": 0.09,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 9
+        }
+      },
+      {
+        "value": "medicolegal",
+        "case_count": 20,
+        "submission_count": 100,
+        "consensus_pair_count": 100,
+        "adjudication_required_count": 12,
+        "adjudication_required_rate": 0.12,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 12
+        }
+      },
+      {
+        "value": "omission",
+        "case_count": 20,
+        "submission_count": 100,
+        "consensus_pair_count": 100,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.02,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      },
+      {
+        "value": "overall",
+        "case_count": 20,
+        "submission_count": 100,
+        "consensus_pair_count": 100,
+        "adjudication_required_count": 16,
+        "adjudication_required_rate": 0.16,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 16
+        }
+      },
+      {
+        "value": "pdqi9",
+        "case_count": 20,
+        "submission_count": 100,
+        "consensus_pair_count": 100,
+        "adjudication_required_count": 0,
+        "adjudication_required_rate": 0.0,
+        "mean_reviewer_score_range_when_required": 0.0,
+        "reviewer_severity_gap_counts": {}
+      },
+      {
+        "value": "qnote",
+        "case_count": 20,
+        "submission_count": 100,
+        "consensus_pair_count": 100,
+        "adjudication_required_count": 1,
+        "adjudication_required_rate": 0.01,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 1
+        }
+      }
+    ],
+    "specialty": [
+      {
+        "value": "aged_care",
+        "case_count": 2,
+        "submission_count": 10,
+        "consensus_pair_count": 70,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "chronic_disease",
+        "case_count": 2,
+        "submission_count": 10,
+        "consensus_pair_count": 70,
+        "adjudication_required_count": 7,
+        "adjudication_required_rate": 0.1,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 7
+        }
+      },
+      {
+        "value": "general_practice",
+        "case_count": 9,
+        "submission_count": 45,
+        "consensus_pair_count": 315,
+        "adjudication_required_count": 17,
+        "adjudication_required_rate": 0.054,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 17
+        }
+      },
+      {
+        "value": "mental_health",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 1,
+        "adjudication_required_rate": 0.0286,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 1
+        }
+      },
+      {
+        "value": "paediatrics",
+        "case_count": 2,
+        "submission_count": 10,
+        "consensus_pair_count": 70,
+        "adjudication_required_count": 8,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 8
+        }
+      },
+      {
+        "value": "palliative_care",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "telehealth",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "urgent_care",
+        "case_count": 2,
+        "submission_count": 10,
+        "consensus_pair_count": 70,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.0286,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      }
+    ],
+    "note_source": [
+      {
+        "value": "model_candidate",
+        "case_count": 20,
+        "submission_count": 80,
+        "consensus_pair_count": 560,
+        "adjudication_required_count": 47,
+        "adjudication_required_rate": 0.0839,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 47
+        }
+      },
+      {
+        "value": "nurse_cdss",
+        "case_count": 20,
+        "submission_count": 20,
+        "consensus_pair_count": 140,
+        "adjudication_required_count": 0,
+        "adjudication_required_rate": 0.0,
+        "mean_reviewer_score_range_when_required": 0.0,
+        "reviewer_severity_gap_counts": {}
+      }
+    ],
+    "prompt_strategy": [
+      {
+        "value": "cdss_checklist",
+        "case_count": 20,
+        "submission_count": 20,
+        "consensus_pair_count": 140,
+        "adjudication_required_count": 0,
+        "adjudication_required_rate": 0.0,
+        "mean_reviewer_score_range_when_required": 0.0,
+        "reviewer_severity_gap_counts": {}
+      },
+      {
+        "value": "cdss_informed",
+        "case_count": 20,
+        "submission_count": 20,
+        "consensus_pair_count": 140,
+        "adjudication_required_count": 6,
+        "adjudication_required_rate": 0.0429,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 6
+        }
+      },
+      {
+        "value": "safety_first",
+        "case_count": 20,
+        "submission_count": 20,
+        "consensus_pair_count": 140,
+        "adjudication_required_count": 20,
+        "adjudication_required_rate": 0.1429,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 20
+        }
+      },
+      {
+        "value": "standard",
+        "case_count": 20,
+        "submission_count": 20,
+        "consensus_pair_count": 140,
+        "adjudication_required_count": 16,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 16
+        }
+      },
+      {
+        "value": "structured_soap",
+        "case_count": 20,
+        "submission_count": 20,
+        "consensus_pair_count": 140,
+        "adjudication_required_count": 5,
+        "adjudication_required_rate": 0.0357,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 5
+        }
+      }
+    ],
+    "failure_mode": [
+      {
+        "value": "anticoagulant_head_injury_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      },
+      {
+        "value": "asthma_action_plan_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "clinically_significant_omission",
+        "case_count": 18,
+        "submission_count": 90,
+        "consensus_pair_count": 630,
+        "adjudication_required_count": 39,
+        "adjudication_required_rate": 0.0619,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 39
+        }
+      },
+      {
+        "value": "confidentiality_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      },
+      {
+        "value": "contraception_contraindication_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      },
+      {
+        "value": "copd_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 1,
+        "adjudication_required_rate": 0.0286,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 1
+        }
+      },
+      {
+        "value": "culturally_safe_care_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 3,
+        "adjudication_required_rate": 0.0857,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 3
+        }
+      },
+      {
+        "value": "delirium_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      },
+      {
+        "value": "diabetes_safety_net_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "documentation_photo_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 1,
+        "adjudication_required_rate": 0.0286,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 1
+        }
+      },
+      {
+        "value": "ectopic_pregnancy_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      },
+      {
+        "value": "medication_adherence_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "medication_dosing_risk",
+        "case_count": 5,
+        "submission_count": 25,
+        "consensus_pair_count": 175,
+        "adjudication_required_count": 16,
+        "adjudication_required_rate": 0.0914,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 16
+        }
+      },
+      {
+        "value": "medicolegal_followup_gap",
+        "case_count": 9,
+        "submission_count": 29,
+        "consensus_pair_count": 203,
+        "adjudication_required_count": 11,
+        "adjudication_required_rate": 0.0542,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 11
+        }
+      },
+      {
+        "value": "opioid_safety_net_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.1143,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "over_inference_from_uncertain_transcript",
+        "case_count": 2,
+        "submission_count": 10,
+        "consensus_pair_count": 70,
+        "adjudication_required_count": 4,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 4
+        }
+      },
+      {
+        "value": "preventive_care_followup_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 3,
+        "adjudication_required_rate": 0.0857,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 3
+        }
+      },
+      {
+        "value": "renal_medication_interaction",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 3,
+        "adjudication_required_rate": 0.0857,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 3
+        }
+      },
+      {
+        "value": "results_followup_ownership_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 3,
+        "adjudication_required_rate": 0.0857,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 3
+        }
+      },
+      {
+        "value": "skin_cancer_referral_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 1,
+        "adjudication_required_rate": 0.0286,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 1
+        }
+      },
+      {
+        "value": "suicide_risk_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 1,
+        "adjudication_required_rate": 0.0286,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 1
+        }
+      },
+      {
+        "value": "unsupported_hallucination",
+        "case_count": 11,
+        "submission_count": 39,
+        "consensus_pair_count": 273,
+        "adjudication_required_count": 14,
+        "adjudication_required_rate": 0.0513,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 14
+        }
+      },
+      {
+        "value": "withdrawal_risk_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 2,
+        "adjudication_required_rate": 0.0571,
+        "mean_reviewer_score_range_when_required": 0.02,
+        "reviewer_severity_gap_counts": {
+          "1": 2
+        }
+      },
+      {
+        "value": "work_certificate_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "consensus_pair_count": 35,
+        "adjudication_required_count": 0,
+        "adjudication_required_rate": 0.0,
+        "mean_reviewer_score_range_when_required": 0.0,
+        "reviewer_severity_gap_counts": {}
+      }
+    ]
+  }
+}

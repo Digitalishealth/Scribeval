@@ -885,6 +885,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     consensus_pairs = json.loads((bundle_dir / "consensus_calibration_pairs.json").read_text())
     stratified = json.loads((bundle_dir / "stratified_summary.json").read_text())
     reviewer_reliability = json.loads((bundle_dir / "reviewer_reliability.json").read_text())
+    adjudication_burden = json.loads((bundle_dir / "adjudication_burden.json").read_text())
     claim_readiness = json.loads((bundle_dir / "validation_claim_readiness.json").read_text())
 
     assert "Wrote validation evidence bundle" in result.stdout
@@ -903,6 +904,8 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["review_run_status_report"] == "review_run_status.md"
     assert manifest["reviewer_reliability"] == "reviewer_reliability.json"
     assert manifest["reviewer_reliability_report"] == "reviewer_reliability.md"
+    assert manifest["adjudication_burden"] == "adjudication_burden.json"
+    assert manifest["adjudication_burden_report"] == "adjudication_burden.md"
     assert manifest["validation_claim_readiness"] == "validation_claim_readiness.json"
     assert manifest["validation_claim_readiness_report"] == "validation_claim_readiness.md"
     assert manifest["reviewer_assignments_manifest_source"] == "assignment_manifest.json"
@@ -948,6 +951,16 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert reviewer_reliability["coverage"]["reliability_pair_count"] == 700
     assert "overall" in reviewer_reliability["coverage"]["dimensions"]
     assert reviewer_reliability["readiness"]["is_ready_for_independent_validation"] is True
+    assert adjudication_burden["summary_id"] == "adjudication_burden_summary_v1"
+    assert adjudication_burden["coverage"]["consensus_pair_count"] == 700
+    assert adjudication_burden["coverage"]["adjudication_required_count"] == 0
+    assert set(adjudication_burden["strata"]) >= {
+        "dimension",
+        "specialty",
+        "note_source",
+        "prompt_strategy",
+        "failure_mode",
+    }
     assert claim_readiness["is_ready_for_validation_claim"] is True
     assert not claim_readiness["failed_checks"]
     assert "Weighted kappa" in (bundle_dir / "calibration_report.md").read_text()
@@ -1017,6 +1030,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         (bundle_dir / "consensus_calibration_pairs.json").read_text()
     )
     claim_readiness = json.loads((bundle_dir / "validation_claim_readiness.json").read_text())
+    adjudication_burden = json.loads((bundle_dir / "adjudication_burden.json").read_text())
     assert "Wrote validation evidence bundle" in result.stdout
     assert manifest["consensus_source"] == "adjudicated_consensus_pairs"
     assert manifest["adjudicated_consensus_pairs_source"] == adjudicated_consensus.name
@@ -1031,6 +1045,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "reviewer_worksheet_sha256",
     }
     assert manifest["coverage"]["consensus_adjudication_required_count"] == 0
+    assert adjudication_burden["coverage"]["adjudication_required_count"] == 0
     assert consensus_output[0]["adjudicated"] is True
     assert consensus_output[0]["consensus_method"] == "adjudicator_resolved_consensus"
     assert claim_readiness["is_ready_for_validation_claim"] is True
@@ -1779,6 +1794,7 @@ def test_synthetic_evidence_bundle_script_reproduces_public_bundle(
     manifest = json.loads((bundle_dir / "evidence_manifest.json").read_text())
     committed_manifest = json.loads((committed_bundle / "evidence_manifest.json").read_text())
     claim_readiness = json.loads((bundle_dir / "validation_claim_readiness.json").read_text())
+    adjudication_burden = json.loads((bundle_dir / "adjudication_burden.json").read_text())
     index = json.loads((output_dir / "index.json").read_text())
 
     assert "Wrote synthetic validation evidence bundle" in result.stdout
@@ -1788,6 +1804,10 @@ def test_synthetic_evidence_bundle_script_reproduces_public_bundle(
     assert manifest["input_generation"]["raw_inputs_public"] is False
     assert manifest["source_hashes"] == committed_manifest["source_hashes"]
     assert manifest["coverage"] == committed_manifest["coverage"]
+    assert manifest["adjudication_burden"] == "adjudication_burden.json"
+    assert adjudication_burden["coverage"]["adjudication_required_count"] == 47
+    assert adjudication_burden["strata"]["note_source"][0]["value"] == "model_candidate"
+    assert "reviewer identifiers" in adjudication_burden["privacy_note"]
     assert claim_readiness["is_ready_for_validation_claim"] is False
     assert index["run_count"] == 1
     assert index["claim_ready_run_count"] == 0

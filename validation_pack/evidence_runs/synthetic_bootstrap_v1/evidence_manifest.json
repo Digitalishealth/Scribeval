@@ -22,6 +22,8 @@
   "stratified_summary_report": "stratified_summary.md",
   "reviewer_reliability": "reviewer_reliability.json",
   "reviewer_reliability_report": "reviewer_reliability.md",
+  "adjudication_burden": "adjudication_burden.json",
+  "adjudication_burden_report": "adjudication_burden.md",
   "validation_claim_readiness": "validation_claim_readiness.json",
   "validation_claim_readiness_report": "validation_claim_readiness.md",
   "generated_by": "python scripts/build_validation_evidence_bundle.py",

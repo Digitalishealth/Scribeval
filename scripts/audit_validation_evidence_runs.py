@@ -37,6 +37,8 @@ REQUIRED_MANIFEST_FILES = (
     "stratified_summary_report",
     "reviewer_reliability",
     "reviewer_reliability_report",
+    "adjudication_burden",
+    "adjudication_burden_report",
     "validation_claim_readiness",
     "validation_claim_readiness_report",
 )
@@ -325,6 +327,7 @@ def audit_pairs_and_summary(
     consensus_pairs_path: Path,
     summary_path: Path,
     reviewer_reliability_path: Path,
+    adjudication_burden_path: Path,
     claim_readiness_path: Path,
     manifest: dict[str, Any],
 ) -> int:
@@ -332,6 +335,7 @@ def audit_pairs_and_summary(
     consensus_pairs = load_json(consensus_pairs_path)
     summary = load_json(summary_path)
     reviewer_reliability = load_json(reviewer_reliability_path)
+    adjudication_burden = load_json(adjudication_burden_path)
     claim_readiness = load_json(claim_readiness_path)
     manifest_coverage = manifest.get("coverage", {})
     require(isinstance(pairs, list) and pairs, f"{bundle_name} has no calibration pairs")
@@ -401,6 +405,38 @@ def audit_pairs_and_summary(
         f"{bundle_name} reviewer reliability strata drift",
     )
     require(
+        adjudication_burden.get("benchmark_unit") == BENCHMARK_UNIT,
+        f"{bundle_name} adjudication burden has invalid benchmark_unit",
+    )
+    require(
+        adjudication_burden.get("evidence_id") == manifest.get("evidence_id"),
+        f"{bundle_name} adjudication burden evidence_id drift",
+    )
+    burden_coverage = adjudication_burden.get("coverage", {})
+    require(
+        burden_coverage.get("consensus_pair_count") == consensus_pair_count,
+        f"{bundle_name} adjudication burden consensus count drift",
+    )
+    require(
+        burden_coverage.get("adjudication_required_count")
+        == manifest_coverage.get("consensus_adjudication_required_count"),
+        f"{bundle_name} adjudication burden required count drift",
+    )
+    burden_strata = adjudication_burden.get("strata")
+    require(
+        isinstance(burden_strata, dict),
+        f"{bundle_name} adjudication burden missing strata",
+    )
+    require(
+        set(burden_strata) >= REQUIRED_STRATA | {"dimension"},
+        f"{bundle_name} adjudication burden strata drift",
+    )
+    privacy_note = adjudication_burden.get("privacy_note", "")
+    require(
+        isinstance(privacy_note, str) and "reviewer identifiers" in privacy_note,
+        f"{bundle_name} adjudication burden missing privacy note",
+    )
+    require(
         claim_readiness.get("benchmark_unit") == BENCHMARK_UNIT,
         f"{bundle_name} validation claim readiness has invalid benchmark_unit",
     )
@@ -442,6 +478,7 @@ def audit_bundle(bundle_dir: Path) -> int:
         paths["consensus_calibration_pairs"],
         paths["stratified_summary"],
         paths["reviewer_reliability"],
+        paths["adjudication_burden"],
         paths["validation_claim_readiness"],
         manifest,
     )
