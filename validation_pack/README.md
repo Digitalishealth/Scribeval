@@ -217,9 +217,9 @@ python scripts/build_validation_evidence_bundle.py \
 The bundle includes the aggregate review-run status report, readiness report,
 reviewer reliability report, individual and consensus calibration pairs,
 agreement reports, stratified summary, validation-claim readiness assessment,
-manifest, source hashes, and the reviewer assignment manifest hash when
-supplied. It does not copy reviewer-specific assignment worksheets into the
-public bundle.
+manifest, blinded reviewer-material hashes, source hashes, and the reviewer
+assignment manifest hash when supplied. It does not copy reviewer-specific
+assignment worksheets into the public bundle.
 
 Audit generated evidence bundles before publishing or committing them:
 

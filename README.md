@@ -270,8 +270,9 @@ adjudication flags. The validation-claim readiness report applies explicit
 protocol thresholds before treating the bundle as evidence for validation
 claims. For a completed review run, `scripts/build_validation_evidence_bundle.py`
 orchestrates these steps into one versioned bundle with the aggregate review-run
-status, source hashes, the reviewer assignment manifest hash when supplied, and
-the adjudicated consensus-pair source hash when supplied.
+status, blinded reviewer-material hashes, source hashes, the reviewer assignment
+manifest hash when supplied, and the adjudicated consensus-pair source hash when
+supplied.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
 publication and rejects raw clinician CSV inputs. Use
 `scripts/index_validation_evidence_runs.py` to publish a compact run index with

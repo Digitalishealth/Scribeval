@@ -18,6 +18,7 @@ if str(SRC) not in sys.path:
 
 DEFAULT_CORPUS_MANIFEST = ROOT / "validation_pack" / "corpus" / "corpus_manifest.json"
 DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
+DEFAULT_REVIEWER_PACKETS = ROOT / "validation_pack" / "reviewer_packets"
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,80}$")
 
 
@@ -154,6 +155,45 @@ def load_adjudicated_consensus_pairs(
     return pairs
 
 
+def build_review_materials_provenance(
+    *,
+    reviewer_packets_dir: Path,
+    bundle_dir: Path,
+) -> dict[str, Any]:
+    manifest_path = reviewer_packets_dir / "reviewer_packet_manifest.json"
+    if not manifest_path.exists():
+        raise ValueError(f"Reviewer packet manifest is missing: {manifest_path}")
+    packet_manifest = load_json(manifest_path)
+    packet_files = packet_manifest.get("packet_files")
+    if not isinstance(packet_files, list) or not packet_files:
+        raise ValueError("Reviewer packet manifest has no packet_files")
+
+    packet_hashes: dict[str, str] = {}
+    for rel_path in packet_files:
+        packet_path = reviewer_packets_dir / str(rel_path)
+        if not packet_path.exists():
+            raise ValueError(f"Reviewer packet file is missing: {packet_path}")
+        packet_hashes[str(rel_path)] = sha256_file(packet_path)
+
+    readme_path = reviewer_packets_dir / "README.md"
+    return {
+        "schema_version": "1.0.0",
+        "provenance_id": "scribeval_review_materials_v1",
+        "benchmark_unit": "whole transcript -> final note quality score",
+        "reviewer_packets_dir": relative_to_base(reviewer_packets_dir, bundle_dir),
+        "reviewer_packet_manifest": relative_to_base(manifest_path, bundle_dir),
+        "reviewer_packet_manifest_sha256": sha256_file(manifest_path),
+        "reviewer_packet_count": len(packet_hashes),
+        "packet_files_sha256": packet_hashes,
+        "readme_sha256": sha256_file(readme_path) if readme_path.exists() else None,
+        "privacy_note": (
+            "Reviewer material hashes identify the blinded packet files shown to "
+            "clinicians. They do not include reviewer identifiers, assignment "
+            "worksheets, reviewer comments, or completed ratings."
+        ),
+    }
+
+
 def bundle_manifest(
     *,
     run_id: str,
@@ -171,6 +211,7 @@ def bundle_manifest(
     reviewer_reliability_pair_count: int,
     adjudicated_consensus_pairs: Path | None,
     reviewer_assignments_manifest: Path | None,
+    review_materials: dict[str, Any],
 ) -> dict[str, Any]:
     source_hashes = {
         "reviewer_worksheet_sha256": sha256_file(worksheet),
@@ -178,6 +219,9 @@ def bundle_manifest(
         "judge_scores_sha256": sha256_file(judge_scores),
         "corpus_manifest_sha256": sha256_file(corpus_manifest),
         "protocol_sha256": sha256_file(protocol),
+        "reviewer_packet_manifest_sha256": review_materials[
+            "reviewer_packet_manifest_sha256"
+        ],
     }
     if adjudicated_consensus_pairs is not None:
         source_hashes["adjudicated_consensus_pairs_sha256"] = sha256_file(
@@ -212,6 +256,7 @@ def bundle_manifest(
         ),
         "readiness_report": "readiness_report.json",
         "readiness_report_markdown": "readiness_report.md",
+        "review_materials": "review_materials.json",
         "review_run_status": "review_run_status.json",
         "review_run_status_report": "review_run_status.md",
         "stratified_summary": "stratified_summary.json",
@@ -270,6 +315,7 @@ def build_bundle(
     evidence_status: str,
     adjudicated_consensus_pairs: Path | None = None,
     reviewer_assignments_dir: Path | None = None,
+    reviewer_packets_dir: Path = DEFAULT_REVIEWER_PACKETS,
 ) -> Path:
     from assess_validation_claim_readiness import assess_claim_readiness
     from assess_validation_claim_readiness import report_markdown as claim_report_markdown
@@ -292,6 +338,10 @@ def build_bundle(
     bundle_dir = output_dir / run_id
     bundle_dir.mkdir(parents=True, exist_ok=True)
     reviewer_assignments_manifest = resolve_assignment_manifest(reviewer_assignments_dir)
+    review_materials = build_review_materials_provenance(
+        reviewer_packets_dir=reviewer_packets_dir,
+        bundle_dir=bundle_dir,
+    )
 
     readiness = audit_readiness(
         worksheet_path=worksheet,
@@ -363,10 +413,12 @@ def build_bundle(
         ],
         adjudicated_consensus_pairs=adjudicated_consensus_pairs,
         reviewer_assignments_manifest=reviewer_assignments_manifest,
+        review_materials=review_materials,
     )
 
     write_json(bundle_dir / "readiness_report.json", readiness)
     (bundle_dir / "readiness_report.md").write_text(report_markdown(readiness))
+    write_json(bundle_dir / "review_materials.json", review_materials)
     write_json(bundle_dir / "review_run_status.json", review_run_status)
     (bundle_dir / "review_run_status.md").write_text(
         review_run_status_markdown(review_run_status)
@@ -415,6 +467,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--corpus-manifest", type=Path, default=DEFAULT_CORPUS_MANIFEST)
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
+    parser.add_argument("--reviewer-packets-dir", type=Path, default=DEFAULT_REVIEWER_PACKETS)
     parser.add_argument(
         "--status",
         default="independent_clinician_review",
@@ -455,6 +508,7 @@ def main() -> int:
             evidence_status=args.status,
             adjudicated_consensus_pairs=args.adjudicated_consensus_pairs,
             reviewer_assignments_dir=args.reviewer_assignments_dir,
+            reviewer_packets_dir=args.reviewer_packets_dir,
         )
     except ValueError as exc:
         print(f"Bundle build failed: {exc}", file=sys.stderr)

@@ -859,6 +859,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     bundle_dir = output_dir / "qualified_fixture_v1"
     manifest = json.loads((bundle_dir / "evidence_manifest.json").read_text())
     readiness = json.loads((bundle_dir / "readiness_report.json").read_text())
+    review_materials = json.loads((bundle_dir / "review_materials.json").read_text())
     review_run_status = json.loads((bundle_dir / "review_run_status.json").read_text())
     pairs = json.loads((bundle_dir / "calibration_pairs.json").read_text())
     consensus_pairs = json.loads((bundle_dir / "consensus_calibration_pairs.json").read_text())
@@ -877,6 +878,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["coverage"]["reviewer_reliability_pair_count"] == 700
     assert manifest["consensus_calibration_pairs"] == "consensus_calibration_pairs.json"
     assert manifest["consensus_calibration_report"] == "consensus_calibration_report.md"
+    assert manifest["review_materials"] == "review_materials.json"
     assert manifest["review_run_status"] == "review_run_status.json"
     assert manifest["review_run_status_report"] == "review_run_status.md"
     assert manifest["reviewer_reliability"] == "reviewer_reliability.json"
@@ -888,11 +890,18 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "corpus_manifest_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
+        "reviewer_packet_manifest_sha256",
         "reviewer_assignments_manifest_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
     }
     assert readiness["is_ready_for_independent_validation"] is True
+    assert review_materials["provenance_id"] == "scribeval_review_materials_v1"
+    assert review_materials["reviewer_packet_count"] == 20
+    assert len(review_materials["packet_files_sha256"]) == 20
+    assert review_materials["reviewer_packet_manifest_sha256"] == manifest[
+        "source_hashes"
+    ]["reviewer_packet_manifest_sha256"]
     assert review_run_status["readiness"]["ready_for_evidence_bundle"] is True
     assert review_run_status["coverage"]["case_submission_count"] == 100
     assert review_run_status["coverage"]["complete_case_submission_count"] == 100
@@ -919,6 +928,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         bundle_dir / "consensus_calibration_report.md"
     ).read_text()
     assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
+    assert (bundle_dir / "review_materials.json").exists()
     assert "Validation Review Run Status" in (
         bundle_dir / "review_run_status.md"
     ).read_text()
@@ -988,6 +998,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "corpus_manifest_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
+        "reviewer_packet_manifest_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
     }

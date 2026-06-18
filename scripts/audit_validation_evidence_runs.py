@@ -26,6 +26,7 @@ BENCHMARK_UNIT = "whole transcript -> final note quality score"
 REQUIRED_MANIFEST_FILES = (
     "readiness_report",
     "readiness_report_markdown",
+    "review_materials",
     "review_run_status",
     "review_run_status_report",
     "calibration_pairs",
@@ -43,6 +44,7 @@ REQUIRED_SOURCE_HASHES = {
     "corpus_manifest_sha256",
     "judge_scores_sha256",
     "protocol_sha256",
+    "reviewer_packet_manifest_sha256",
     "reviewer_registry_sha256",
     "reviewer_worksheet_sha256",
 }
@@ -183,6 +185,45 @@ def audit_readiness(
         manifest_coverage.get("qualified_reviewer_count")
         == coverage.get("qualified_reviewer_count"),
         f"{bundle_name} manifest qualified_reviewer_count drift",
+    )
+
+
+def audit_review_materials(
+    bundle_name: str,
+    review_materials_path: Path,
+    manifest: dict[str, Any],
+) -> None:
+    review_materials = load_json(review_materials_path)
+    source_hashes = manifest.get("source_hashes", {})
+    packet_hashes = review_materials.get("packet_files_sha256")
+    require(
+        review_materials.get("benchmark_unit") == BENCHMARK_UNIT,
+        f"{bundle_name} review materials have invalid benchmark_unit",
+    )
+    require(
+        review_materials.get("provenance_id") == "scribeval_review_materials_v1",
+        f"{bundle_name} review materials have invalid provenance_id",
+    )
+    require(
+        review_materials.get("reviewer_packet_manifest_sha256")
+        == source_hashes.get("reviewer_packet_manifest_sha256"),
+        f"{bundle_name} reviewer packet manifest hash drift",
+    )
+    require(
+        isinstance(packet_hashes, dict) and packet_hashes,
+        f"{bundle_name} review materials missing packet file hashes",
+    )
+    require(
+        review_materials.get("reviewer_packet_count") == len(packet_hashes),
+        f"{bundle_name} review material packet count drift",
+    )
+    for rel_path, digest in packet_hashes.items():
+        require(isinstance(rel_path, str) and rel_path, f"{bundle_name} invalid packet path")
+        require(SHA256_RE.fullmatch(str(digest)) is not None, f"{bundle_name} invalid packet hash")
+    privacy_note = review_materials.get("privacy_note", "")
+    require(
+        isinstance(privacy_note, str) and "reviewer identifiers" in privacy_note,
+        f"{bundle_name} review materials missing privacy note",
     )
 
 
@@ -382,6 +423,7 @@ def audit_bundle(bundle_dir: Path) -> int:
     audit_source_hashes(bundle_dir.name, manifest)
     paths = audit_referenced_files(bundle_dir, manifest)
     audit_readiness(bundle_dir.name, paths["readiness_report"], manifest)
+    audit_review_materials(bundle_dir.name, paths["review_materials"], manifest)
     audit_review_run_status(bundle_dir.name, paths["review_run_status"], manifest)
     return audit_pairs_and_summary(
         bundle_dir.name,

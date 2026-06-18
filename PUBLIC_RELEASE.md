@@ -50,8 +50,8 @@ transcripts.
       treating a completed bundle as validation evidence.
 - [x] Versioned evidence bundle builder produces review-run status, readiness,
       calibration, agreement, stratified summary, manifest, and source-hash
-      artifacts, including reviewer assignment and adjudicated consensus source
-      hashes when supplied.
+      artifacts, including blinded reviewer-material hashes and reviewer
+      assignment/adjudicated consensus source hashes when supplied.
 - [x] Evidence-run audit verifies publishable bundles and rejects raw clinician
       CSV inputs.
 - [x] Evidence-run index summarizes bundle coverage, claim readiness, and
