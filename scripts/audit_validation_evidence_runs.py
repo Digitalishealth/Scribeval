@@ -45,6 +45,7 @@ REQUIRED_SOURCE_HASHES = {
     "judge_scores_sha256",
     "protocol_sha256",
     "reviewer_packet_manifest_sha256",
+    "reviewer_scoring_guide_sha256",
     "reviewer_registry_sha256",
     "reviewer_worksheet_sha256",
 }
@@ -208,6 +209,16 @@ def audit_review_materials(
         review_materials.get("reviewer_packet_manifest_sha256")
         == source_hashes.get("reviewer_packet_manifest_sha256"),
         f"{bundle_name} reviewer packet manifest hash drift",
+    )
+    require(
+        review_materials.get("reviewer_scoring_guide_sha256")
+        == source_hashes.get("reviewer_scoring_guide_sha256"),
+        f"{bundle_name} reviewer scoring guide hash drift",
+    )
+    require(
+        isinstance(review_materials.get("reviewer_scoring_guide"), str)
+        and review_materials.get("reviewer_scoring_guide"),
+        f"{bundle_name} review materials missing scoring guide path",
     )
     require(
         isinstance(packet_hashes, dict) and packet_hashes,

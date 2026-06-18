@@ -169,8 +169,8 @@ The [`validation_pack/`](validation_pack/) directory contains a clinician-facing
 pilot protocol for testing Scribeval against independent human reviewers. It
 includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
 20-case synthetic corpus of complete transcript/note packets, generated blinded
-reviewer packets, a pseudonymous reviewer registry template, and example
-calibration inputs/results for:
+reviewer packets, a clinician reviewer scoring guide, a pseudonymous reviewer
+registry template, and example calibration inputs/results for:
 
 ```bash
 python scripts/build_reviewer_packets.py
@@ -270,9 +270,9 @@ adjudication flags. The validation-claim readiness report applies explicit
 protocol thresholds before treating the bundle as evidence for validation
 claims. For a completed review run, `scripts/build_validation_evidence_bundle.py`
 orchestrates these steps into one versioned bundle with the aggregate review-run
-status, blinded reviewer-material hashes, source hashes, the reviewer assignment
-manifest hash when supplied, and the adjudicated consensus-pair source hash when
-supplied.
+status, blinded reviewer-material hashes including the reviewer scoring guide,
+source hashes, the reviewer assignment manifest hash when supplied, and the
+adjudicated consensus-pair source hash when supplied.
 `scripts/audit_validation_evidence_runs.py` checks generated bundles before
 publication and rejects raw clinician CSV inputs. Use
 `scripts/index_validation_evidence_runs.py` to publish a compact run index with

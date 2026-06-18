@@ -21,6 +21,8 @@ transcripts.
       comparison outputs.
 - [x] Clinician validation pilot pack included with blinded reviewer worksheet
       and example calibration output.
+- [x] Clinician reviewer scoring guide included for transcript-to-note score,
+      severity, and dimension anchoring.
 - [x] Full 20-case synthetic validation corpus included with traceable
       transcript/note packets.
 - [x] Full 20-case validation corpus can run directly through
@@ -50,8 +52,9 @@ transcripts.
       treating a completed bundle as validation evidence.
 - [x] Versioned evidence bundle builder produces review-run status, readiness,
       calibration, agreement, stratified summary, manifest, and source-hash
-      artifacts, including blinded reviewer-material hashes and reviewer
-      assignment/adjudicated consensus source hashes when supplied.
+      artifacts, including blinded reviewer-material hashes, scoring-guide
+      source hash, and reviewer assignment/adjudicated consensus source hashes
+      when supplied.
 - [x] Evidence-run audit verifies publishable bundles and rejects raw clinician
       CSV inputs.
 - [x] Evidence-run index summarizes bundle coverage, claim readiness, and

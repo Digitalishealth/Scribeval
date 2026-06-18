@@ -52,8 +52,8 @@ Scribeval's 2-to-5 comparison limit and avoids implying a fixed vendor set.
 python scripts/build_reviewer_packets.py
 ```
 
-3. Give reviewers `reviewer_packets/`, plus `reviewer_worksheet.csv` or an
-   imported spreadsheet copy.
+3. Give reviewers `reviewer_packets/`, `reviewer_scoring_guide.md`, plus
+   `reviewer_worksheet.csv` or an imported spreadsheet copy.
 4. Ask reviewers to score each blinded submission against the transcript, not
    against another note.
 5. Assign each reviewer a pseudonymous `reviewer_id` and record eligibility in
@@ -217,9 +217,9 @@ python scripts/build_validation_evidence_bundle.py \
 The bundle includes the aggregate review-run status report, readiness report,
 reviewer reliability report, individual and consensus calibration pairs,
 agreement reports, stratified summary, validation-claim readiness assessment,
-manifest, blinded reviewer-material hashes, source hashes, and the reviewer
-assignment manifest hash when supplied. It does not copy reviewer-specific
-assignment worksheets into the public bundle.
+manifest, blinded reviewer-material hashes including the reviewer scoring guide,
+source hashes, and the reviewer assignment manifest hash when supplied. It does
+not copy reviewer-specific assignment worksheets into the public bundle.
 
 Audit generated evidence bundles before publishing or committing them:
 
@@ -272,6 +272,7 @@ instructions, more cases, or adjudication by a second clinician.
 |---|---|
 | `case_manifest.json` | 20-case synthetic validation design |
 | `clinician_review_protocol.json` | Minimum reviewer provenance and eligibility protocol |
+| `reviewer_scoring_guide.md` | Clinician-facing score, severity, and dimension anchors |
 | `reviewer_registry_template.csv` | Pseudonymous reviewer eligibility template |
 | `reviewer_worksheet.csv` | Spreadsheet template for blinded human scoring |
 | `corpus/` | Complete synthetic transcript/note case packets |

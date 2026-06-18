@@ -18,6 +18,7 @@ VALIDATION_PACK = ROOT / "validation_pack"
 CORPUS = VALIDATION_PACK / "corpus"
 EVIDENCE = VALIDATION_PACK / "evidence"
 REVIEWER_PACKETS = VALIDATION_PACK / "reviewer_packets"
+REVIEWER_SCORING_GUIDE = VALIDATION_PACK / "reviewer_scoring_guide.md"
 
 FORBIDDEN_REVIEWER_PACKET_TOKENS = {
     "cdss_checklist",
@@ -226,6 +227,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     protocol = json.loads((VALIDATION_PACK / "clinician_review_protocol.json").read_text())
 
     assert protocol["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert protocol["review_materials"]["reviewer_scoring_guide"] == (
+        "reviewer_scoring_guide.md"
+    )
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
@@ -440,9 +444,13 @@ def test_reviewer_packets_cover_corpus_without_metadata_leakage() -> None:
     packet_manifest = json.loads(
         (REVIEWER_PACKETS / "reviewer_packet_manifest.json").read_text()
     )
+    guide_text = REVIEWER_SCORING_GUIDE.read_text()
 
     assert packet_manifest["case_count"] == 20
     assert len(packet_manifest["packet_files"]) == len(corpus_manifest["case_files"])
+    assert "overall note quality" in guide_text
+    assert "whole transcript -> final note quality score" in guide_text
+    assert "Severity Scale" in guide_text
 
     packet_files = {Path(path).stem: path for path in packet_manifest["packet_files"]}
     for rel_path in corpus_manifest["case_files"]:
@@ -891,6 +899,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "judge_scores_sha256",
         "protocol_sha256",
         "reviewer_packet_manifest_sha256",
+        "reviewer_scoring_guide_sha256",
         "reviewer_assignments_manifest_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
@@ -902,6 +911,12 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_materials["reviewer_packet_manifest_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_packet_manifest_sha256"]
+    assert review_materials["reviewer_scoring_guide_sha256"] == manifest[
+        "source_hashes"
+    ]["reviewer_scoring_guide_sha256"]
+    assert review_materials["reviewer_scoring_guide"].endswith(
+        "validation_pack/reviewer_scoring_guide.md"
+    )
     assert review_run_status["readiness"]["ready_for_evidence_bundle"] is True
     assert review_run_status["coverage"]["case_submission_count"] == 100
     assert review_run_status["coverage"]["complete_case_submission_count"] == 100
@@ -999,6 +1014,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "judge_scores_sha256",
         "protocol_sha256",
         "reviewer_packet_manifest_sha256",
+        "reviewer_scoring_guide_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
     }

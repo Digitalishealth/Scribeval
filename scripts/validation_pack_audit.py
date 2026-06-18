@@ -20,6 +20,7 @@ PACK = ROOT / "validation_pack"
 CORPUS = PACK / "corpus"
 EVIDENCE = PACK / "evidence"
 REVIEWER_PACKETS = PACK / "reviewer_packets"
+REVIEWER_SCORING_GUIDE = PACK / "reviewer_scoring_guide.md"
 
 VALID_DIMENSIONS = {
     "ahpra",
@@ -320,6 +321,18 @@ def audit_corpus_benchmark_manifest(corpus_refs: dict[str, set[str]]) -> None:
 
 def audit_reviewer_packets(corpus_refs: dict[str, set[str]]) -> int:
     require((REVIEWER_PACKETS / "README.md").exists(), "missing reviewer packet README")
+    require(REVIEWER_SCORING_GUIDE.exists(), "missing reviewer scoring guide")
+    guide_text = REVIEWER_SCORING_GUIDE.read_text().lower()
+    for required_phrase in (
+        "whole transcript -> final note quality score",
+        "overall note quality",
+        "severity scale",
+        "score scale",
+    ):
+        require(
+            required_phrase in guide_text,
+            f"reviewer scoring guide missing {required_phrase}",
+        )
     manifest_path = REVIEWER_PACKETS / "reviewer_packet_manifest.json"
     manifest = load_json(manifest_path)
     packet_files = manifest.get("packet_files")
