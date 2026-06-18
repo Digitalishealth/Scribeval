@@ -32,11 +32,9 @@ from summarize_reviewer_reliability import (  # noqa: E402
     parse_dimensions,
 )
 
-from scribeval.calibration import RatingPair, compute_agreement  # noqa: E402
-from scribeval.models.score import SeverityLevel  # noqa: E402
+from scribeval.calibration import SEVERITY_ORDER, RatingPair, compute_agreement  # noqa: E402
 
 BENCHMARK_UNIT = "whole transcript -> final note quality score"
-SEVERITY_ORDER = [severity.value for severity in SeverityLevel]
 SEVERITY_INDEX = {severity: index for index, severity in enumerate(SEVERITY_ORDER)}
 
 

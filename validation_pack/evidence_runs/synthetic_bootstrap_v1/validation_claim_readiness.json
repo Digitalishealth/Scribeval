@@ -1,0 +1,231 @@
+{
+  "schema_version": "1.0.0",
+  "assessment_id": "validation_claim_readiness_v1",
+  "evidence_id": "synthetic_bootstrap_v1",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "is_ready_for_validation_claim": false,
+  "thresholds": {
+    "required_evidence_status": "independent_clinician_review",
+    "minimum_case_count": 20,
+    "minimum_submission_count": 100,
+    "minimum_qualified_reviewers": 2,
+    "maximum_consensus_adjudication_required_count": 0,
+    "minimum_reviewer_reliability_weighted_kappa": 0.6,
+    "minimum_consensus_weighted_kappa": 0.6,
+    "required_strata": [
+      "specialty",
+      "note_source",
+      "prompt_strategy",
+      "failure_mode"
+    ]
+  },
+  "coverage": {
+    "case_count": 20,
+    "submission_count": 100,
+    "consensus_pair_count": 700,
+    "individual_calibration_pair_count": 1400,
+    "reviewer_reliability_pair_count": 700,
+    "adjudication_required_count": 47
+  },
+  "checks": [
+    {
+      "id": "benchmark_unit",
+      "passed": true,
+      "observed": "whole transcript -> final note quality score",
+      "threshold": "whole transcript -> final note quality score",
+      "message": "Evidence bundle uses the transcript-to-note benchmark unit"
+    },
+    {
+      "id": "evidence_status",
+      "passed": false,
+      "observed": "synthetic_bootstrap",
+      "threshold": "independent_clinician_review",
+      "message": "Evidence status supports independent clinician validation claims"
+    },
+    {
+      "id": "review_readiness",
+      "passed": true,
+      "observed": true,
+      "threshold": true,
+      "message": "Clinician review readiness audit passed"
+    },
+    {
+      "id": "case_count",
+      "passed": true,
+      "observed": 20,
+      "threshold": ">= 20",
+      "message": "Consensus evidence covers enough validation cases"
+    },
+    {
+      "id": "submission_count",
+      "passed": true,
+      "observed": 100,
+      "threshold": ">= 100",
+      "message": "Consensus evidence covers enough scored submissions"
+    },
+    {
+      "id": "qualified_reviewer_count",
+      "passed": true,
+      "observed": 2,
+      "threshold": ">= 2",
+      "message": "Enough qualified reviewers are represented"
+    },
+    {
+      "id": "complete_case_submission_count",
+      "passed": true,
+      "observed": 100,
+      "threshold": 100,
+      "message": "All expected case-submissions have complete clinician ratings"
+    },
+    {
+      "id": "consensus_adjudication_required_count",
+      "passed": false,
+      "observed": 47,
+      "threshold": "<= 0",
+      "message": "Consensus ratings have no unresolved adjudication burden"
+    },
+    {
+      "id": "reviewer_reliability.omission",
+      "passed": true,
+      "observed": 0.9787,
+      "threshold": ">= 0.6",
+      "message": "Clinician reviewer reliability omission weighted kappa"
+    },
+    {
+      "id": "reviewer_reliability.hallucination",
+      "passed": true,
+      "observed": 0.935,
+      "threshold": ">= 0.6",
+      "message": "Clinician reviewer reliability hallucination weighted kappa"
+    },
+    {
+      "id": "reviewer_reliability.medicolegal",
+      "passed": true,
+      "observed": 0.9108,
+      "threshold": ">= 0.6",
+      "message": "Clinician reviewer reliability medicolegal weighted kappa"
+    },
+    {
+      "id": "reviewer_reliability.ahpra",
+      "passed": true,
+      "observed": 0.9485,
+      "threshold": ">= 0.6",
+      "message": "Clinician reviewer reliability ahpra weighted kappa"
+    },
+    {
+      "id": "reviewer_reliability.pdqi9",
+      "passed": true,
+      "observed": 1.0,
+      "threshold": ">= 0.6",
+      "message": "Clinician reviewer reliability pdqi9 weighted kappa"
+    },
+    {
+      "id": "reviewer_reliability.qnote",
+      "passed": true,
+      "observed": 0.9885,
+      "threshold": ">= 0.6",
+      "message": "Clinician reviewer reliability qnote weighted kappa"
+    },
+    {
+      "id": "reviewer_reliability.overall",
+      "passed": true,
+      "observed": 0.8266,
+      "threshold": ">= 0.6",
+      "message": "Clinician reviewer reliability overall weighted kappa"
+    },
+    {
+      "id": "consensus_agreement.omission",
+      "passed": true,
+      "observed": 0.9787,
+      "threshold": ">= 0.6",
+      "message": "Scribeval judge vs clinician consensus omission weighted kappa"
+    },
+    {
+      "id": "consensus_agreement.hallucination",
+      "passed": true,
+      "observed": 1.0,
+      "threshold": ">= 0.6",
+      "message": "Scribeval judge vs clinician consensus hallucination weighted kappa"
+    },
+    {
+      "id": "consensus_agreement.medicolegal",
+      "passed": true,
+      "observed": 0.9108,
+      "threshold": ">= 0.6",
+      "message": "Scribeval judge vs clinician consensus medicolegal weighted kappa"
+    },
+    {
+      "id": "consensus_agreement.ahpra",
+      "passed": true,
+      "observed": 1.0,
+      "threshold": ">= 0.6",
+      "message": "Scribeval judge vs clinician consensus ahpra weighted kappa"
+    },
+    {
+      "id": "consensus_agreement.pdqi9",
+      "passed": true,
+      "observed": 1.0,
+      "threshold": ">= 0.6",
+      "message": "Scribeval judge vs clinician consensus pdqi9 weighted kappa"
+    },
+    {
+      "id": "consensus_agreement.qnote",
+      "passed": true,
+      "observed": 0.9885,
+      "threshold": ">= 0.6",
+      "message": "Scribeval judge vs clinician consensus qnote weighted kappa"
+    },
+    {
+      "id": "consensus_agreement.overall",
+      "passed": true,
+      "observed": 0.8266,
+      "threshold": ">= 0.6",
+      "message": "Scribeval judge vs clinician consensus overall weighted kappa"
+    },
+    {
+      "id": "stratum.specialty",
+      "passed": true,
+      "observed": 8,
+      "threshold": "> 0 rows",
+      "message": "Stratified evidence includes specialty"
+    },
+    {
+      "id": "stratum.note_source",
+      "passed": true,
+      "observed": 2,
+      "threshold": "> 0 rows",
+      "message": "Stratified evidence includes note_source"
+    },
+    {
+      "id": "stratum.prompt_strategy",
+      "passed": true,
+      "observed": 5,
+      "threshold": "> 0 rows",
+      "message": "Stratified evidence includes prompt_strategy"
+    },
+    {
+      "id": "stratum.failure_mode",
+      "passed": true,
+      "observed": 24,
+      "threshold": "> 0 rows",
+      "message": "Stratified evidence includes failure_mode"
+    }
+  ],
+  "failed_checks": [
+    {
+      "id": "evidence_status",
+      "passed": false,
+      "observed": "synthetic_bootstrap",
+      "threshold": "independent_clinician_review",
+      "message": "Evidence status supports independent clinician validation claims"
+    },
+    {
+      "id": "consensus_adjudication_required_count",
+      "passed": false,
+      "observed": 47,
+      "threshold": "<= 0",
+      "message": "Consensus ratings have no unresolved adjudication burden"
+    }
+  ],
+  "interpretation_note": "A structurally valid evidence bundle is not automatically strong enough for validation claims. This assessment requires completed independent clinician review, reliable clinician agreement, judge-vs-consensus agreement across required dimensions, full corpus coverage, and no unresolved adjudication flags."
+}

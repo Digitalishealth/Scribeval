@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "synthetic_bootstrap_v1",
+  "status": "synthetic_bootstrap",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "disclaimer": "Synthetic bootstrap reviewer ratings only. This bundle is a public reproducibility artifact for the evidence-run workflow, not independent clinical validation.",
+  "corpus_manifest": "../../corpus/corpus_manifest.json",
+  "reviewer_worksheet": "synthetic_bootstrap_worksheet.csv",
+  "reviewer_registry": "synthetic_bootstrap_reviewer_registry.csv",
+  "judge_scores": "synthetic_bootstrap_judge_scores.json",
+  "calibration_pairs": "calibration_pairs.json",
+  "calibration_report": "calibration_report.md",
+  "consensus_calibration_pairs": "consensus_calibration_pairs.json",
+  "consensus_calibration_report": "consensus_calibration_report.md",
+  "consensus_source": "computed_from_reviewer_worksheet",
+  "readiness_report": "readiness_report.json",
+  "readiness_report_markdown": "readiness_report.md",
+  "review_materials": "review_materials.json",
+  "review_run_status": "review_run_status.json",
+  "review_run_status_report": "review_run_status.md",
+  "stratified_summary": "stratified_summary.json",
+  "stratified_summary_report": "stratified_summary.md",
+  "reviewer_reliability": "reviewer_reliability.json",
+  "reviewer_reliability_report": "reviewer_reliability.md",
+  "validation_claim_readiness": "validation_claim_readiness.json",
+  "validation_claim_readiness_report": "validation_claim_readiness.md",
+  "generated_by": "python scripts/build_validation_evidence_bundle.py",
+  "source_hashes": {
+    "reviewer_worksheet_sha256": "25005d93c3ceb15a910dd7797a27041501b2cee938dc3f804472e81d29362ae8",
+    "reviewer_registry_sha256": "8158f3402e9f1812ab41cc1afe6be96968e9f7ccd624853e47f4388a310fd5e8",
+    "judge_scores_sha256": "6b4b88ad47ce3c5da88fabda7ab21c256b9f6b85f928bb95ea162dafcc48e10f",
+    "corpus_manifest_sha256": "a34d0e9611329a41977ee1b7fbac22ff054ec573c0fc6ca3adeca08d1ed546d6",
+    "protocol_sha256": "93f6729db4d79531c69923d594ef7e98f96c8e8b55e70bae7b1ded57babc7424",
+    "reviewer_packet_manifest_sha256": "9a0411ec2983747de5634a01710e94dd32fea864818fe359a69f408a8c0d1ae0",
+    "reviewer_scoring_guide_sha256": "b41be7ff7108c35f7e7bc35be1a812751eb891d4e89e5cdf1a20b6ff3d82955e",
+    "reviewer_assignments_manifest_sha256": "34a216388453e279f9884fc4346759f6c761a2d6c4d0970eb1faa0307b19b520"
+  },
+  "coverage": {
+    "case_submission_count": 100,
+    "complete_case_submission_count": 100,
+    "qualified_reviewer_count": 2,
+    "calibration_pair_count": 1400,
+    "consensus_calibration_pair_count": 700,
+    "consensus_adjudication_required_count": 47,
+    "reviewer_reliability_pair_count": 700
+  },
+  "reviewer_assignments_manifest_source": "assignment_manifest.json",
+  "input_generation": {
+    "script": "python scripts/build_synthetic_evidence_bundle.py",
+    "raw_inputs_public": false,
+    "raw_input_policy": "The synthetic worksheet, reviewer registry, and reviewer assignment worksheets are generated deterministically in a temporary directory and are not committed to the public evidence bundle."
+  }
+}

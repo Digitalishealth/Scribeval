@@ -436,7 +436,7 @@ def audit_bundle(bundle_dir: Path) -> int:
     audit_readiness(bundle_dir.name, paths["readiness_report"], manifest)
     audit_review_materials(bundle_dir.name, paths["review_materials"], manifest)
     audit_review_run_status(bundle_dir.name, paths["review_run_status"], manifest)
-    return audit_pairs_and_summary(
+    pair_count = audit_pairs_and_summary(
         bundle_dir.name,
         paths["calibration_pairs"],
         paths["consensus_calibration_pairs"],
@@ -445,6 +445,20 @@ def audit_bundle(bundle_dir: Path) -> int:
         paths["validation_claim_readiness"],
         manifest,
     )
+    if manifest.get("status") == "synthetic_bootstrap":
+        claim_readiness = load_json(paths["validation_claim_readiness"])
+        generation = manifest.get("input_generation", {})
+        require(
+            claim_readiness.get("is_ready_for_validation_claim") is False,
+            f"{bundle_dir.name} synthetic bundle must not be claim-ready",
+        )
+        require(
+            isinstance(generation, dict)
+            and generation.get("script") == "python scripts/build_synthetic_evidence_bundle.py"
+            and generation.get("raw_inputs_public") is False,
+            f"{bundle_dir.name} synthetic bundle missing input-generation policy",
+        )
+    return pair_count
 
 
 def parse_args() -> argparse.Namespace:

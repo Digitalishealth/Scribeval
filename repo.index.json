@@ -19,6 +19,9 @@
       "validation_pack/reviewer_packets/README.md",
       "validation_pack/evidence/README.md",
       "validation_pack/evidence/stratified_summary_v0.md",
+      "validation_pack/evidence_runs/README.md",
+      "validation_pack/evidence_runs/index.md",
+      "validation_pack/evidence_runs/synthetic_bootstrap_v1/evidence_manifest.json",
       "scripts/build_reviewer_assignments.py",
       "scripts/audit_clinician_review_readiness.py",
       "scripts/summarize_validation_review_run.py",
@@ -31,6 +34,7 @@
       "scripts/audit_validation_evidence_runs.py",
       "scripts/index_validation_evidence_runs.py",
       "scripts/build_validation_evidence_bundle.py",
+      "scripts/build_synthetic_evidence_bundle.py",
       "frontend/README.md"
     ],
     "skills": [],

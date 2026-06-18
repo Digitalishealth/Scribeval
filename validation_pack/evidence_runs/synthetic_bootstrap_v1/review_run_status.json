@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0.0",
+  "summary_id": "scribeval_validation_review_run_status_v1",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "requirements": {
+    "reviewers_per_case_submission": 2,
+    "required_dimensions": [
+      "omission",
+      "hallucination",
+      "medicolegal",
+      "ahpra",
+      "pdqi9",
+      "qnote"
+    ],
+    "required_overall_rating": true,
+    "expected_dimension_rating_count": 1200,
+    "expected_overall_rating_count": 200
+  },
+  "coverage": {
+    "case_count": 20,
+    "case_submission_count": 100,
+    "expected_case_submission_count": 100,
+    "qualified_reviewer_count": 2,
+    "reviewer_role_counts": {
+      "primary_reviewer": 1,
+      "secondary_reviewer": 1
+    },
+    "assignment_count": 200,
+    "complete_case_submission_count": 100,
+    "complete_dimension_rating_count": 1200,
+    "complete_overall_rating_count": 200,
+    "judge_score_count": 700,
+    "raw_judge_score_row_count": 600,
+    "required_judge_score_count": 700
+  },
+  "readiness": {
+    "reviewer_registry_ready": true,
+    "assignments_ready": true,
+    "worksheet_ready_for_independent_validation": true,
+    "judge_scores_ready": true,
+    "ready_for_consensus_build": true,
+    "ready_for_evidence_bundle": true
+  },
+  "inputs": {
+    "assignments": {
+      "provided": true,
+      "assignment_count": 200,
+      "case_submission_count": 100,
+      "reviewer_count": 2,
+      "worksheet_file_count": 2,
+      "ready": true,
+      "issue_counts": {}
+    },
+    "worksheet": {
+      "provided": true,
+      "row_count": 200,
+      "complete_rating_row_count": 200,
+      "complete_dimension_rating_count": 1200,
+      "complete_overall_rating_count": 200,
+      "complete_case_submission_count": 100,
+      "ready": true,
+      "issue_counts": {}
+    },
+    "judge_scores": {
+      "provided": true,
+      "score_count": 700,
+      "raw_score_row_count": 600,
+      "required_score_count": 700,
+      "ready": true,
+      "issue_counts": {}
+    }
+  },
+  "source_files": {
+    "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
+    "clinician_review_protocol": "validation_pack/clinician_review_protocol.json",
+    "reviewer_registry": "synthetic_bootstrap_reviewer_registry.csv",
+    "worksheet": "synthetic_bootstrap_worksheet.csv",
+    "judge_scores": "synthetic_bootstrap_judge_scores.json",
+    "assignments_dir": "synthetic_bootstrap_reviewer_assignments"
+  },
+  "privacy_note": "This status summary intentionally reports aggregate progress only. It omits reviewer identifiers, reviewer comments, transcript text, candidate note text, raw judge responses, reasoning, and excerpts."
+}

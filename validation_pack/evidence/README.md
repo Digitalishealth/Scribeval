@@ -138,6 +138,14 @@ python scripts/index_validation_evidence_runs.py \
   --output-md validation_pack/evidence_runs/index.md
 ```
 
+The repository includes `../evidence_runs/synthetic_bootstrap_v1/` as a public
+synthetic bootstrap bundle. Regenerate it with:
+
+```bash
+python scripts/build_synthetic_evidence_bundle.py
+python scripts/audit_validation_evidence_runs.py
+```
+
 ## Files
 
 | File | Purpose |

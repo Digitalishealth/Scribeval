@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "index_id": "validation_evidence_runs_index_v1",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "run_count": 1,
+  "claim_ready_run_count": 0,
+  "runs": [
+    {
+      "evidence_id": "synthetic_bootstrap_v1",
+      "status": "synthetic_bootstrap",
+      "bundle_path": "validation_pack/evidence_runs/synthetic_bootstrap_v1",
+      "benchmark_unit": "whole transcript -> final note quality score",
+      "is_ready_for_validation_claim": false,
+      "failed_check_count": 2,
+      "case_count": 20,
+      "submission_count": 100,
+      "individual_calibration_pair_count": 1400,
+      "consensus_calibration_pair_count": 700,
+      "reviewer_reliability_pair_count": 700,
+      "adjudication_required_count": 47,
+      "min_reviewer_reliability_weighted_kappa": 0.8266,
+      "min_consensus_weighted_kappa": 0.8266
+    }
+  ]
+}

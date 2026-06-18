@@ -1,0 +1,3626 @@
+{
+  "schema_version": "1.0.0",
+  "summary_id": "stratified_evidence_summary_v0",
+  "evidence_id": "synthetic_bootstrap_v1",
+  "evidence_status": "synthetic_bootstrap",
+  "disclaimer": "Independent clinician validation claims require a ready clinician review readiness report and qualified reviewer provenance.",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "source_files": {
+    "evidence_manifest": "validation_pack/evidence_runs/synthetic_bootstrap_v1/evidence_manifest.json",
+    "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
+    "calibration_pairs": "validation_pack/evidence_runs/synthetic_bootstrap_v1/calibration_pairs.json"
+  },
+  "coverage": {
+    "case_count": 20,
+    "submission_count": 100,
+    "pair_count": 1400,
+    "dimension_count": 7,
+    "dimensions": [
+      "ahpra",
+      "hallucination",
+      "medicolegal",
+      "omission",
+      "overall",
+      "pdqi9",
+      "qnote"
+    ]
+  },
+  "strata": {
+    "specialty": [
+      {
+        "value": "aged_care",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 140,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.8649,
+        "minimum_icc_2_1": 0.9889,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.562,
+            "human_mean": 0.562
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.562,
+            "human_mean": 0.562
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9265,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9922,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.76,
+            "human_mean": 0.74
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9889,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.562,
+            "human_mean": 0.542
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 20,
+            "weighted_kappa": 0.8649,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9957,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.598,
+            "human_mean": 0.588
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.562,
+            "human_mean": 0.562
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9889,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.562,
+            "human_mean": 0.542
+          }
+        ]
+      },
+      {
+        "value": "chronic_disease",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 140,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.95,
+        "minimum_weighted_kappa": 0.918,
+        "minimum_icc_2_1": 0.9892,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 20,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 20,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9265,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9924,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.756,
+            "human_mean": 0.736
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9892,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9457,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.664,
+            "human_mean": 0.654
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9892,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "general_practice",
+        "case_count": 9,
+        "submission_count": 45,
+        "pair_count": 630,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.973,
+        "minimum_weighted_kappa": 0.9175,
+        "minimum_icc_2_1": 0.9887,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 90,
+            "weighted_kappa": 0.9837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9987,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6469,
+            "human_mean": 0.6469
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 90,
+            "weighted_kappa": 0.9691,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9987,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6958,
+            "human_mean": 0.6958
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 90,
+            "weighted_kappa": 0.9661,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9931,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.6469,
+            "human_mean": 0.6269
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 90,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9887,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5589,
+            "human_mean": 0.5389
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 90,
+            "weighted_kappa": 0.9175,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6107,
+            "human_mean": 0.6007
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 90,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9977,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.5589,
+            "human_mean": 0.5589
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 90,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9887,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5589,
+            "human_mean": 0.5389
+          }
+        ]
+      },
+      {
+        "value": "mental_health",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9857,
+        "minimum_weighted_kappa": 0.9206,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9969,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.614,
+            "human_mean": 0.604
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "paediatrics",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 140,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.8837,
+        "minimum_icc_2_1": 0.9892,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 20,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 20,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9892,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9892,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 20,
+            "weighted_kappa": 0.8837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9957,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9892,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "palliative_care",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.8837,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "telehealth",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.8837,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          }
+        ]
+      },
+      {
+        "value": "urgent_care",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 140,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9857,
+        "minimum_weighted_kappa": 0.9375,
+        "minimum_icc_2_1": 0.9889,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.562,
+            "human_mean": 0.562
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.562,
+            "human_mean": 0.562
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9618,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9931,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.672,
+            "human_mean": 0.652
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9889,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.562,
+            "human_mean": 0.542
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9375,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9956,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.582,
+            "human_mean": 0.572
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.562,
+            "human_mean": 0.562
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9889,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.562,
+            "human_mean": 0.542
+          }
+        ]
+      }
+    ],
+    "note_source": [
+      {
+        "value": "model_candidate",
+        "case_count": 20,
+        "submission_count": 80,
+        "pair_count": 1120,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.958,
+        "minimum_weighted_kappa": 0.9041,
+        "minimum_icc_2_1": 0.9914,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 160,
+            "weighted_kappa": 0.9704,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9988,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6508,
+            "human_mean": 0.6508
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 160,
+            "weighted_kappa": 0.9629,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9988,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6727,
+            "human_mean": 0.6727
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 160,
+            "weighted_kappa": 0.949,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.994,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.67,
+            "human_mean": 0.65
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 160,
+            "weighted_kappa": 0.9878,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.992,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.571,
+            "human_mean": 0.551
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 160,
+            "weighted_kappa": 0.9041,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9966,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6124,
+            "human_mean": 0.6024
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 160,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9981,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.549,
+            "human_mean": 0.549
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 160,
+            "weighted_kappa": 0.9934,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9914,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.56,
+            "human_mean": 0.54
+          }
+        ]
+      },
+      {
+        "value": "nurse_cdss",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 280,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 1.0,
+        "minimum_weighted_kappa": 1.0,
+        "minimum_icc_2_1": 0.0,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.996,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.71,
+            "human_mean": 0.71
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9958,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.732,
+            "human_mean": 0.732
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9794,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.732,
+            "human_mean": 0.712
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.947,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.622,
+            "human_mean": 0.602
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.931,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.0,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6,
+            "human_mean": 0.6
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9041,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.611,
+            "human_mean": 0.591
+          }
+        ]
+      }
+    ],
+    "prompt_strategy": [
+      {
+        "value": "cdss_checklist",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 280,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 1.0,
+        "minimum_weighted_kappa": 1.0,
+        "minimum_icc_2_1": 0.0,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.996,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.71,
+            "human_mean": 0.71
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9958,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.732,
+            "human_mean": 0.732
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9794,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.732,
+            "human_mean": 0.712
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.947,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.622,
+            "human_mean": 0.602
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.931,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.0,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6,
+            "human_mean": 0.6
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9041,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.611,
+            "human_mean": 0.591
+          }
+        ]
+      },
+      {
+        "value": "cdss_informed",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 280,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9786,
+        "minimum_weighted_kappa": 0.5,
+        "minimum_icc_2_1": 0.0,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.996,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.83,
+            "human_mean": 0.83
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9958,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.852,
+            "human_mean": 0.852
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9794,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.852,
+            "human_mean": 0.832
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.947,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.742,
+            "human_mean": 0.722
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 40,
+            "weighted_kappa": 0.5,
+            "kappa_interpretation": "moderate",
+            "icc_2_1": 0.931,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.788,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.0,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.72,
+            "human_mean": 0.72
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9041,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.731,
+            "human_mean": 0.711
+          }
+        ]
+      },
+      {
+        "value": "safety_first",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 280,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9286,
+        "minimum_weighted_kappa": 0.7059,
+        "minimum_icc_2_1": 0.0,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.996,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.8,
+            "human_mean": 0.8
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9958,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.822,
+            "human_mean": 0.822
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 40,
+            "weighted_kappa": 0.7059,
+            "kappa_interpretation": "substantial",
+            "icc_2_1": 0.9794,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.822,
+            "human_mean": 0.802
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 40,
+            "weighted_kappa": 0.8438,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.947,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.712,
+            "human_mean": 0.692
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 40,
+            "weighted_kappa": 0.7525,
+            "kappa_interpretation": "substantial",
+            "icc_2_1": 0.931,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.758,
+            "human_mean": 0.748
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.0,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.69,
+            "human_mean": 0.69
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 40,
+            "weighted_kappa": 0.8507,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9041,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.701,
+            "human_mean": 0.681
+          }
+        ]
+      },
+      {
+        "value": "standard",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 280,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.6875,
+        "minimum_icc_2_1": 0.0,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 40,
+            "weighted_kappa": 0.7222,
+            "kappa_interpretation": "substantial",
+            "icc_2_1": 0.9956,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.407,
+            "human_mean": 0.407
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 40,
+            "weighted_kappa": 0.6875,
+            "kappa_interpretation": "substantial",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.429,
+            "human_mean": 0.429
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9794,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.462,
+            "human_mean": 0.442
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.947,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.352,
+            "human_mean": 0.332
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9432,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.3875,
+            "human_mean": 0.3775
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.0,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.33,
+            "human_mean": 0.33
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9041,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.341,
+            "human_mean": 0.321
+          }
+        ]
+      },
+      {
+        "value": "structured_soap",
+        "case_count": 20,
+        "submission_count": 20,
+        "pair_count": 280,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9821,
+        "minimum_weighted_kappa": 0.6,
+        "minimum_icc_2_1": 0.8071,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9956,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.566,
+            "human_mean": 0.566
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9953,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.588,
+            "human_mean": 0.588
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9821,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.544,
+            "human_mean": 0.524
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9463,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.478,
+            "human_mean": 0.458
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 40,
+            "weighted_kappa": 0.6,
+            "kappa_interpretation": "substantial",
+            "icc_2_1": 0.9359,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.516,
+            "human_mean": 0.506
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.8071,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.456,
+            "human_mean": 0.456
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 40,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9068,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.467,
+            "human_mean": 0.447
+          }
+        ]
+      }
+    ],
+    "failure_mode": [
+      {
+        "value": "anticoagulant_head_injury_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.8649,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9296,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9943,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.734,
+            "human_mean": 0.714
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8649,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9962,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.59,
+            "human_mean": 0.58
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "asthma_action_plan_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.8837,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "clinically_significant_omission",
+        "case_count": 18,
+        "submission_count": 90,
+        "pair_count": 1260,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.969,
+        "minimum_weighted_kappa": 0.9172,
+        "minimum_icc_2_1": 0.9886,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 180,
+            "weighted_kappa": 0.9758,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9986,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.662,
+            "human_mean": 0.662
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 180,
+            "weighted_kappa": 0.9685,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9986,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6864,
+            "human_mean": 0.6864
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 180,
+            "weighted_kappa": 0.9558,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9931,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.684,
+            "human_mean": 0.664
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 180,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9886,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5593,
+            "human_mean": 0.5393
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 180,
+            "weighted_kappa": 0.9172,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6186,
+            "human_mean": 0.6086
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 180,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9977,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.5593,
+            "human_mean": 0.5593
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 180,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9886,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5593,
+            "human_mean": 0.5393
+          }
+        ]
+      },
+      {
+        "value": "confidentiality_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.8649,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8649,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.598,
+            "human_mean": 0.588
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "contraception_contraindication_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.8649,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9296,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9943,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.734,
+            "human_mean": 0.714
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8649,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9962,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.59,
+            "human_mean": 0.58
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "copd_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9857,
+        "minimum_weighted_kappa": 0.9296,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9296,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9943,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.734,
+            "human_mean": 0.714
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9971,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.646,
+            "human_mean": 0.636
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "culturally_safe_care_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9571,
+        "minimum_weighted_kappa": 0.8936,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8936,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.628,
+            "human_mean": 0.618
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "delirium_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.8649,
+        "minimum_icc_2_1": 0.9891,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.566,
+            "human_mean": 0.566
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.566,
+            "human_mean": 0.566
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9891,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.786,
+            "human_mean": 0.766
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9891,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.566,
+            "human_mean": 0.546
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8649,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9956,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.606,
+            "human_mean": 0.596
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.566,
+            "human_mean": 0.566
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9891,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.566,
+            "human_mean": 0.546
+          }
+        ]
+      },
+      {
+        "value": "diabetes_safety_net_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.8837,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "documentation_photo_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9857,
+        "minimum_weighted_kappa": 0.9206,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9969,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.614,
+            "human_mean": 0.604
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "ectopic_pregnancy_escalation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.8649,
+        "minimum_icc_2_1": 0.9891,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.566,
+            "human_mean": 0.566
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.566,
+            "human_mean": 0.566
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9891,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.786,
+            "human_mean": 0.766
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9891,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.566,
+            "human_mean": 0.546
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8649,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9956,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.606,
+            "human_mean": 0.596
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.566,
+            "human_mean": 0.566
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9891,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.566,
+            "human_mean": 0.546
+          }
+        ]
+      },
+      {
+        "value": "medication_adherence_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.8837,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "medication_dosing_risk",
+        "case_count": 5,
+        "submission_count": 25,
+        "pair_count": 350,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9543,
+        "minimum_weighted_kappa": 0.934,
+        "minimum_icc_2_1": 0.9889,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 50,
+            "weighted_kappa": 0.9389,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9982,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.7692,
+            "human_mean": 0.7692
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 50,
+            "weighted_kappa": 0.9389,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9982,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.7692,
+            "human_mean": 0.7692
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 50,
+            "weighted_kappa": 0.9436,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9931,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.7164,
+            "human_mean": 0.6964
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 50,
+            "weighted_kappa": 0.9813,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9918,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.602,
+            "human_mean": 0.582
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 50,
+            "weighted_kappa": 0.934,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.662,
+            "human_mean": 0.652
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 50,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 50,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9889,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "medicolegal_followup_gap",
+        "case_count": 9,
+        "submission_count": 29,
+        "pair_count": 406,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9729,
+        "minimum_weighted_kappa": 0.9311,
+        "minimum_icc_2_1": 0.988,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 58,
+            "weighted_kappa": 0.9628,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9986,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.7024,
+            "human_mean": 0.7024
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 58,
+            "weighted_kappa": 0.9628,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9986,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.7024,
+            "human_mean": 0.7024
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 58,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.988,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5431,
+            "human_mean": 0.5231
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 58,
+            "weighted_kappa": 0.9833,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9914,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.581,
+            "human_mean": 0.561
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 58,
+            "weighted_kappa": 0.9311,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9958,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.6007,
+            "human_mean": 0.5907
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 58,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9976,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.5431,
+            "human_mean": 0.5431
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 58,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.988,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5431,
+            "human_mean": 0.5231
+          }
+        ]
+      },
+      {
+        "value": "opioid_safety_net_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9429,
+        "minimum_weighted_kappa": 0.8837,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8837,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.668,
+            "human_mean": 0.658
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "over_inference_from_uncertain_transcript",
+        "case_count": 2,
+        "submission_count": 10,
+        "pair_count": 140,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.9468,
+        "minimum_icc_2_1": 0.993,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9618,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.993,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.668,
+            "human_mean": 0.648
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9618,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.993,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.668,
+            "human_mean": 0.648
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9468,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9962,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.613,
+            "human_mean": 0.603
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 20,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9978,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 20,
+            "weighted_kappa": 0.9618,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.993,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.668,
+            "human_mean": 0.648
+          }
+        ]
+      },
+      {
+        "value": "preventive_care_followup_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9571,
+        "minimum_weighted_kappa": 0.8936,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.778,
+            "human_mean": 0.758
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8936,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.628,
+            "human_mean": 0.618
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "renal_medication_interaction",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9571,
+        "minimum_weighted_kappa": 0.918,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9296,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9943,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.734,
+            "human_mean": 0.714
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9962,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.66,
+            "human_mean": 0.65
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "results_followup_ownership_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9571,
+        "minimum_weighted_kappa": 0.8936,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8936,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.628,
+            "human_mean": 0.618
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "skin_cancer_referral_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9857,
+        "minimum_weighted_kappa": 0.9206,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9969,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.614,
+            "human_mean": 0.604
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "suicide_risk_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9857,
+        "minimum_weighted_kappa": 0.9206,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9991,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.734,
+            "human_mean": 0.734
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.9206,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9969,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.614,
+            "human_mean": 0.604
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "unsupported_hallucination",
+        "case_count": 11,
+        "submission_count": 39,
+        "pair_count": 546,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9744,
+        "minimum_weighted_kappa": 0.9174,
+        "minimum_icc_2_1": 0.992,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 78,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.5377,
+            "human_mean": 0.5377
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 78,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.5377,
+            "human_mean": 0.5377
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 78,
+            "weighted_kappa": 0.95,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.994,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.7013,
+            "human_mean": 0.6813
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 78,
+            "weighted_kappa": 0.9884,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.992,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5659,
+            "human_mean": 0.5459
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 78,
+            "weighted_kappa": 0.9174,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9963,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.5764,
+            "human_mean": 0.5664
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 78,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.5377,
+            "human_mean": 0.5377
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 78,
+            "weighted_kappa": 0.9884,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.992,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.5659,
+            "human_mean": 0.5459
+          }
+        ]
+      },
+      {
+        "value": "withdrawal_risk_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 0.9714,
+        "minimum_weighted_kappa": 0.8649,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 0.918,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.778,
+            "human_mean": 0.778
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 0.8649,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.598,
+            "human_mean": 0.588
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      },
+      {
+        "value": "work_certificate_documentation_gap",
+        "case_count": 1,
+        "submission_count": 5,
+        "pair_count": 70,
+        "dimension_count": 7,
+        "dimensions": [
+          "ahpra",
+          "hallucination",
+          "medicolegal",
+          "omission",
+          "overall",
+          "pdqi9",
+          "qnote"
+        ],
+        "mean_abs_difference": 0.0143,
+        "severity_exact_agreement": 1.0,
+        "minimum_weighted_kappa": 1.0,
+        "minimum_icc_2_1": 0.9898,
+        "agreement_by_dimension": [
+          {
+            "dimension": "ahpra",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "hallucination",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "medicolegal",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "omission",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          },
+          {
+            "dimension": "overall",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9959,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.548
+          },
+          {
+            "dimension": "pdqi9",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9979,
+            "mean_abs_difference": 0.01,
+            "judge_mean": 0.558,
+            "human_mean": 0.558
+          },
+          {
+            "dimension": "qnote",
+            "n_pairs": 10,
+            "weighted_kappa": 1.0,
+            "kappa_interpretation": "almost perfect",
+            "icc_2_1": 0.9898,
+            "mean_abs_difference": 0.02,
+            "judge_mean": 0.558,
+            "human_mean": 0.538
+          }
+        ]
+      }
+    ]
+  }
+}

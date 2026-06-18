@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "audit_id": "clinician_review_readiness_v1",
+  "is_ready_for_independent_validation": true,
+  "requirements": {
+    "reviewers_per_case_submission": 2,
+    "required_dimensions": [
+      "omission",
+      "hallucination",
+      "medicolegal",
+      "ahpra",
+      "pdqi9",
+      "qnote"
+    ],
+    "required_overall_rating": true,
+    "direct_identifier_fields_forbidden": [
+      "email",
+      "name",
+      "phone",
+      "provider_number",
+      "registration_number"
+    ]
+  },
+  "coverage": {
+    "expected_case_submission_count": 100,
+    "complete_case_submission_count": 100,
+    "qualified_reviewer_count": 2
+  },
+  "issues": {
+    "under_reviewed_submissions": [],
+    "incomplete_rating_rows": [],
+    "unknown_submission_rows": [],
+    "unknown_reviewer_rows": []
+  }
+}

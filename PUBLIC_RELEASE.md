@@ -59,6 +59,8 @@ transcripts.
       CSV inputs.
 - [x] Evidence-run index summarizes bundle coverage, claim readiness, and
       agreement minima for public review.
+- [x] Synthetic evidence-run bundle committed as a reproducible workflow
+      artifact with raw reviewer inputs excluded and claim-readiness set false.
 - [x] Stratified validation evidence summary included across specialty, note
       source, prompt strategy, and safety-critical failure mode, including
       kappa/ICC agreement metrics where enough pairs exist.

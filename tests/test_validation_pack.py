@@ -1756,6 +1756,44 @@ def test_evidence_run_indexer_summarizes_generated_bundle(tmp_path: Path) -> Non
     assert "qualified_fixture_v1" in output_md.read_text()
 
 
+def test_synthetic_evidence_bundle_script_reproduces_public_bundle(
+    tmp_path: Path,
+) -> None:
+    output_dir = tmp_path / "evidence_runs"
+    committed_bundle = VALIDATION_PACK / "evidence_runs" / "synthetic_bootstrap_v1"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_synthetic_evidence_bundle.py",
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    bundle_dir = output_dir / "synthetic_bootstrap_v1"
+    manifest = json.loads((bundle_dir / "evidence_manifest.json").read_text())
+    committed_manifest = json.loads((committed_bundle / "evidence_manifest.json").read_text())
+    claim_readiness = json.loads((bundle_dir / "validation_claim_readiness.json").read_text())
+    index = json.loads((output_dir / "index.json").read_text())
+
+    assert "Wrote synthetic validation evidence bundle" in result.stdout
+    assert manifest["status"] == "synthetic_bootstrap"
+    assert manifest["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert "not independent clinical validation" in manifest["disclaimer"]
+    assert manifest["input_generation"]["raw_inputs_public"] is False
+    assert manifest["source_hashes"] == committed_manifest["source_hashes"]
+    assert manifest["coverage"] == committed_manifest["coverage"]
+    assert claim_readiness["is_ready_for_validation_claim"] is False
+    assert index["run_count"] == 1
+    assert index["claim_ready_run_count"] == 0
+    assert not any(path.suffix == ".csv" for path in output_dir.rglob("*"))
+
+
 def test_evidence_run_audit_rejects_raw_clinician_csv(tmp_path: Path) -> None:
     worksheet = tmp_path / "complete_worksheet.csv"
     registry = tmp_path / "reviewer_registry.csv"
