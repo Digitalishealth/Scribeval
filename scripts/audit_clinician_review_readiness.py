@@ -51,6 +51,7 @@ def load_protocol(protocol_path: Path) -> dict[str, Any]:
         ),
         "allowed_review_roles": set(requirements.get("allowed_review_roles", [])),
         "required_dimensions": tuple(required_dimensions),
+        "required_overall_rating": bool(requirements.get("required_overall_rating", False)),
     }
 
 
@@ -125,6 +126,12 @@ def row_has_complete_required_dimensions(row: dict[str, str], dimensions: tuple[
     return True
 
 
+def row_has_complete_overall_rating(row: dict[str, str]) -> bool:
+    return bool(row.get("overall_score", "").strip()) and bool(
+        row.get("overall_severity", "").strip()
+    )
+
+
 def audit_readiness(
     *,
     worksheet_path: Path,
@@ -166,7 +173,16 @@ def audit_readiness(
             if reviewer_id not in registry:
                 unknown_reviewer_rows.append({"row": row_index, "reviewer_id": reviewer_id})
                 continue
-            if not row_has_complete_required_dimensions(row, protocol["required_dimensions"]):
+            dimensions_complete = row_has_complete_required_dimensions(
+                row,
+                protocol["required_dimensions"],
+            )
+            overall_complete = (
+                row_has_complete_overall_rating(row)
+                if protocol["required_overall_rating"]
+                else True
+            )
+            if not dimensions_complete or not overall_complete:
                 incomplete_rows.append(
                     {
                         "row": row_index,
@@ -199,6 +215,7 @@ def audit_readiness(
         "requirements": {
             "reviewers_per_case_submission": minimum_reviewers,
             "required_dimensions": list(protocol["required_dimensions"]),
+            "required_overall_rating": protocol["required_overall_rating"],
             "direct_identifier_fields_forbidden": sorted(DIRECT_IDENTIFIER_FIELDS),
         },
         "coverage": {
@@ -235,6 +252,7 @@ def report_markdown(report: dict[str, Any]) -> str:
             f"{report['requirements']['reviewers_per_case_submission']}"
         ),
         "- Required dimensions: " + ", ".join(report["requirements"]["required_dimensions"]),
+        f"- Overall rating required: {report['requirements']['required_overall_rating']}",
         "- Direct identifiers are forbidden in worksheet and registry files.",
         "",
     ]

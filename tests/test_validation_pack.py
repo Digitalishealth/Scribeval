@@ -167,6 +167,8 @@ def write_complete_review_worksheet_and_judge_scores(
                             "dimension": dimension,
                             "judge_score": 0.9,
                             "judge_severity": "low",
+                            "overall_score": 0.9,
+                            "overall_severity": "low",
                         }
                     )
                 for reviewer_id in ("reviewer_clinician_001", "reviewer_clinician_002"):
@@ -174,6 +176,8 @@ def write_complete_review_worksheet_and_judge_scores(
                         "case_id": case["case_id"],
                         "blinded_submission": note["blind_label"],
                         "reviewer_id": reviewer_id,
+                        "overall_score": "0.90",
+                        "overall_severity": "low",
                         "reviewer_comments": "Complete readiness fixture.",
                     }
                     for dimension in REQUIRED_CLINICIAN_REVIEW_DIMENSIONS:
@@ -239,6 +243,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     requirements = protocol["minimum_independent_review_requirements"]
     assert requirements["reviewers_per_case"] == 2
     assert requirements["reviewers_per_case_submission"] == 2
+    assert requirements["required_overall_rating"] is True
     assert requirements["eligible_registration_status"] == "current"
     assert requirements["required_training_completed"] is True
     assert requirements["minimum_years_post_registration"] >= 1
@@ -751,8 +756,10 @@ def test_validation_review_run_status_accepts_complete_inputs(
     assert summary["coverage"]["assignment_count"] == 200
     assert summary["coverage"]["complete_case_submission_count"] == 100
     assert summary["coverage"]["complete_dimension_rating_count"] == 1200
-    assert summary["coverage"]["judge_score_count"] == 600
-    assert summary["coverage"]["required_judge_score_count"] == 600
+    assert summary["coverage"]["complete_overall_rating_count"] == 200
+    assert summary["coverage"]["judge_score_count"] == 700
+    assert summary["coverage"]["raw_judge_score_row_count"] == 600
+    assert summary["coverage"]["required_judge_score_count"] == 700
     assert summary["readiness"]["assignments_ready"] is True
     assert summary["readiness"]["worksheet_ready_for_independent_validation"] is True
     assert summary["readiness"]["judge_scores_ready"] is True
@@ -794,6 +801,7 @@ def test_validation_review_run_status_reports_incomplete_inputs(
     assert summary["readiness"]["ready_for_consensus_build"] is False
     assert summary["coverage"]["complete_case_submission_count"] == 0
     assert summary["coverage"]["complete_dimension_rating_count"] == 0
+    assert summary["coverage"]["complete_overall_rating_count"] == 0
     assert summary["inputs"]["worksheet"]["issue_counts"] == {
         "empty_assignment_rows": 100,
         "under_reviewed_case_submissions": 100,
@@ -846,10 +854,10 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["coverage"]["case_submission_count"] == 100
     assert manifest["coverage"]["complete_case_submission_count"] == 100
     assert manifest["coverage"]["qualified_reviewer_count"] == 2
-    assert manifest["coverage"]["calibration_pair_count"] == 1200
-    assert manifest["coverage"]["consensus_calibration_pair_count"] == 600
+    assert manifest["coverage"]["calibration_pair_count"] == 1400
+    assert manifest["coverage"]["consensus_calibration_pair_count"] == 700
     assert manifest["coverage"]["consensus_adjudication_required_count"] == 0
-    assert manifest["coverage"]["reviewer_reliability_pair_count"] == 600
+    assert manifest["coverage"]["reviewer_reliability_pair_count"] == 700
     assert manifest["consensus_calibration_pairs"] == "consensus_calibration_pairs.json"
     assert manifest["consensus_calibration_report"] == "consensus_calibration_report.md"
     assert manifest["review_run_status"] == "review_run_status.json"
@@ -870,14 +878,17 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_run_status["coverage"]["case_submission_count"] == 100
     assert review_run_status["coverage"]["complete_case_submission_count"] == 100
     assert review_run_status["coverage"]["complete_dimension_rating_count"] == 1200
-    assert review_run_status["coverage"]["judge_score_count"] == 600
-    assert review_run_status["coverage"]["required_judge_score_count"] == 600
-    assert len(pairs) == 1200
-    assert len(consensus_pairs) == 600
+    assert review_run_status["coverage"]["complete_overall_rating_count"] == 200
+    assert review_run_status["coverage"]["judge_score_count"] == 700
+    assert review_run_status["coverage"]["raw_judge_score_row_count"] == 600
+    assert review_run_status["coverage"]["required_judge_score_count"] == 700
+    assert len(pairs) == 1400
+    assert len(consensus_pairs) == 700
     assert all(not pair["adjudication_required"] for pair in consensus_pairs)
-    assert stratified["coverage"]["pair_count"] == 1200
+    assert stratified["coverage"]["pair_count"] == 1400
     assert stratified["evidence_status"] == "independent_clinician_review"
-    assert reviewer_reliability["coverage"]["reliability_pair_count"] == 600
+    assert reviewer_reliability["coverage"]["reliability_pair_count"] == 700
+    assert "overall" in reviewer_reliability["coverage"]["dimensions"]
     assert reviewer_reliability["readiness"]["is_ready_for_independent_validation"] is True
     assert claim_readiness["is_ready_for_validation_claim"] is True
     assert not claim_readiness["failed_checks"]
@@ -1060,16 +1071,17 @@ def test_reviewer_reliability_summary_accepts_complete_qualified_inputs(
     )
 
     summary = json.loads(output_json.read_text())
-    assert "Reviewer reliability pairs: 600" in result.stdout
+    assert "Reviewer reliability pairs: 700" in result.stdout
     assert summary["benchmark_unit"] == "whole transcript -> final note quality score"
     assert summary["readiness"]["is_ready_for_independent_validation"] is True
     assert summary["coverage"]["case_count"] == 20
     assert summary["coverage"]["submission_count"] == 100
     assert summary["coverage"]["reviewer_pair_count"] == 1
-    assert summary["coverage"]["reliability_pair_count"] == 600
-    assert {row["dimension"] for row in summary["dimension_agreement"]} == set(
-        REQUIRED_CLINICIAN_REVIEW_DIMENSIONS
-    )
+    assert summary["coverage"]["reliability_pair_count"] == 700
+    assert {row["dimension"] for row in summary["dimension_agreement"]} == {
+        *REQUIRED_CLINICIAN_REVIEW_DIMENSIONS,
+        "overall",
+    }
     assert all(row["weighted_kappa"] == 1.0 for row in summary["dimension_agreement"])
     assert "Clinician Reviewer Reliability Report" in output_md.read_text()
 
@@ -1111,14 +1123,14 @@ def test_consensus_validation_ratings_build_importable_pairs(
 
     pairs = json.loads(output.read_text())
     summary = json.loads(output_summary_json.read_text())
-    assert "Wrote 600 consensus calibration pairs" in result.stdout
-    assert len(pairs) == 600
+    assert "Wrote 700 consensus calibration pairs" in result.stdout
+    assert len(pairs) == 700
     assert pairs[0]["reviewer_count"] == 2
     assert pairs[0]["human_score"] == 0.9
     assert pairs[0]["human_severity"] == "low"
     assert pairs[0]["severity_consensus_method"] == "unanimous"
     assert pairs[0]["adjudication_required"] is False
-    assert summary["coverage"]["consensus_pair_count"] == 600
+    assert summary["coverage"]["consensus_pair_count"] == 700
     assert summary["coverage"]["adjudication_required_count"] == 0
     assert "Judge vs Consensus Agreement" in output_summary_md.read_text()
 
@@ -1132,9 +1144,10 @@ def test_consensus_validation_ratings_build_importable_pairs(
         )
         for pair in pairs
     ]
-    assert {agreement.dimension for agreement in compute_agreement(pairs_for_agreement)} == set(
-        REQUIRED_CLINICIAN_REVIEW_DIMENSIONS
-    )
+    assert {agreement.dimension for agreement in compute_agreement(pairs_for_agreement)} == {
+        *REQUIRED_CLINICIAN_REVIEW_DIMENSIONS,
+        "overall",
+    }
 
 
 def test_adjudication_packet_builder_accepts_clean_consensus_pairs(
@@ -1594,7 +1607,7 @@ def test_evidence_run_audit_accepts_generated_bundle(tmp_path: Path) -> None:
 
     assert "Evidence run audit passed." in result.stdout
     assert "Bundles: 1" in result.stdout
-    assert "Calibration pairs: 1200" in result.stdout
+    assert "Calibration pairs: 1400" in result.stdout
 
 
 def test_evidence_run_indexer_summarizes_generated_bundle(tmp_path: Path) -> None:
@@ -1656,9 +1669,9 @@ def test_evidence_run_indexer_summarizes_generated_bundle(tmp_path: Path) -> Non
     assert run["failed_check_count"] == 0
     assert run["case_count"] == 20
     assert run["submission_count"] == 100
-    assert run["individual_calibration_pair_count"] == 1200
-    assert run["consensus_calibration_pair_count"] == 600
-    assert run["reviewer_reliability_pair_count"] == 600
+    assert run["individual_calibration_pair_count"] == 1400
+    assert run["consensus_calibration_pair_count"] == 700
+    assert run["reviewer_reliability_pair_count"] == 700
     assert run["adjudication_required_count"] == 0
     assert run["min_reviewer_reliability_weighted_kappa"] == 1.0
     assert run["min_consensus_weighted_kappa"] == 1.0

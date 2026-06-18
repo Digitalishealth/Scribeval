@@ -23,7 +23,9 @@ python scripts/build_reviewer_assignments.py \
   --output-dir <reviewer_assignments_dir>
 ```
 
-After reviewers complete their worksheets, audit the completed review set:
+After reviewers complete their worksheets, audit the completed review set. The
+audit requires the overall note-quality fields plus all required dimension
+fields for each assigned case-submission:
 
 ```bash
 python scripts/audit_clinician_review_readiness.py \

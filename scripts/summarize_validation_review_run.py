@@ -127,6 +127,7 @@ def summarize_worksheet(
     registry: dict[str, dict[str, str]],
     required_dimensions: tuple[str, ...],
     required_reviewer_count: int,
+    required_overall_rating: bool,
 ) -> dict[str, Any]:
     if worksheet_path is None:
         return {
@@ -134,6 +135,7 @@ def summarize_worksheet(
             "row_count": 0,
             "complete_rating_row_count": 0,
             "complete_dimension_rating_count": 0,
+            "complete_overall_rating_count": 0,
             "complete_case_submission_count": 0,
             "ready": None,
             "issue_counts": {},
@@ -141,6 +143,7 @@ def summarize_worksheet(
 
     from audit_clinician_review_readiness import (
         DIRECT_IDENTIFIER_FIELDS,
+        row_has_complete_overall_rating,
         row_has_complete_required_dimensions,
     )
 
@@ -150,6 +153,7 @@ def summarize_worksheet(
     row_count = 0
     complete_rating_row_count = 0
     incomplete_rating_row_count = 0
+    incomplete_overall_rating_row_count = 0
     empty_assignment_row_count = 0
     unknown_submission_row_count = 0
     unknown_reviewer_row_count = 0
@@ -178,8 +182,17 @@ def summarize_worksheet(
             if reviewer_id not in registry:
                 unknown_reviewer_row_count += 1
                 continue
-            if not row_has_complete_required_dimensions(row, required_dimensions):
+            dimensions_complete = row_has_complete_required_dimensions(
+                row,
+                required_dimensions,
+            )
+            overall_complete = (
+                row_has_complete_overall_rating(row) if required_overall_rating else True
+            )
+            if not dimensions_complete or not overall_complete:
                 incomplete_rating_row_count += 1
+                if required_overall_rating and not overall_complete:
+                    incomplete_overall_rating_row_count += 1
                 continue
             complete_rating_row_count += 1
             reviewer_ids_by_submission[submission_key].add(reviewer_id)
@@ -193,6 +206,7 @@ def summarize_worksheet(
     issue_counts = {
         "empty_assignment_rows": empty_assignment_row_count,
         "incomplete_rating_rows": incomplete_rating_row_count,
+        "incomplete_overall_rating_rows": incomplete_overall_rating_row_count,
         "unknown_submission_rows": unknown_submission_row_count,
         "unknown_reviewer_rows": unknown_reviewer_row_count,
         "under_reviewed_case_submissions": under_reviewed_count,
@@ -203,6 +217,9 @@ def summarize_worksheet(
         "row_count": row_count,
         "complete_rating_row_count": complete_rating_row_count,
         "complete_dimension_rating_count": complete_rating_row_count * len(required_dimensions),
+        "complete_overall_rating_count": (
+            complete_rating_row_count if required_overall_rating else 0
+        ),
         "complete_case_submission_count": complete_case_submission_count,
         "ready": not issue_counts,
         "issue_counts": issue_counts,
@@ -215,11 +232,13 @@ def summarize_judge_scores(
     corpus_manifest_path: Path,
     expected_submissions: set[tuple[str, str]],
     required_dimensions: tuple[str, ...],
+    required_overall_rating: bool,
 ) -> dict[str, Any]:
     if judge_scores_path is None:
         return {
             "provided": False,
             "score_count": 0,
+            "raw_score_row_count": 0,
             "required_score_count": 0,
             "ready": None,
             "issue_counts": {},
@@ -245,6 +264,15 @@ def summarize_judge_scores(
     observed_required_keys = {
         key for key in score_map if key[2] in set(required_dimensions)
     }
+    if required_overall_rating:
+        for case_id, blind_label in expected_submissions:
+            submission_id = blind_label_map[(case_id, blind_label)]
+            expected_score_keys.add((case_id, submission_id, "overall"))
+        observed_required_keys = {
+            key
+            for key in score_map
+            if key[2] in set(required_dimensions) or key[2] == "overall"
+        }
     missing_score_count = len(expected_score_keys - observed_required_keys)
     extra_required_dimension_score_count = len(observed_required_keys - expected_score_keys)
     issue_counts = {
@@ -255,7 +283,8 @@ def summarize_judge_scores(
     issue_counts = {key: value for key, value in issue_counts.items() if value}
     return {
         "provided": True,
-        "score_count": len(raw_scores),
+        "score_count": len(score_map),
+        "raw_score_row_count": len(raw_scores),
         "required_score_count": len(expected_score_keys),
         "ready": not issue_counts,
         "issue_counts": issue_counts,
@@ -286,6 +315,11 @@ def build_review_run_status(
     expected_dimension_rating_count = (
         len(expected_submissions) * required_reviewer_count * len(required_dimensions)
     )
+    expected_overall_rating_count = (
+        len(expected_submissions) * required_reviewer_count
+        if protocol["required_overall_rating"]
+        else 0
+    )
 
     assignments = summarize_assignments(
         assignments_dir=assignments_dir,
@@ -298,12 +332,14 @@ def build_review_run_status(
         registry=registry,
         required_dimensions=required_dimensions,
         required_reviewer_count=required_reviewer_count,
+        required_overall_rating=protocol["required_overall_rating"],
     )
     judge_score_summary = summarize_judge_scores(
         judge_scores_path=judge_scores,
         corpus_manifest_path=corpus_manifest,
         expected_submissions=expected_submissions,
         required_dimensions=required_dimensions,
+        required_overall_rating=protocol["required_overall_rating"],
     )
     ready_for_consensus = (
         worksheet_summary["ready"] is True and judge_score_summary["ready"] is True
@@ -326,7 +362,9 @@ def build_review_run_status(
         "requirements": {
             "reviewers_per_case_submission": required_reviewer_count,
             "required_dimensions": list(required_dimensions),
+            "required_overall_rating": protocol["required_overall_rating"],
             "expected_dimension_rating_count": expected_dimension_rating_count,
+            "expected_overall_rating_count": expected_overall_rating_count,
         },
         "coverage": {
             "case_count": counts["case_count"],
@@ -341,7 +379,11 @@ def build_review_run_status(
             "complete_dimension_rating_count": worksheet_summary[
                 "complete_dimension_rating_count"
             ],
+            "complete_overall_rating_count": worksheet_summary[
+                "complete_overall_rating_count"
+            ],
             "judge_score_count": judge_score_summary["score_count"],
+            "raw_judge_score_row_count": judge_score_summary["raw_score_row_count"],
             "required_judge_score_count": judge_score_summary["required_score_count"],
         },
         "readiness": {
@@ -391,6 +433,11 @@ def report_markdown(report: dict[str, Any]) -> str:
             "- Complete required dimension ratings: "
             f"{coverage['complete_dimension_rating_count']} / "
             f"{report['requirements']['expected_dimension_rating_count']}"
+        ),
+        (
+            "- Complete overall ratings: "
+            f"{coverage['complete_overall_rating_count']} / "
+            f"{report['requirements']['expected_overall_rating_count']}"
         ),
         (
             "- Judge scores: "
@@ -475,6 +522,11 @@ def main() -> int:
         "Complete required dimension ratings: "
         f"{report['coverage']['complete_dimension_rating_count']} / "
         f"{report['requirements']['expected_dimension_rating_count']}"
+    )
+    print(
+        "Complete overall ratings: "
+        f"{report['coverage']['complete_overall_rating_count']} / "
+        f"{report['requirements']['expected_overall_rating_count']}"
     )
     print(
         "Judge scores: "

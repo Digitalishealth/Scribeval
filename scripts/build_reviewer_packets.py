@@ -12,6 +12,7 @@ DEFAULT_CORPUS_MANIFEST = ROOT / "validation_pack" / "corpus" / "corpus_manifest
 DEFAULT_OUTPUT_DIR = ROOT / "validation_pack" / "reviewer_packets"
 
 REVIEW_DIMENSIONS = [
+    "overall note quality",
     "omission",
     "hallucination",
     "medicolegal adequacy",

@@ -32,7 +32,8 @@ transcripts.
 - [x] Reviewer assignment builder creates balanced reviewer-specific
       worksheets for blinded case-submission collection.
 - [x] Independent clinician review readiness audit checks two qualified
-      reviewers per blinded case-submission before calibration import.
+      reviewers plus overall and dimension ratings per blinded case-submission
+      before calibration import.
 - [x] Validation corpus judge-score exporter produces importable Scribeval
       score JSON without transcript/note text or raw judge excerpts.
 - [x] Validation review-run status summary tracks assignment, worksheet, and

@@ -24,6 +24,7 @@
     "eligible_registration_status": "current",
     "minimum_years_post_registration": 1,
     "required_training_completed": true,
+    "required_overall_rating": true,
     "required_dimensions": [
       "omission",
       "hallucination",

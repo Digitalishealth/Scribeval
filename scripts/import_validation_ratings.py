@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CORPUS_MANIFEST = ROOT / "validation_pack" / "corpus" / "corpus_manifest.json"
 
 DIMENSIONS = (
+    "overall",
     "omission",
     "hallucination",
     "medicolegal",
@@ -93,6 +94,33 @@ def load_judge_scores(judge_scores_path: Path) -> dict[tuple[str, str, str], dic
         validate_score(item.get("judge_score"), f"judge score {index}")
         validate_severity(item.get("judge_severity"), f"judge score {index}")
         scores[key] = item
+        if "overall_score" in item or "overall_severity" in item:
+            overall_score = validate_score(
+                item.get("overall_score"),
+                f"judge score {index} overall",
+            )
+            overall_severity = validate_severity(
+                item.get("overall_severity"),
+                f"judge score {index} overall",
+            )
+            overall_key = (case_id, submission_id, "overall")
+            overall_item = {
+                **item,
+                "dimension": "overall",
+                "judge_score": overall_score,
+                "judge_severity": overall_severity,
+            }
+            existing_overall = scores.get(overall_key)
+            if existing_overall is not None:
+                if (
+                    float(existing_overall["judge_score"]) != overall_score
+                    or existing_overall["judge_severity"] != overall_severity
+                ):
+                    raise ValueError(
+                        f"Inconsistent overall judge score for {case_id}/{submission_id}"
+                    )
+            else:
+                scores[overall_key] = overall_item
     return scores
 
 

@@ -215,6 +215,8 @@ def assess_claim_readiness(
     )
 
     required_dimensions = list(readiness["requirements"]["required_dimensions"])
+    if readiness["requirements"].get("required_overall_rating"):
+        required_dimensions.append("overall")
     dimension_kappa_checks(
         checks,
         check_prefix="reviewer_reliability",

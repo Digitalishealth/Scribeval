@@ -11,6 +11,7 @@ Score each blinded final note against the whole transcript. Do not score a note 
 
 Review dimensions:
 
+- overall note quality
 - omission
 - hallucination
 - medicolegal adequacy

@@ -435,6 +435,10 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol required_dimensions drift",
     )
     require(
+        requirements.get("required_overall_rating") is True,
+        "clinician review protocol must require overall note-quality ratings",
+    )
+    require(
         requirements.get("eligible_registration_status") == "current",
         "clinician review protocol must require current registration",
     )

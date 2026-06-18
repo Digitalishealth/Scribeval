@@ -66,7 +66,11 @@ def display_path(path: Path) -> str:
 def parse_dimensions(raw_dimensions: str | None, protocol_path: Path) -> tuple[str, ...]:
     if raw_dimensions is not None:
         return tuple(item.strip() for item in raw_dimensions.split(",") if item.strip())
-    return tuple(load_protocol(protocol_path)["required_dimensions"])
+    protocol = load_protocol(protocol_path)
+    dimensions = list(protocol["required_dimensions"])
+    if protocol.get("required_overall_rating") and "overall" not in dimensions:
+        dimensions.append("overall")
+    return tuple(dimensions)
 
 
 def load_corpus_index(corpus_manifest_path: Path) -> dict[str, Any]:

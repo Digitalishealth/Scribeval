@@ -18,6 +18,7 @@ whole transcript -> final note quality score
 
 Each candidate note is scored on the same dimensions used by Scribeval:
 
+- overall note quality
 - omission
 - hallucination
 - medicolegal adequacy
@@ -67,7 +68,9 @@ python scripts/build_reviewer_assignments.py \
 ```
 
 7. Audit the filled worksheet and reviewer registry before treating it as
-   independent clinician evidence:
+   independent clinician evidence. The audit requires both overall note-quality
+   ratings and complete required dimension ratings for each assigned
+   case-submission:
 
 ```bash
 python scripts/audit_clinician_review_readiness.py \
