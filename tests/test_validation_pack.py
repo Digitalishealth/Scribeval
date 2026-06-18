@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from scribeval.calibration import RatingPair, compute_agreement
+from scribeval.cli import _load_benchmark_manifest
 from tests.conftest import MockJudge
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -328,6 +329,30 @@ def test_bootstrap_corpus_has_traceable_case_packets() -> None:
     assert "withdrawal_risk_gap" in failure_modes
     assert "contraception_contraindication_gap" in failure_modes
     assert "delirium_escalation_gap" in failure_modes
+
+
+def test_validation_corpus_is_runnable_benchmark_manifest() -> None:
+    cases = _load_benchmark_manifest(CORPUS / "benchmark_manifest.json")
+    expected_labels = {
+        "CDSSInformed",
+        "ModelStandard",
+        "NurseCDSS",
+        "SafetyFirst",
+        "StructuredSOAP",
+    }
+
+    assert len(cases) == 20
+    assert {case.case_id for case in cases} == {
+        json.loads((CORPUS / rel_path).read_text())["case_id"]
+        for rel_path in json.loads((CORPUS / "corpus_manifest.json").read_text())["case_files"]
+    }
+    assert all(":" in case.transcript_content for case in cases)
+    assert {submission.label for submission in cases[0].submissions} == expected_labels
+    assert all(len(case.submissions) == 5 for case in cases)
+    assert all(
+        {submission.label for submission in case.submissions} == expected_labels
+        for case in cases
+    )
 
 
 def test_evidence_pairs_reference_corpus_and_are_computable() -> None:

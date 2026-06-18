@@ -23,6 +23,8 @@ transcripts.
       and example calibration output.
 - [x] Full 20-case synthetic validation corpus included with traceable
       transcript/note packets.
+- [x] Full 20-case validation corpus can run directly through
+      `scribeval benchmark`.
 - [x] Generated blinded reviewer packets included for clinician scoring without
       coordinator-only corpus metadata.
 - [x] Pseudonymous reviewer registry template and clinician review protocol

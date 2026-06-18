@@ -60,9 +60,8 @@ change.
 
 - [x] 20-case full transcript/note synthetic validation corpus across
       specialties
-- [ ] 20+ full transcript/note runnable benchmark cases wired into
-      `scribeval benchmark` (sample runnable corpus current: 5; validation
-      corpus current: 20)
+- [x] 20+ full transcript/note runnable benchmark cases wired into
+      `scribeval benchmark` via `validation_pack/corpus/benchmark_manifest.json`
 - [ ] Multi-speaker cases with recorded audio alignment
 - [ ] Paediatric, palliative, remote/telehealth cases
 

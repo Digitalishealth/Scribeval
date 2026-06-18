@@ -275,6 +275,49 @@ def audit_stratified_summary(
             )
 
 
+def audit_corpus_benchmark_manifest(corpus_refs: dict[str, set[str]]) -> None:
+    benchmark_manifest = load_json(CORPUS / "benchmark_manifest.json")
+    require(
+        benchmark_manifest.get("source") == "validation_corpus",
+        "validation corpus benchmark manifest has invalid source",
+    )
+    require(
+        benchmark_manifest.get("benchmark_unit")
+        == "whole transcript -> final note quality score",
+        "validation corpus benchmark manifest has invalid benchmark_unit",
+    )
+    require(
+        benchmark_manifest.get("corpus_manifest") == "corpus_manifest.json",
+        "validation corpus benchmark manifest must reference corpus_manifest.json",
+    )
+    label_map = benchmark_manifest.get("candidate_label_map")
+    require(isinstance(label_map, dict), "validation corpus benchmark label map missing")
+    require(len(label_map) == 5, "validation corpus benchmark must define five labels")
+    require(
+        set(label_map)
+        == {"Submission A", "Submission B", "Submission C", "Submission D", "Submission E"},
+        "validation corpus benchmark label map drift",
+    )
+    require(
+        len(set(label_map.values())) == 5,
+        "validation corpus benchmark labels must be unique",
+    )
+
+    corpus_manifest = load_json(CORPUS / "corpus_manifest.json")
+    for rel_path in corpus_manifest["case_files"]:
+        case = load_json(CORPUS / rel_path)
+        case_id = case["case_id"]
+        require(
+            case_id in corpus_refs["case_ids"],
+            f"validation benchmark references unknown case {case_id}",
+        )
+        blind_labels = {submission["blind_label"] for submission in case["candidate_notes"]}
+        require(
+            blind_labels == set(label_map),
+            f"validation benchmark labels do not cover {case_id}",
+        )
+
+
 def audit_reviewer_packets(corpus_refs: dict[str, set[str]]) -> int:
     require((REVIEWER_PACKETS / "README.md").exists(), "missing reviewer packet README")
     manifest_path = REVIEWER_PACKETS / "reviewer_packet_manifest.json"
@@ -412,6 +455,7 @@ def audit_clinician_review_protocol() -> None:
 def main() -> int:
     try:
         corpus_refs = audit_corpus()
+        audit_corpus_benchmark_manifest(corpus_refs)
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
         audit_clinician_review_protocol()

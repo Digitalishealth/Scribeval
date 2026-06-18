@@ -769,6 +769,9 @@ def _load_benchmark_manifest(manifest: Path) -> list[BenchmarkCase]:
     except json.JSONDecodeError as exc:
         raise click.UsageError(f"Invalid benchmark manifest JSON: {exc}") from exc
 
+    if data.get("source") == "validation_corpus":
+        return _load_validation_corpus_benchmark_manifest(manifest, data)
+
     raw_cases = data.get("cases")
     if not isinstance(raw_cases, list) or not raw_cases:
         raise click.UsageError("Benchmark manifest must contain a non-empty 'cases' list.")
@@ -839,6 +842,149 @@ def _load_benchmark_manifest(manifest: Path) -> list[BenchmarkCase]:
         )
 
     return cases
+
+
+VALIDATION_CONSULTATION_TYPE_MAP = {
+    "aged_care_review": ConsultationType.SPECIALIST_REVIEW,
+    "gp_antenatal": ConsultationType.GP_STANDARD,
+    "gp_chronic_disease": ConsultationType.GP_LONG,
+    "gp_mental_health": ConsultationType.PSYCHIATRY,
+    "gp_paediatric": ConsultationType.PAEDIATRICS,
+    "gp_preventive_health": ConsultationType.GP_LONG,
+    "gp_respiratory": ConsultationType.GP_STANDARD,
+    "gp_results_followup": ConsultationType.GP_STANDARD,
+    "gp_skin": ConsultationType.GP_STANDARD,
+    "gp_standard": ConsultationType.GP_STANDARD,
+    "gp_substance_use": ConsultationType.GP_STANDARD,
+    "gp_urgent": ConsultationType.GP_STANDARD,
+    "gp_womens_health": ConsultationType.GP_STANDARD,
+    "palliative_review": ConsultationType.SPECIALIST_REVIEW,
+    "telehealth": ConsultationType.GP_TELEHEALTH,
+    "urgent_care": ConsultationType.ED_PRESENTATION,
+}
+
+
+def _load_validation_corpus_benchmark_manifest(
+    manifest: Path,
+    data: dict,
+) -> list[BenchmarkCase]:
+    """Load benchmark cases directly from validation_pack/corpus JSON."""
+    corpus_manifest_path = _manifest_path(
+        manifest,
+        data.get("corpus_manifest"),
+        "validation_corpus",
+    )
+    try:
+        corpus_manifest = json.loads(corpus_manifest_path.read_text())
+    except json.JSONDecodeError as exc:
+        raise click.UsageError(f"Invalid validation corpus manifest JSON: {exc}") from exc
+
+    raw_label_map = data.get("candidate_label_map", {})
+    if raw_label_map is not None and not isinstance(raw_label_map, dict):
+        raise click.UsageError("candidate_label_map must be an object when provided.")
+    label_map = {
+        str(blind_label): str(label).strip()
+        for blind_label, label in (raw_label_map or {}).items()
+    }
+
+    raw_case_files = corpus_manifest.get("case_files")
+    if not isinstance(raw_case_files, list) or not raw_case_files:
+        raise click.UsageError("Validation corpus manifest must contain case_files.")
+
+    cases: list[BenchmarkCase] = []
+    expected_labels: set[str] | None = None
+    corpus_root = corpus_manifest_path.parent
+    for idx, rel_case_path in enumerate(raw_case_files, start=1):
+        if not isinstance(rel_case_path, str) or not rel_case_path:
+            raise click.UsageError(f"Validation corpus case_files[{idx}] is invalid.")
+        case_path = corpus_root / rel_case_path
+        if not case_path.exists():
+            raise click.UsageError(f"Validation corpus case file not found: {case_path}")
+        try:
+            raw_case = json.loads(case_path.read_text())
+        except json.JSONDecodeError as exc:
+            raise click.UsageError(f"Invalid validation case JSON: {case_path}: {exc}") from exc
+
+        case_id = str(raw_case.get("case_id") or case_path.stem)
+        transcript_content = _validation_transcript_text(raw_case, case_id)
+        submissions = _validation_case_submissions(raw_case, case_id, label_map)
+        labels = {submission.label for submission in submissions}
+        if expected_labels is None:
+            expected_labels = labels
+        elif labels != expected_labels:
+            raise click.UsageError(
+                "Every validation corpus case must resolve the same benchmark labels. "
+                f"Expected {sorted(expected_labels)}, got {sorted(labels)} for {case_id!r}."
+            )
+        cases.append(
+            BenchmarkCase(
+                case_id=case_id,
+                transcript_content=transcript_content,
+                submissions=submissions,
+                consultation_type=_validation_consultation_type(raw_case, case_id),
+            )
+        )
+
+    return cases
+
+
+def _validation_transcript_text(raw_case: dict, case_id: str) -> str:
+    turns = raw_case.get("transcript")
+    if not isinstance(turns, list) or not turns:
+        raise click.UsageError(f"Validation case {case_id!r} has no transcript turns.")
+    lines: list[str] = []
+    for index, turn in enumerate(turns, start=1):
+        if not isinstance(turn, dict):
+            raise click.UsageError(
+                f"Validation case {case_id!r} transcript turn {index} is invalid."
+            )
+        speaker = str(turn.get("speaker", "")).strip()
+        text = str(turn.get("text", "")).strip()
+        if not speaker or not text:
+            raise click.UsageError(
+                f"Validation case {case_id!r} transcript turn {index} is incomplete."
+            )
+        lines.append(f"{speaker}: {text}")
+    return "\n".join(lines)
+
+
+def _validation_case_submissions(
+    raw_case: dict,
+    case_id: str,
+    label_map: dict[str, str],
+) -> list[NoteSubmission]:
+    raw_notes = raw_case.get("candidate_notes")
+    if not isinstance(raw_notes, list) or not raw_notes:
+        raise click.UsageError(f"Validation case {case_id!r} has no candidate_notes.")
+
+    submissions: list[NoteSubmission] = []
+    for index, note in enumerate(raw_notes, start=1):
+        if not isinstance(note, dict):
+            raise click.UsageError(f"Validation case {case_id!r} note {index} is invalid.")
+        blind_label = str(note.get("blind_label", "")).strip()
+        label = label_map.get(blind_label, blind_label).strip()
+        note_content = str(note.get("note", "")).strip()
+        if not label or not note_content:
+            raise click.UsageError(
+                f"Validation case {case_id!r} note {index} is missing label or note text."
+            )
+        submissions.append(NoteSubmission(label=label, note_content=note_content))
+    return submissions
+
+
+def _validation_consultation_type(raw_case: dict, case_id: str) -> ConsultationType:
+    raw_type = str(raw_case.get("consultation_type", "gp_standard")).strip()
+    mapped_type = VALIDATION_CONSULTATION_TYPE_MAP.get(raw_type)
+    if mapped_type is not None:
+        return mapped_type
+    try:
+        return ConsultationType(raw_type)
+    except ValueError as exc:
+        available = ", ".join(t.value for t in ConsultationType)
+        raise click.UsageError(
+            f"Validation case {case_id!r} has unsupported consultation_type "
+            f"{raw_type!r}. Available benchmark types: {available}."
+        ) from exc
 
 
 def _manifest_path(manifest: Path, value: object, case_id: str) -> Path:

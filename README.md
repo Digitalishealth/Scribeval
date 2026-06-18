@@ -124,6 +124,12 @@ scribeval benchmark samples/benchmark_manifest.json \
     --output product_quality_benchmark \
     --format both
 
+# Full 20-case validation corpus benchmark
+scribeval benchmark validation_pack/corpus/benchmark_manifest.json \
+    --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote \
+    --output validation_corpus_benchmark \
+    --format both
+
 # Validate a rubric file
 scribeval validate-rubric rubrics/omission.yaml
 
@@ -308,6 +314,16 @@ labels:
 `scribeval benchmark` ranks products by mean score across cases, reports
 cross-case score standard deviation, counts critical findings, and preserves
 case-level results for audit.
+
+The 20-case validation corpus can also be run directly without generating
+separate text files:
+
+```bash
+scribeval benchmark validation_pack/corpus/benchmark_manifest.json \
+    --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote \
+    --output validation_corpus_benchmark \
+    --format both
+```
 
 ## Demo Frontend
 

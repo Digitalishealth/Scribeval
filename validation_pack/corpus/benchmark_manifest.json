@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "source": "validation_corpus",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "corpus_manifest": "corpus_manifest.json",
+  "candidate_label_map": {
+    "Submission A": "NurseCDSS",
+    "Submission B": "ModelStandard",
+    "Submission C": "StructuredSOAP",
+    "Submission D": "SafetyFirst",
+    "Submission E": "CDSSInformed"
+  }
+}

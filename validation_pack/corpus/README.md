@@ -23,6 +23,23 @@ The scoring unit remains:
 whole transcript -> final note quality score
 ```
 
+## Benchmark Manifest
+
+`benchmark_manifest.json` lets the full 20-case corpus run through
+`scribeval benchmark` without duplicating transcripts or note text into
+separate files:
+
+```bash
+scribeval benchmark validation_pack/corpus/benchmark_manifest.json \
+  --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote \
+  --output validation_corpus_benchmark \
+  --format both
+```
+
+The manifest maps the five blinded submission slots to stable benchmark labels:
+`NurseCDSS`, `ModelStandard`, `StructuredSOAP`, `SafetyFirst`, and
+`CDSSInformed`.
+
 ## Evidence Linkage
 
 The files in `../evidence/` reference these case IDs and blinded submissions.
