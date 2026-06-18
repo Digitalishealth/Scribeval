@@ -225,6 +225,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
+    assert "summarize_validation_review_run.py" in protocol["review_run_status_command"]
     assert "build_consensus_validation_ratings.py" in protocol["consensus_rating_command"]
     assert "build_adjudication_packets.py" in protocol["adjudication_packet_command"]
     assert "import_adjudication_decisions.py" in protocol["adjudication_import_command"]
@@ -690,6 +691,113 @@ def test_reviewer_assignment_builder_balances_required_reviewers(
                 (row["case_id"], row["blinded_submission"], row["reviewer_id"])
             )
     assert len(assigned_pairs) == 200
+
+
+def test_validation_review_run_status_accepts_complete_inputs(
+    tmp_path: Path,
+) -> None:
+    worksheet = tmp_path / "complete_worksheet.csv"
+    registry = tmp_path / "reviewer_registry.csv"
+    judge_scores = tmp_path / "judge_scores.json"
+    assignments_dir = tmp_path / "reviewer_assignments"
+    output_json = tmp_path / "review_run_status.json"
+    output_md = tmp_path / "review_run_status.md"
+    write_qualified_reviewer_registry(registry)
+    write_complete_review_worksheet_and_judge_scores(worksheet, judge_scores)
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_reviewer_assignments.py",
+            "--reviewer-registry",
+            str(registry),
+            "--output-dir",
+            str(assignments_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/summarize_validation_review_run.py",
+            "--reviewer-registry",
+            str(registry),
+            "--worksheet",
+            str(worksheet),
+            "--judge-scores",
+            str(judge_scores),
+            "--assignments-dir",
+            str(assignments_dir),
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+            "--fail-on-not-ready",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    summary = json.loads(output_json.read_text())
+    assert "Validation review run status: ready" in result.stdout
+    assert summary["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert summary["coverage"]["case_count"] == 20
+    assert summary["coverage"]["case_submission_count"] == 100
+    assert summary["coverage"]["assignment_count"] == 200
+    assert summary["coverage"]["complete_case_submission_count"] == 100
+    assert summary["coverage"]["complete_dimension_rating_count"] == 1200
+    assert summary["coverage"]["judge_score_count"] == 600
+    assert summary["coverage"]["required_judge_score_count"] == 600
+    assert summary["readiness"]["assignments_ready"] is True
+    assert summary["readiness"]["worksheet_ready_for_independent_validation"] is True
+    assert summary["readiness"]["judge_scores_ready"] is True
+    assert summary["readiness"]["ready_for_consensus_build"] is True
+    assert summary["readiness"]["ready_for_evidence_bundle"] is True
+    assert all(not summary["inputs"][key]["issue_counts"] for key in summary["inputs"])
+    assert "reviewer_clinician_001" not in output_md.read_text()
+
+
+def test_validation_review_run_status_reports_incomplete_inputs(
+    tmp_path: Path,
+) -> None:
+    registry = tmp_path / "reviewer_registry.csv"
+    output_json = tmp_path / "review_run_status.json"
+    write_qualified_reviewer_registry(registry)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/summarize_validation_review_run.py",
+            "--reviewer-registry",
+            str(registry),
+            "--worksheet",
+            "validation_pack/reviewer_worksheet.csv",
+            "--output-json",
+            str(output_json),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    summary = json.loads(output_json.read_text())
+    assert "Validation review run status: not ready" in result.stdout
+    assert summary["readiness"]["assignments_ready"] is None
+    assert summary["readiness"]["worksheet_ready_for_independent_validation"] is False
+    assert summary["readiness"]["judge_scores_ready"] is None
+    assert summary["readiness"]["ready_for_consensus_build"] is False
+    assert summary["coverage"]["complete_case_submission_count"] == 0
+    assert summary["coverage"]["complete_dimension_rating_count"] == 0
+    assert summary["inputs"]["worksheet"]["issue_counts"] == {
+        "empty_assignment_rows": 100,
+        "under_reviewed_case_submissions": 100,
+    }
 
 
 def test_validation_evidence_bundle_builder_creates_reproducible_run(

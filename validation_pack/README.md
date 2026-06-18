@@ -93,6 +93,25 @@ python scripts/export_validation_judge_scores.py \
 
 10. Summarise inter-rater reliability between clinician reviewers:
 
+Before reliability and consensus analysis, publish an aggregate collection
+status report if coordinators need to track whether assignments, completed
+ratings, and Scribeval score exports are ready:
+
+```bash
+python scripts/summarize_validation_review_run.py \
+  --reviewer-registry <reviewer_registry.csv> \
+  --assignments-dir <reviewer_assignments_dir> \
+  --worksheet <filled_worksheet.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --output-json <review_run_status.json> \
+  --output-md <review_run_status.md> \
+  --fail-on-not-ready
+```
+
+The status report contains aggregate counts and issue counts only. It omits
+reviewer IDs, reviewer comments, transcript text, candidate note text, raw judge
+responses, reasoning, and excerpts.
+
 ```bash
 python scripts/summarize_reviewer_reliability.py \
   --worksheet <filled_worksheet.csv> \

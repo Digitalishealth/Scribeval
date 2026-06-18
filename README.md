@@ -181,6 +181,14 @@ python scripts/import_validation_ratings.py \
 python scripts/export_validation_judge_scores.py \
     --output <scribeval_scores.json> \
     --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote
+python scripts/summarize_validation_review_run.py \
+    --reviewer-registry <reviewer_registry.csv> \
+    --assignments-dir <reviewer_assignments_dir> \
+    --worksheet <filled_worksheet.csv> \
+    --judge-scores <scribeval_scores.json> \
+    --output-json <review_run_status.json> \
+    --output-md <review_run_status.md> \
+    --fail-on-not-ready
 python scripts/summarize_reviewer_reliability.py \
     --worksheet <filled_worksheet.csv> \
     --reviewer-registry <reviewer_registry.csv> \
@@ -244,9 +252,13 @@ eligibility provenance without exposing direct identifiers. The generated
 stratified summary shows whether agreement evidence spans specialties, note
 sources, prompting strategies, and safety-critical failure modes. The readiness
 audit checks that every blinded case-submission has two qualified reviewers and
-complete required dimension ratings before calibration import. The reviewer
-reliability report shows whether clinician reviewers agree enough for their
-ratings to be a defensible comparator. The consensus ratings provide a cleaner
+complete required dimension ratings before calibration import.
+`scripts/summarize_validation_review_run.py` publishes an aggregate coordinator
+status report across assignments, worksheet completion, reviewer provenance, and
+judge-score availability without exposing reviewer identifiers, comments,
+transcripts, notes, raw judge responses, or reasoning. The reviewer reliability
+report shows whether clinician reviewers agree enough for their ratings to be a
+defensible comparator. The consensus ratings provide a cleaner
 judge-vs-clinician comparison and flag rows needing adjudication before strong
 claims. `scripts/build_adjudication_packets.py` turns those flagged rows into
 blinded adjudicator packets and a worksheet without reviewer IDs or candidate

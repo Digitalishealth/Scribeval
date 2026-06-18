@@ -378,6 +378,11 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol judge score export command missing score output placeholder",
     )
     require(
+        "summarize_validation_review_run.py"
+        in protocol.get("review_run_status_command", ""),
+        "clinician review protocol missing review run status command",
+    )
+    require(
         "summarize_reviewer_reliability.py"
         in protocol.get("reviewer_reliability_command", ""),
         "clinician review protocol missing reviewer reliability command",

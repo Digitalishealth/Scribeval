@@ -40,6 +40,14 @@ Then use the stricter import path:
 python scripts/export_validation_judge_scores.py \
   --output <scribeval_scores.json> \
   --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote
+python scripts/summarize_validation_review_run.py \
+  --reviewer-registry <reviewer_registry.csv> \
+  --assignments-dir <reviewer_assignments_dir> \
+  --worksheet <filled_worksheet.csv> \
+  --judge-scores <scribeval_scores.json> \
+  --output-json <review_run_status.json> \
+  --output-md <review_run_status.md> \
+  --fail-on-not-ready
 python scripts/summarize_reviewer_reliability.py \
   --worksheet <filled_worksheet.csv> \
   --reviewer-registry <reviewer_registry.csv> \
@@ -80,6 +88,11 @@ python scripts/summarize_validation_evidence.py \
   --output-json <stratified_summary.json> \
   --output-md <stratified_summary.md>
 ```
+
+The review-run status report is safe to share with governance reviewers because
+it contains aggregate collection counts and issue counts only. It omits reviewer
+IDs, reviewer comments, transcript text, candidate note text, raw judge
+responses, reasoning, and excerpts.
 
 For a completed independent clinician run, prefer the bundle builder because it
 keeps the readiness report, reviewer reliability report, individual and

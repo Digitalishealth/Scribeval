@@ -20,6 +20,7 @@
       "validation_pack/evidence/stratified_summary_v0.md",
       "scripts/build_reviewer_assignments.py",
       "scripts/audit_clinician_review_readiness.py",
+      "scripts/summarize_validation_review_run.py",
       "scripts/export_validation_judge_scores.py",
       "scripts/summarize_reviewer_reliability.py",
       "scripts/build_consensus_validation_ratings.py",

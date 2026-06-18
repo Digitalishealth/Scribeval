@@ -35,6 +35,8 @@ transcripts.
       reviewers per blinded case-submission before calibration import.
 - [x] Validation corpus judge-score exporter produces importable Scribeval
       score JSON without transcript/note text or raw judge excerpts.
+- [x] Validation review-run status summary tracks assignment, worksheet, and
+      judge-score readiness with aggregate counts only.
 - [x] Clinician reviewer reliability summary measures inter-rater agreement
       before judge-vs-clinician calibration claims.
 - [x] Consensus clinician rating builder produces judge-vs-consensus pairs and

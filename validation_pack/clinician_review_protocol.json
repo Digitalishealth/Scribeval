@@ -59,6 +59,7 @@
   },
   "assignment_builder_command": "python scripts/build_reviewer_assignments.py --reviewer-registry <reviewer_registry.csv> --output-dir <reviewer_assignments_dir>",
   "readiness_audit_command": "python scripts/audit_clinician_review_readiness.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --output-json <readiness_report.json> --output-md <readiness_report.md> --fail-on-not-ready",
+  "review_run_status_command": "python scripts/summarize_validation_review_run.py --reviewer-registry <reviewer_registry.csv> --assignments-dir <reviewer_assignments_dir> --worksheet <filled_worksheet.csv> --judge-scores <scribeval_scores.json> --output-json <review_run_status.json> --output-md <review_run_status.md> --fail-on-not-ready",
   "judge_score_export_command": "python scripts/export_validation_judge_scores.py --output <scribeval_scores.json> --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote",
   "reviewer_reliability_command": "python scripts/summarize_reviewer_reliability.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --output-json <reviewer_reliability.json> --output-md <reviewer_reliability.md> --fail-on-not-ready",
   "consensus_rating_command": "python scripts/build_consensus_validation_ratings.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --judge-scores <scribeval_scores.json> --output <consensus_calibration_pairs.json> --output-summary-json <consensus_summary.json> --output-summary-md <consensus_summary.md>",
