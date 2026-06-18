@@ -7,6 +7,7 @@
     "case_packets": "reviewer_packets/",
     "scoring_guide": "reviewer_scoring_guide.md",
     "reviewer_scoring_guide": "reviewer_scoring_guide.md",
+    "reviewer_intake_checklist": "reviewer_intake_checklist.json",
     "worksheet_template": "reviewer_worksheet.csv",
     "reviewer_registry_template": "reviewer_registry_template.csv"
   },

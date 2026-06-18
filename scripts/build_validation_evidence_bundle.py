@@ -18,6 +18,7 @@ if str(SRC) not in sys.path:
 
 DEFAULT_CORPUS_MANIFEST = ROOT / "validation_pack" / "corpus" / "corpus_manifest.json"
 DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
+DEFAULT_REVIEWER_INTAKE_CHECKLIST = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_PACKETS = ROOT / "validation_pack" / "reviewer_packets"
 DEFAULT_REVIEWER_SCORING_GUIDE = ROOT / "validation_pack" / "reviewer_scoring_guide.md"
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,80}$")
@@ -159,6 +160,7 @@ def load_adjudicated_consensus_pairs(
 def build_review_materials_provenance(
     *,
     reviewer_packets_dir: Path,
+    reviewer_intake_checklist: Path,
     reviewer_scoring_guide: Path,
     bundle_dir: Path,
 ) -> dict[str, Any]:
@@ -178,6 +180,8 @@ def build_review_materials_provenance(
         packet_hashes[str(rel_path)] = sha256_file(packet_path)
 
     readme_path = reviewer_packets_dir / "README.md"
+    if not reviewer_intake_checklist.exists():
+        raise ValueError(f"Reviewer intake checklist is missing: {reviewer_intake_checklist}")
     if not reviewer_scoring_guide.exists():
         raise ValueError(f"Reviewer scoring guide is missing: {reviewer_scoring_guide}")
     return {
@@ -187,15 +191,21 @@ def build_review_materials_provenance(
         "reviewer_packets_dir": relative_to_base(reviewer_packets_dir, bundle_dir),
         "reviewer_packet_manifest": relative_to_base(manifest_path, bundle_dir),
         "reviewer_packet_manifest_sha256": sha256_file(manifest_path),
+        "reviewer_intake_checklist": relative_to_base(
+            reviewer_intake_checklist,
+            bundle_dir,
+        ),
+        "reviewer_intake_checklist_sha256": sha256_file(reviewer_intake_checklist),
         "reviewer_scoring_guide": relative_to_base(reviewer_scoring_guide, bundle_dir),
         "reviewer_scoring_guide_sha256": sha256_file(reviewer_scoring_guide),
         "reviewer_packet_count": len(packet_hashes),
         "packet_files_sha256": packet_hashes,
         "readme_sha256": sha256_file(readme_path) if readme_path.exists() else None,
         "privacy_note": (
-            "Reviewer material hashes identify the blinded packet files and scoring "
-            "guide shown to clinicians. They do not include reviewer identifiers, "
-            "assignment worksheets, reviewer comments, or completed ratings."
+            "Reviewer material hashes identify the blinded packet files, intake "
+            "checklist, and scoring guide used for clinician review. They do not "
+            "include reviewer identifiers, assignment worksheets, reviewer "
+            "comments, or completed ratings."
         ),
     }
 
@@ -227,6 +237,9 @@ def bundle_manifest(
         "protocol_sha256": sha256_file(protocol),
         "reviewer_packet_manifest_sha256": review_materials[
             "reviewer_packet_manifest_sha256"
+        ],
+        "reviewer_intake_checklist_sha256": review_materials[
+            "reviewer_intake_checklist_sha256"
         ],
         "reviewer_scoring_guide_sha256": review_materials[
             "reviewer_scoring_guide_sha256"
@@ -327,6 +340,7 @@ def build_bundle(
     adjudicated_consensus_pairs: Path | None = None,
     reviewer_assignments_dir: Path | None = None,
     reviewer_packets_dir: Path = DEFAULT_REVIEWER_PACKETS,
+    reviewer_intake_checklist: Path = DEFAULT_REVIEWER_INTAKE_CHECKLIST,
     reviewer_scoring_guide: Path = DEFAULT_REVIEWER_SCORING_GUIDE,
 ) -> Path:
     from assess_validation_claim_readiness import assess_claim_readiness
@@ -354,6 +368,7 @@ def build_bundle(
     reviewer_assignments_manifest = resolve_assignment_manifest(reviewer_assignments_dir)
     review_materials = build_review_materials_provenance(
         reviewer_packets_dir=reviewer_packets_dir,
+        reviewer_intake_checklist=reviewer_intake_checklist,
         reviewer_scoring_guide=reviewer_scoring_guide,
         bundle_dir=bundle_dir,
     )
@@ -487,6 +502,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
     parser.add_argument("--reviewer-packets-dir", type=Path, default=DEFAULT_REVIEWER_PACKETS)
     parser.add_argument(
+        "--reviewer-intake-checklist",
+        type=Path,
+        default=DEFAULT_REVIEWER_INTAKE_CHECKLIST,
+    )
+    parser.add_argument(
         "--reviewer-scoring-guide",
         type=Path,
         default=DEFAULT_REVIEWER_SCORING_GUIDE,
@@ -532,6 +552,7 @@ def main() -> int:
             adjudicated_consensus_pairs=args.adjudicated_consensus_pairs,
             reviewer_assignments_dir=args.reviewer_assignments_dir,
             reviewer_packets_dir=args.reviewer_packets_dir,
+            reviewer_intake_checklist=args.reviewer_intake_checklist,
             reviewer_scoring_guide=args.reviewer_scoring_guide,
         )
     except ValueError as exc:

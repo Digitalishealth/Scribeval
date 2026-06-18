@@ -32,10 +32,11 @@
     "reviewer_registry_sha256": "8158f3402e9f1812ab41cc1afe6be96968e9f7ccd624853e47f4388a310fd5e8",
     "judge_scores_sha256": "6b4b88ad47ce3c5da88fabda7ab21c256b9f6b85f928bb95ea162dafcc48e10f",
     "corpus_manifest_sha256": "a34d0e9611329a41977ee1b7fbac22ff054ec573c0fc6ca3adeca08d1ed546d6",
-    "protocol_sha256": "93f6729db4d79531c69923d594ef7e98f96c8e8b55e70bae7b1ded57babc7424",
+    "protocol_sha256": "c24f5c4a8ba332d274b5378155deac32b3ed63414b91ecf00ee7e62b74c0c8eb",
     "reviewer_packet_manifest_sha256": "9a0411ec2983747de5634a01710e94dd32fea864818fe359a69f408a8c0d1ae0",
+    "reviewer_intake_checklist_sha256": "682c9de6d9cce5288b3a1c32843ecd691d7d41579c8efeb4c3594825c8c3220e",
     "reviewer_scoring_guide_sha256": "b41be7ff7108c35f7e7bc35be1a812751eb891d4e89e5cdf1a20b6ff3d82955e",
-    "reviewer_assignments_manifest_sha256": "7b649a3128c29e07b5380c5f99c7d087881f33ded8e84fbe429ba9dda7056482"
+    "reviewer_assignments_manifest_sha256": "a3f37b47abc2546a2aa4268d4c36b3f23a3cff681cb2f6143eaa4f18e5f16961"
   },
   "coverage": {
     "case_submission_count": 100,

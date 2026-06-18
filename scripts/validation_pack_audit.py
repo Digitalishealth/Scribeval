@@ -58,6 +58,30 @@ FORBIDDEN_REVIEWER_REGISTRY_FIELDS = {
     "provider_number",
     "registration_number",
 }
+REQUIRED_REVIEWER_INTAKE_STAGES = {
+    "adjudication_and_publication",
+    "analysis_readiness",
+    "assignment_control",
+    "material_preparation",
+    "rating_collection",
+    "reviewer_onboarding",
+}
+REQUIRED_REVIEWER_INTAKE_ATTESTATIONS = {
+    "all_required_adjudication_resolved_before_validation_claim",
+    "all_reviewers_qualified_and_conflict_screened",
+    "no_direct_reviewer_identifiers_in_public_materials",
+    "no_patient_identifiers_in_public_materials",
+    "reviewer_training_completed_before_scoring",
+    "reviewers_blinded_to_candidate_source_and_prompt_strategy",
+}
+REQUIRED_REVIEWER_INTAKE_OUTPUTS = {
+    "adjudication_burden.json",
+    "consensus_calibration_pairs.json",
+    "evidence_manifest.json",
+    "review_run_status.json",
+    "reviewer_reliability.json",
+    "validation_claim_readiness.json",
+}
 FORBIDDEN_REVIEWER_PACKET_TOKENS = {
     "cdss_checklist",
     "cdss_informed",
@@ -413,6 +437,12 @@ def audit_clinician_review_protocol() -> None:
         "build_reviewer_assignments.py" in protocol.get("assignment_builder_command", ""),
         "clinician review protocol missing assignment builder command",
     )
+    review_materials = protocol.get("review_materials", {})
+    require(
+        review_materials.get("reviewer_intake_checklist")
+        == "reviewer_intake_checklist.json",
+        "clinician review protocol missing reviewer intake checklist",
+    )
     require(
         "export_validation_judge_scores.py" in protocol.get("judge_score_export_command", ""),
         "clinician review protocol missing judge score export command",
@@ -509,6 +539,65 @@ def audit_clinician_review_protocol() -> None:
     )
 
 
+def audit_reviewer_intake_checklist() -> None:
+    checklist = load_json(PACK / "reviewer_intake_checklist.json")
+    require(
+        checklist.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "reviewer intake checklist has invalid benchmark_unit",
+    )
+    require(
+        checklist.get("status") == "ready_for_independent_review",
+        "reviewer intake checklist status drift",
+    )
+    public_fields = set(checklist.get("public_registry_fields", []))
+    forbidden_fields = set(checklist.get("forbidden_public_fields", []))
+    require(
+        public_fields >= REQUIRED_REVIEWER_REGISTRY_FIELDS,
+        "reviewer intake checklist missing required public registry fields",
+    )
+    require(
+        forbidden_fields >= FORBIDDEN_REVIEWER_REGISTRY_FIELDS,
+        "reviewer intake checklist missing forbidden public identifier fields",
+    )
+    require(
+        not (public_fields & forbidden_fields),
+        "reviewer intake checklist publishes forbidden identifier fields",
+    )
+
+    stages = checklist.get("stages", [])
+    require(isinstance(stages, list) and stages, "reviewer intake checklist has no stages")
+    stage_ids = {stage.get("stage_id") for stage in stages}
+    require(
+        stage_ids == REQUIRED_REVIEWER_INTAKE_STAGES,
+        "reviewer intake checklist stage coverage drift",
+    )
+    for stage in stages:
+        checks = stage.get("required_checks")
+        require(
+            isinstance(checks, list) and checks,
+            f"reviewer intake checklist stage {stage.get('stage_id')} has no checks",
+        )
+
+    outputs = set(checklist.get("minimum_publishable_outputs", []))
+    require(
+        outputs >= REQUIRED_REVIEWER_INTAKE_OUTPUTS,
+        "reviewer intake checklist missing minimum publishable outputs",
+    )
+    attestations = {
+        item.get("attestation_id")
+        for item in checklist.get("completion_attestations", [])
+        if item.get("required") is True
+    }
+    require(
+        attestations >= REQUIRED_REVIEWER_INTAKE_ATTESTATIONS,
+        "reviewer intake checklist missing required completion attestations",
+    )
+    require(
+        "not itself clinical validation evidence" in checklist.get("claim_boundary", ""),
+        "reviewer intake checklist must preserve validation claim boundary",
+    )
+
+
 def main() -> int:
     try:
         corpus_refs = audit_corpus()
@@ -516,6 +605,7 @@ def main() -> int:
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
         audit_clinician_review_protocol()
+        audit_reviewer_intake_checklist()
     except AssertionError as exc:
         print(f"Validation pack audit failed: {exc}", file=sys.stderr)
         return 1
@@ -525,6 +615,7 @@ def main() -> int:
     print(f"Submissions: {len(corpus_refs['submission_refs'])}")
     print(f"Reviewer packets: {packet_count}")
     print("Clinician review protocol: ready_for_independent_review")
+    print("Reviewer intake checklist: ready_for_independent_review")
     print(f"Evidence pairs: {pair_count}")
     print(f"Note sources: {', '.join(sorted(corpus_refs['note_sources']))}")
     print(f"Prompt strategies: {', '.join(sorted(corpus_refs['prompt_strategies']))}")

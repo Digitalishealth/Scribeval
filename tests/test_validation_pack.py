@@ -43,6 +43,37 @@ REQUIRED_REVIEWER_REGISTRY_FIELDS = {
     "training_completed",
     "years_post_registration",
 }
+FORBIDDEN_PUBLIC_REVIEWER_FIELDS = {
+    "email",
+    "name",
+    "phone",
+    "provider_number",
+    "registration_number",
+}
+REQUIRED_REVIEWER_INTAKE_STAGES = {
+    "adjudication_and_publication",
+    "analysis_readiness",
+    "assignment_control",
+    "material_preparation",
+    "rating_collection",
+    "reviewer_onboarding",
+}
+REQUIRED_REVIEWER_INTAKE_ATTESTATIONS = {
+    "all_required_adjudication_resolved_before_validation_claim",
+    "all_reviewers_qualified_and_conflict_screened",
+    "no_direct_reviewer_identifiers_in_public_materials",
+    "no_patient_identifiers_in_public_materials",
+    "reviewer_training_completed_before_scoring",
+    "reviewers_blinded_to_candidate_source_and_prompt_strategy",
+}
+REQUIRED_REVIEWER_INTAKE_OUTPUTS = {
+    "adjudication_burden.json",
+    "consensus_calibration_pairs.json",
+    "evidence_manifest.json",
+    "review_run_status.json",
+    "reviewer_reliability.json",
+    "validation_claim_readiness.json",
+}
 REQUIRED_CLINICIAN_REVIEW_DIMENSIONS = (
     "omission",
     "hallucination",
@@ -227,6 +258,10 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     protocol = json.loads((VALIDATION_PACK / "clinician_review_protocol.json").read_text())
 
     assert protocol["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert (
+        protocol["review_materials"]["reviewer_intake_checklist"]
+        == "reviewer_intake_checklist.json"
+    )
     assert protocol["review_materials"]["reviewer_scoring_guide"] == (
         "reviewer_scoring_guide.md"
     )
@@ -259,6 +294,34 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert {"name", "email", "phone", "provider_number", "registration_number"}.isdisjoint(
         fieldnames
     )
+
+
+def test_reviewer_intake_checklist_defines_publication_boundaries() -> None:
+    checklist = json.loads((VALIDATION_PACK / "reviewer_intake_checklist.json").read_text())
+
+    assert checklist["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert checklist["status"] == "ready_for_independent_review"
+    assert set(checklist["public_registry_fields"]) >= REQUIRED_REVIEWER_REGISTRY_FIELDS
+    assert set(checklist["forbidden_public_fields"]) >= FORBIDDEN_PUBLIC_REVIEWER_FIELDS
+    assert not (
+        set(checklist["public_registry_fields"]) & set(checklist["forbidden_public_fields"])
+    )
+    assert {stage["stage_id"] for stage in checklist["stages"]} == (
+        REQUIRED_REVIEWER_INTAKE_STAGES
+    )
+    assert all(stage["required_checks"] for stage in checklist["stages"])
+    assert set(checklist["minimum_publishable_outputs"]) >= (
+        REQUIRED_REVIEWER_INTAKE_OUTPUTS
+    )
+    assert {
+        attestation["attestation_id"]
+        for attestation in checklist["completion_attestations"]
+        if attestation["required"] is True
+    } >= REQUIRED_REVIEWER_INTAKE_ATTESTATIONS
+    assert checklist["private_coordinator_record_policy"][
+        "retain_outside_public_repository"
+    ] is True
+    assert "not itself clinical validation evidence" in checklist["claim_boundary"]
 
 
 def test_example_calibration_pairs_are_computable() -> None:
@@ -913,6 +976,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "corpus_manifest_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
+        "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
         "reviewer_scoring_guide_sha256",
         "reviewer_assignments_manifest_sha256",
@@ -929,8 +993,14 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_materials["reviewer_scoring_guide_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_scoring_guide_sha256"]
+    assert review_materials["reviewer_intake_checklist_sha256"] == manifest[
+        "source_hashes"
+    ]["reviewer_intake_checklist_sha256"]
     assert review_materials["reviewer_scoring_guide"].endswith(
         "validation_pack/reviewer_scoring_guide.md"
+    )
+    assert review_materials["reviewer_intake_checklist"].endswith(
+        "validation_pack/reviewer_intake_checklist.json"
     )
     assert review_run_status["readiness"]["ready_for_evidence_bundle"] is True
     assert review_run_status["coverage"]["case_submission_count"] == 100
@@ -1039,6 +1109,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "corpus_manifest_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
+        "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
         "reviewer_scoring_guide_sha256",
         "reviewer_registry_sha256",

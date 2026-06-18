@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0.0",
+  "checklist_id": "scribeval_reviewer_intake_checklist_v1",
+  "status": "ready_for_independent_review",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "purpose": "Define the coordinator intake controls required before clinician ratings can be treated as independent validation evidence.",
+  "public_registry_fields": [
+    "reviewer_id",
+    "profession",
+    "country",
+    "registration_status",
+    "years_post_registration",
+    "specialty",
+    "review_role",
+    "conflict_of_interest",
+    "training_completed"
+  ],
+  "forbidden_public_fields": [
+    "name",
+    "email",
+    "phone",
+    "provider_number",
+    "registration_number"
+  ],
+  "private_coordinator_record_policy": {
+    "retain_outside_public_repository": true,
+    "examples": [
+      "signed participation and publication consent",
+      "source registration verification record",
+      "contact details for scheduling and payment",
+      "conflict-of-interest declaration source document",
+      "training completion record"
+    ],
+    "public_release_rule": "Do not commit direct reviewer identifiers, contact details, registration numbers, payment details, or raw source verification documents."
+  },
+  "stages": [
+    {
+      "stage_id": "material_preparation",
+      "required_checks": [
+        "source_material_deidentified_before_distribution",
+        "reviewer_packets_match_current_corpus_manifest",
+        "scoring_guide_version_recorded",
+        "candidate_source_and_prompt_metadata_hidden_from_reviewers"
+      ]
+    },
+    {
+      "stage_id": "reviewer_onboarding",
+      "required_checks": [
+        "pseudonymous_reviewer_id_assigned",
+        "current_registration_confirmed",
+        "minimum_experience_confirmed",
+        "conflict_of_interest_screen_completed",
+        "reviewer_training_completed",
+        "review_role_assigned"
+      ]
+    },
+    {
+      "stage_id": "assignment_control",
+      "required_checks": [
+        "balanced_reviewer_assignments_generated",
+        "two_qualified_reviewers_per_case_submission_assigned",
+        "reviewer_specific_worksheets_distributed",
+        "blind_submission_labels_preserved"
+      ]
+    },
+    {
+      "stage_id": "rating_collection",
+      "required_checks": [
+        "worksheet_schema_verified",
+        "overall_note_quality_rating_collected",
+        "required_dimension_ratings_collected",
+        "severity_labels_collected",
+        "reviewer_comments_screened_before_publication"
+      ]
+    },
+    {
+      "stage_id": "analysis_readiness",
+      "required_checks": [
+        "clinician_review_readiness_audit_passed",
+        "scribeval_scores_exported_without_raw_text",
+        "review_run_status_summarized_without_reviewer_ids",
+        "reviewer_reliability_reported",
+        "consensus_ratings_built"
+      ]
+    },
+    {
+      "stage_id": "adjudication_and_publication",
+      "required_checks": [
+        "all_required_adjudication_resolved",
+        "adjudication_burden_summarized",
+        "evidence_bundle_built_without_raw_clinician_inputs",
+        "validation_claim_readiness_assessed",
+        "evidence_run_index_updated"
+      ]
+    }
+  ],
+  "minimum_publishable_outputs": [
+    "review_run_status.json",
+    "reviewer_reliability.json",
+    "consensus_calibration_pairs.json",
+    "adjudication_burden.json",
+    "validation_claim_readiness.json",
+    "evidence_manifest.json"
+  ],
+  "completion_attestations": [
+    {
+      "attestation_id": "no_patient_identifiers_in_public_materials",
+      "required": true
+    },
+    {
+      "attestation_id": "no_direct_reviewer_identifiers_in_public_materials",
+      "required": true
+    },
+    {
+      "attestation_id": "all_reviewers_qualified_and_conflict_screened",
+      "required": true
+    },
+    {
+      "attestation_id": "reviewer_training_completed_before_scoring",
+      "required": true
+    },
+    {
+      "attestation_id": "reviewers_blinded_to_candidate_source_and_prompt_strategy",
+      "required": true
+    },
+    {
+      "attestation_id": "all_required_adjudication_resolved_before_validation_claim",
+      "required": true
+    }
+  ],
+  "claim_boundary": "This checklist supports evidence collection governance only. It is not itself clinical validation evidence; validation claims require a completed independent clinician evidence bundle that passes validation-claim readiness thresholds."
+}

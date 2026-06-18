@@ -170,7 +170,8 @@ pilot protocol for testing Scribeval against independent human reviewers. It
 includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
 20-case synthetic corpus of complete transcript/note packets, generated blinded
 reviewer packets, a clinician reviewer scoring guide, a pseudonymous reviewer
-registry template, and example calibration inputs/results for:
+registry template, a reviewer intake checklist for public/private evidence
+boundaries, and example calibration inputs/results for:
 
 ```bash
 python scripts/build_reviewer_packets.py
@@ -244,6 +245,7 @@ The pack is intended to produce evidence about agreement with clinicians
 included example data is synthetic and illustrative only; it is not clinical
 validation evidence. For independent clinician ratings, run
 `scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets,
+complete the coordinator-side `validation_pack/reviewer_intake_checklist.json`,
 run `scripts/audit_clinician_review_readiness.py`, export Scribeval scores with
 `scripts/export_validation_judge_scores.py`, check clinician inter-rater
 agreement with `scripts/summarize_reviewer_reliability.py`, build consensus

@@ -31,6 +31,8 @@ transcripts.
       coordinator-only corpus metadata.
 - [x] Pseudonymous reviewer registry template and clinician review protocol
       included for independent rating provenance.
+- [x] Reviewer intake checklist included to separate private coordinator
+      eligibility records from publishable pseudonymous evidence artifacts.
 - [x] Reviewer assignment builder creates balanced reviewer-specific
       worksheets for blinded case-submission collection.
 - [x] Independent clinician review readiness audit checks two qualified
