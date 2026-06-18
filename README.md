@@ -171,9 +171,10 @@ includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
 20-case synthetic corpus of complete transcript/note packets, generated blinded
 reviewer packets, a clinician reviewer scoring guide, a pseudonymous reviewer
 registry template, a reviewer intake checklist for public/private evidence
-boundaries, a reviewer training guide, a collection plan for planned stratum
-coverage, a pre-specified statistical analysis plan, and example calibration
-inputs/results for:
+boundaries, a reviewer training guide, an independent-review runbook with
+private workspace guardrails, a collection plan for planned stratum coverage, a
+pre-specified statistical analysis plan, and example calibration inputs/results
+for:
 
 ```bash
 python scripts/build_reviewer_packets.py
@@ -252,10 +253,12 @@ python scripts/index_validation_evidence_runs.py \
 The pack is intended to produce evidence about agreement with clinicians
 (weighted kappa for severity ratings and ICC(2,1) for continuous scores). The
 included example data is synthetic and illustrative only; it is not clinical
-validation evidence. For independent clinician ratings, run
-`scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets,
-complete the coordinator-side `validation_pack/reviewer_intake_checklist.json`,
-check `validation_pack/collection_plan.json` for planned coverage across
+validation evidence. For independent clinician ratings, follow
+`validation_pack/independent_review_runbook.json`, run
+`scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets
+under an ignored private workspace, complete the coordinator-side
+`validation_pack/reviewer_intake_checklist.json`, check
+`validation_pack/collection_plan.json` for planned coverage across
 specialty, note source, prompt strategy, and safety-critical failure mode,
 preserve `validation_pack/statistical_analysis_plan.json` as the pre-specified
 interpretation contract,

@@ -5,6 +5,8 @@
   "benchmark_unit": "whole transcript -> final note quality score",
   "review_materials": {
     "case_packets": "reviewer_packets/",
+    "independent_review_runbook": "independent_review_runbook.json",
+    "independent_review_runbook_report": "independent_review_runbook.md",
     "scoring_guide": "reviewer_scoring_guide.md",
     "reviewer_scoring_guide": "reviewer_scoring_guide.md",
     "reviewer_training_guide": "reviewer_training_guide.json",

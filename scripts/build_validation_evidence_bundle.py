@@ -18,6 +18,9 @@ if str(SRC) not in sys.path:
 
 DEFAULT_CORPUS_MANIFEST = ROOT / "validation_pack" / "corpus" / "corpus_manifest.json"
 DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
+DEFAULT_INDEPENDENT_REVIEW_RUNBOOK = (
+    ROOT / "validation_pack" / "independent_review_runbook.json"
+)
 DEFAULT_REVIEWER_INTAKE_CHECKLIST = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_PACKETS = ROOT / "validation_pack" / "reviewer_packets"
 DEFAULT_REVIEWER_SCORING_GUIDE = ROOT / "validation_pack" / "reviewer_scoring_guide.md"
@@ -164,6 +167,7 @@ def load_adjudicated_consensus_pairs(
 def build_review_materials_provenance(
     *,
     reviewer_packets_dir: Path,
+    independent_review_runbook: Path,
     reviewer_intake_checklist: Path,
     reviewer_scoring_guide: Path,
     reviewer_training_guide: Path,
@@ -186,6 +190,10 @@ def build_review_materials_provenance(
         packet_hashes[str(rel_path)] = sha256_file(packet_path)
 
     readme_path = reviewer_packets_dir / "README.md"
+    if not independent_review_runbook.exists():
+        raise ValueError(
+            f"Independent review runbook is missing: {independent_review_runbook}"
+        )
     if not reviewer_intake_checklist.exists():
         raise ValueError(f"Reviewer intake checklist is missing: {reviewer_intake_checklist}")
     if not reviewer_scoring_guide.exists():
@@ -203,6 +211,11 @@ def build_review_materials_provenance(
         "reviewer_packets_dir": relative_to_base(reviewer_packets_dir, bundle_dir),
         "reviewer_packet_manifest": relative_to_base(manifest_path, bundle_dir),
         "reviewer_packet_manifest_sha256": sha256_file(manifest_path),
+        "independent_review_runbook": relative_to_base(
+            independent_review_runbook,
+            bundle_dir,
+        ),
+        "independent_review_runbook_sha256": sha256_file(independent_review_runbook),
         "reviewer_intake_checklist": relative_to_base(
             reviewer_intake_checklist,
             bundle_dir,
@@ -222,10 +235,10 @@ def build_review_materials_provenance(
         "readme_sha256": sha256_file(readme_path) if readme_path.exists() else None,
         "privacy_note": (
             "Reviewer material hashes identify the blinded packet files, intake "
-            "checklist, scoring guide, training guide, and statistical analysis "
-            "plan used for clinician review. They do not include reviewer "
-            "identifiers, assignment worksheets, reviewer comments, or completed "
-            "ratings."
+            "checklist, scoring guide, training guide, independent review runbook, "
+            "and statistical analysis plan used for clinician review. They do not "
+            "include reviewer identifiers, assignment worksheets, reviewer "
+            "comments, or completed ratings."
         ),
     }
 
@@ -255,6 +268,9 @@ def bundle_manifest(
         "judge_scores_sha256": sha256_file(judge_scores),
         "corpus_manifest_sha256": sha256_file(corpus_manifest),
         "protocol_sha256": sha256_file(protocol),
+        "independent_review_runbook_sha256": review_materials[
+            "independent_review_runbook_sha256"
+        ],
         "reviewer_packet_manifest_sha256": review_materials[
             "reviewer_packet_manifest_sha256"
         ],
@@ -366,6 +382,7 @@ def build_bundle(
     adjudicated_consensus_pairs: Path | None = None,
     reviewer_assignments_dir: Path | None = None,
     reviewer_packets_dir: Path = DEFAULT_REVIEWER_PACKETS,
+    independent_review_runbook: Path = DEFAULT_INDEPENDENT_REVIEW_RUNBOOK,
     reviewer_intake_checklist: Path = DEFAULT_REVIEWER_INTAKE_CHECKLIST,
     reviewer_scoring_guide: Path = DEFAULT_REVIEWER_SCORING_GUIDE,
     reviewer_training_guide: Path = DEFAULT_REVIEWER_TRAINING_GUIDE,
@@ -396,6 +413,7 @@ def build_bundle(
     reviewer_assignments_manifest = resolve_assignment_manifest(reviewer_assignments_dir)
     review_materials = build_review_materials_provenance(
         reviewer_packets_dir=reviewer_packets_dir,
+        independent_review_runbook=independent_review_runbook,
         reviewer_intake_checklist=reviewer_intake_checklist,
         reviewer_scoring_guide=reviewer_scoring_guide,
         reviewer_training_guide=reviewer_training_guide,
@@ -530,6 +548,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--corpus-manifest", type=Path, default=DEFAULT_CORPUS_MANIFEST)
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
+    parser.add_argument(
+        "--independent-review-runbook",
+        type=Path,
+        default=DEFAULT_INDEPENDENT_REVIEW_RUNBOOK,
+    )
     parser.add_argument("--reviewer-packets-dir", type=Path, default=DEFAULT_REVIEWER_PACKETS)
     parser.add_argument(
         "--reviewer-intake-checklist",
@@ -592,6 +615,7 @@ def main() -> int:
             adjudicated_consensus_pairs=args.adjudicated_consensus_pairs,
             reviewer_assignments_dir=args.reviewer_assignments_dir,
             reviewer_packets_dir=args.reviewer_packets_dir,
+            independent_review_runbook=args.independent_review_runbook,
             reviewer_intake_checklist=args.reviewer_intake_checklist,
             reviewer_scoring_guide=args.reviewer_scoring_guide,
             reviewer_training_guide=args.reviewer_training_guide,

@@ -29,6 +29,14 @@
       },
       "note": "Analysis plan is fixed before independent clinician evidence is collected."
     },
+    "independent_review_runbook_ready": {
+      "passed": true,
+      "evidence": {
+        "runbook_id": "scribeval_independent_review_runbook_v1",
+        "status": "ready_for_external_collection"
+      },
+      "note": "Coordinator workflow and private collection paths are defined."
+    },
     "reviewer_intake_ready": {
       "passed": true,
       "evidence": {
@@ -129,6 +137,7 @@
   "source_files": {
     "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
     "collection_plan": "validation_pack/collection_plan.json",
+    "independent_review_runbook": "validation_pack/independent_review_runbook.json",
     "clinician_review_protocol": "validation_pack/clinician_review_protocol.json",
     "reviewer_intake_checklist": "validation_pack/reviewer_intake_checklist.json",
     "reviewer_training_guide": "validation_pack/reviewer_training_guide.json",

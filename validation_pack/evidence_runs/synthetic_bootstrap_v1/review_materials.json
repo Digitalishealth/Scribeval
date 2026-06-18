@@ -5,6 +5,8 @@
   "reviewer_packets_dir": "../../reviewer_packets",
   "reviewer_packet_manifest": "../../reviewer_packets/reviewer_packet_manifest.json",
   "reviewer_packet_manifest_sha256": "9a0411ec2983747de5634a01710e94dd32fea864818fe359a69f408a8c0d1ae0",
+  "independent_review_runbook": "../../independent_review_runbook.json",
+  "independent_review_runbook_sha256": "6f237fc2ea6031783420aa4b00d60fdf4d289817345065190d26f87d06192ad4",
   "reviewer_intake_checklist": "../../reviewer_intake_checklist.json",
   "reviewer_intake_checklist_sha256": "682c9de6d9cce5288b3a1c32843ecd691d7d41579c8efeb4c3594825c8c3220e",
   "reviewer_scoring_guide": "../../reviewer_scoring_guide.md",
@@ -37,5 +39,5 @@
     "cases/val_results_followup_020.md": "e6c5646424f0a16e11871a5c6bd671b536699b64a8fbc9d3fb4bb365fa1d470b"
   },
   "readme_sha256": "9af59997f86963a3b82121617a9bf7e4d449b06900b976cd379f651ab0aca9e6",
-  "privacy_note": "Reviewer material hashes identify the blinded packet files, intake checklist, scoring guide, training guide, and statistical analysis plan used for clinician review. They do not include reviewer identifiers, assignment worksheets, reviewer comments, or completed ratings."
+  "privacy_note": "Reviewer material hashes identify the blinded packet files, intake checklist, scoring guide, training guide, independent review runbook, and statistical analysis plan used for clinician review. They do not include reviewer identifiers, assignment worksheets, reviewer comments, or completed ratings."
 }

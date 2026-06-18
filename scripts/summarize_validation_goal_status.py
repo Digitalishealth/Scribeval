@@ -10,6 +10,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CORPUS_MANIFEST = ROOT / "validation_pack" / "corpus" / "corpus_manifest.json"
 DEFAULT_COLLECTION_PLAN = ROOT / "validation_pack" / "collection_plan.json"
+DEFAULT_INDEPENDENT_REVIEW_RUNBOOK = (
+    ROOT / "validation_pack" / "independent_review_runbook.json"
+)
 DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
 DEFAULT_REVIEWER_INTAKE = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_TRAINING = ROOT / "validation_pack" / "reviewer_training_guide.json"
@@ -46,6 +49,7 @@ def summarize_goal_status(
     *,
     corpus_manifest: Path,
     collection_plan: Path,
+    independent_review_runbook: Path,
     protocol: Path,
     reviewer_intake: Path,
     reviewer_training: Path,
@@ -54,6 +58,7 @@ def summarize_goal_status(
 ) -> dict[str, Any]:
     corpus = load_json(corpus_manifest)
     collection = load_json(collection_plan)
+    runbook = load_json(independent_review_runbook)
     review_protocol = load_json(protocol)
     intake = load_json(reviewer_intake)
     training = load_json(reviewer_training)
@@ -105,6 +110,14 @@ def summarize_goal_status(
             passed=sap.get("status") == "prespecified_for_independent_clinician_review",
             evidence={"plan_id": sap.get("plan_id"), "status": sap.get("status")},
             note="Analysis plan is fixed before independent clinician evidence is collected.",
+        ),
+        "independent_review_runbook_ready": component_status(
+            passed=runbook.get("status") == "ready_for_external_collection",
+            evidence={
+                "runbook_id": runbook.get("runbook_id"),
+                "status": runbook.get("status"),
+            },
+            note="Coordinator workflow and private collection paths are defined.",
         ),
         "reviewer_intake_ready": component_status(
             passed=intake.get("status") == "ready_for_independent_review",
@@ -205,6 +218,7 @@ def summarize_goal_status(
         "source_files": {
             "corpus_manifest": display_path(corpus_manifest),
             "collection_plan": display_path(collection_plan),
+            "independent_review_runbook": display_path(independent_review_runbook),
             "clinician_review_protocol": display_path(protocol),
             "reviewer_intake_checklist": display_path(reviewer_intake),
             "reviewer_training_guide": display_path(reviewer_training),
@@ -279,6 +293,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--corpus-manifest", type=Path, default=DEFAULT_CORPUS_MANIFEST)
     parser.add_argument("--collection-plan", type=Path, default=DEFAULT_COLLECTION_PLAN)
+    parser.add_argument(
+        "--independent-review-runbook",
+        type=Path,
+        default=DEFAULT_INDEPENDENT_REVIEW_RUNBOOK,
+    )
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
     parser.add_argument("--reviewer-intake", type=Path, default=DEFAULT_REVIEWER_INTAKE)
     parser.add_argument("--reviewer-training", type=Path, default=DEFAULT_REVIEWER_TRAINING)
@@ -299,6 +318,7 @@ def main() -> int:
         status = summarize_goal_status(
             corpus_manifest=args.corpus_manifest,
             collection_plan=args.collection_plan,
+            independent_review_runbook=args.independent_review_runbook,
             protocol=args.protocol,
             reviewer_intake=args.reviewer_intake,
             reviewer_training=args.reviewer_training,

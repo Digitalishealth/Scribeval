@@ -90,6 +90,24 @@ REQUIRED_REVIEWER_TRAINING_STEPS = {
     "read_scoring_guide",
     "review_score_and_severity_anchors",
 }
+REQUIRED_INDEPENDENT_REVIEW_RUNBOOK_STAGES = {
+    "assess_goal_status",
+    "build_consensus_and_adjudicate",
+    "build_public_evidence_bundle",
+    "check_review_readiness",
+    "collect_blinded_ratings",
+    "estimate_reviewer_reliability",
+    "export_judge_scores",
+    "generate_private_assignments",
+    "onboard_reviewers",
+    "prepare_public_materials",
+    "publish_evidence_index",
+}
+REQUIRED_IGNORED_PRIVATE_PATHS = {
+    "validation_pack/private_review_inputs/",
+    "validation_pack/private_review_runs/",
+    "validation_pack/reviewer_assignments/",
+}
 REQUIRED_SAP_PRIMARY_ENDPOINTS = {
     "clinician_reviewer_reliability_weighted_kappa",
     "judge_vs_clinician_consensus_weighted_kappa",
@@ -471,6 +489,11 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol missing reviewer intake checklist",
     )
     require(
+        review_materials.get("independent_review_runbook")
+        == "independent_review_runbook.json",
+        "clinician review protocol missing independent review runbook",
+    )
+    require(
         review_materials.get("reviewer_training_guide")
         == "reviewer_training_guide.json",
         "clinician review protocol missing reviewer training guide",
@@ -738,6 +761,88 @@ def audit_reviewer_training_guide() -> None:
     )
 
 
+def audit_independent_review_runbook() -> None:
+    runbook_path = PACK / "independent_review_runbook.json"
+    report_path = PACK / "independent_review_runbook.md"
+    require(runbook_path.exists(), "missing independent review runbook JSON")
+    require(report_path.exists(), "missing independent review runbook report")
+    runbook = load_json(runbook_path)
+    require(
+        runbook.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "independent review runbook has invalid benchmark_unit",
+    )
+    require(
+        runbook.get("runbook_id") == "scribeval_independent_review_runbook_v1",
+        "independent review runbook has invalid runbook_id",
+    )
+    require(
+        runbook.get("status") == "ready_for_external_collection",
+        "independent review runbook status drift",
+    )
+    materials = set(runbook.get("required_public_materials", []))
+    require(
+        materials
+        >= {
+            "clinician_review_protocol.json",
+            "statistical_analysis_plan.json",
+            "reviewer_training_guide.json",
+            "reviewer_packets/",
+            "corpus/corpus_manifest.json",
+        },
+        "independent review runbook missing required public materials",
+    )
+    stage_ids = {stage.get("stage_id") for stage in runbook.get("stages", [])}
+    require(
+        stage_ids == REQUIRED_INDEPENDENT_REVIEW_RUNBOOK_STAGES,
+        "independent review runbook stage drift",
+    )
+    commands = "\n".join(
+        command
+        for stage in runbook.get("stages", [])
+        for command in stage.get("commands", [])
+    )
+    for script_name in (
+        "audit_clinician_review_readiness.py",
+        "summarize_validation_review_run.py",
+        "summarize_reviewer_reliability.py",
+        "build_validation_evidence_bundle.py",
+        "audit_validation_evidence_runs.py",
+        "summarize_validation_goal_status.py",
+    ):
+        require(script_name in commands, f"independent review runbook missing {script_name}")
+    private_policy = runbook.get("private_input_policy", {})
+    ignored_paths = set(private_policy.get("ignored_workspace_paths", []))
+    require(
+        ignored_paths >= REQUIRED_IGNORED_PRIVATE_PATHS,
+        "independent review runbook missing ignored private workspace paths",
+    )
+    require(
+        private_policy.get("retain_outside_public_repository") is True,
+        "independent review runbook must keep private records outside public repo",
+    )
+    never_commit = set(private_policy.get("never_commit", []))
+    require(
+        {"raw filled reviewer worksheets", "reviewer-specific assignment worksheets"}
+        <= never_commit,
+        "independent review runbook must forbid raw reviewer inputs",
+    )
+    gitignore_text = (ROOT / ".gitignore").read_text()
+    for ignored_path in REQUIRED_IGNORED_PRIVATE_PATHS:
+        require(
+            ignored_path in gitignore_text,
+            f".gitignore missing private validation path {ignored_path}",
+        )
+    report_text = report_path.read_text()
+    require(
+        "Private Input Policy" in report_text,
+        "independent review runbook report missing private input policy",
+    )
+    require(
+        "not validation evidence" in runbook.get("claim_boundary", ""),
+        "independent review runbook must preserve validation claim boundary",
+    )
+
+
 def audit_validation_goal_status(corpus_refs: dict[str, set[str]]) -> None:
     status_path = PACK / "validation_goal_status.json"
     report_path = PACK / "validation_goal_status.md"
@@ -780,6 +885,17 @@ def audit_validation_goal_status(corpus_refs: dict[str, set[str]]) -> None:
             "no_claim_ready_independent_clinician_evidence_run" in gap_ids,
             "validation goal status must name missing independent evidence run",
         )
+    components = status.get("prepared_components", {})
+    require(
+        components.get("independent_review_runbook_ready", {}).get("passed") is True,
+        "validation goal status missing prepared runbook component",
+    )
+    source_files = status.get("source_files", {})
+    require(
+        source_files.get("independent_review_runbook")
+        == "validation_pack/independent_review_runbook.json",
+        "validation goal status missing independent review runbook source",
+    )
     require(
         "not independent clinical validation" in status.get("claim_boundary", ""),
         "validation goal status must preserve validation claim boundary",
@@ -852,6 +968,7 @@ def main() -> int:
         audit_collection_plan(corpus_refs)
         audit_statistical_analysis_plan()
         audit_reviewer_training_guide()
+        audit_independent_review_runbook()
         audit_validation_goal_status(corpus_refs)
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
@@ -868,6 +985,7 @@ def main() -> int:
     print("Validation collection plan: ready")
     print("Statistical analysis plan: prespecified")
     print("Reviewer training guide: required_before_independent_scoring")
+    print("Independent review runbook: ready_for_external_collection")
     print("Validation goal status: tracked")
     print("Clinician review protocol: ready_for_independent_review")
     print("Reviewer intake checklist: ready_for_independent_review")

@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.0.0",
+  "runbook_id": "scribeval_independent_review_runbook_v1",
+  "status": "ready_for_external_collection",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "purpose": "Define the reproducible coordinator workflow for converting the public Scribeval validation corpus into an independent clinician evidence run without committing private reviewer inputs.",
+  "required_public_materials": [
+    "clinician_review_protocol.json",
+    "collection_plan.json",
+    "statistical_analysis_plan.json",
+    "reviewer_intake_checklist.json",
+    "reviewer_training_guide.json",
+    "reviewer_scoring_guide.md",
+    "reviewer_packets/",
+    "corpus/corpus_manifest.json"
+  ],
+  "private_input_policy": {
+    "retain_outside_public_repository": true,
+    "ignored_workspace_paths": [
+      "validation_pack/reviewer_assignments/",
+      "validation_pack/private_review_inputs/",
+      "validation_pack/private_review_runs/"
+    ],
+    "never_commit": [
+      "named reviewer records",
+      "reviewer contact details",
+      "registration numbers",
+      "signed consent forms",
+      "source registration verification documents",
+      "raw filled reviewer worksheets",
+      "reviewer-specific assignment worksheets",
+      "payment records",
+      "raw adjudication worksheets"
+    ],
+    "publish_only": [
+      "aggregate readiness reports",
+      "aggregate reliability reports",
+      "adjudicated consensus calibration pairs",
+      "adjudication burden summaries",
+      "validation claim readiness reports",
+      "evidence manifests with source hashes",
+      "evidence-run indexes"
+    ]
+  },
+  "stages": [
+    {
+      "stage_id": "prepare_public_materials",
+      "objective": "Verify that the public corpus, reviewer packets, collection plan, training guide, and statistical analysis plan are internally consistent before recruitment.",
+      "commands": [
+        "python scripts/build_reviewer_packets.py",
+        "python scripts/plan_validation_collection.py --output-json validation_pack/collection_plan.json --output-md validation_pack/collection_plan.md --fail-on-underpowered",
+        "python scripts/validation_pack_audit.py"
+      ],
+      "exit_evidence": [
+        "validation_pack_audit.py passes",
+        "collection_plan.json reports no underpowered stratum values"
+      ],
+      "public_outputs": [
+        "reviewer_packets/",
+        "collection_plan.json",
+        "collection_plan.md"
+      ],
+      "private_outputs": []
+    },
+    {
+      "stage_id": "onboard_reviewers",
+      "objective": "Screen reviewers, complete training, and record only pseudonymous eligibility fields in the publishable registry shape.",
+      "commands": [],
+      "exit_evidence": [
+        "reviewer_intake_checklist.json stages completed by coordinator",
+        "reviewer_training_guide.json completed before training_completed=yes",
+        "private eligibility records retained outside the public repository"
+      ],
+      "public_outputs": [
+        "pseudonymous reviewer registry matching reviewer_registry_template.csv"
+      ],
+      "private_outputs": [
+        "signed consent forms",
+        "registration verification records",
+        "training attendance and anchor-case notes"
+      ]
+    },
+    {
+      "stage_id": "generate_private_assignments",
+      "objective": "Create balanced reviewer-specific worksheets in an ignored private workspace.",
+      "commands": [
+        "python scripts/build_reviewer_assignments.py --reviewer-registry validation_pack/private_review_inputs/reviewer_registry.csv --output-dir validation_pack/reviewer_assignments"
+      ],
+      "exit_evidence": [
+        "assignment_manifest.json records two qualified reviewers per case-submission",
+        "reviewer-specific worksheets are stored in an ignored private path"
+      ],
+      "public_outputs": [],
+      "private_outputs": [
+        "validation_pack/reviewer_assignments/assignment_manifest.json",
+        "validation_pack/reviewer_assignments/worksheets/*.csv"
+      ]
+    },
+    {
+      "stage_id": "collect_blinded_ratings",
+      "objective": "Collect completed clinician ratings against blinded transcript-to-note packets.",
+      "commands": [],
+      "exit_evidence": [
+        "all assigned worksheets returned",
+        "overall scores and required dimension scores completed",
+        "reviewer comments screened for identifiers before publication"
+      ],
+      "public_outputs": [],
+      "private_outputs": [
+        "validation_pack/private_review_inputs/filled_worksheet.csv"
+      ]
+    },
+    {
+      "stage_id": "export_judge_scores",
+      "objective": "Run Scribeval on the same blinded submissions and export scores without transcript text, note text, raw judge responses, or reasoning.",
+      "commands": [
+        "python scripts/export_validation_judge_scores.py --output validation_pack/private_review_runs/scribeval_scores.json --dimensions omission,hallucination,medicolegal,ahpra,pdqi9,qnote"
+      ],
+      "exit_evidence": [
+        "judge score JSON covers every required case-submission and dimension",
+        "judge score JSON contains no raw transcript or note text"
+      ],
+      "public_outputs": [],
+      "private_outputs": [
+        "validation_pack/private_review_runs/scribeval_scores.json"
+      ]
+    },
+    {
+      "stage_id": "check_review_readiness",
+      "objective": "Prove that reviewer registry, assignments, worksheet completion, and judge scores are ready for analysis using aggregate reports only.",
+      "commands": [
+        "python scripts/audit_clinician_review_readiness.py --worksheet validation_pack/private_review_inputs/filled_worksheet.csv --reviewer-registry validation_pack/private_review_inputs/reviewer_registry.csv --output-json validation_pack/private_review_runs/readiness_report.json --output-md validation_pack/private_review_runs/readiness_report.md --fail-on-not-ready",
+        "python scripts/summarize_validation_review_run.py --reviewer-registry validation_pack/private_review_inputs/reviewer_registry.csv --assignments-dir validation_pack/reviewer_assignments --worksheet validation_pack/private_review_inputs/filled_worksheet.csv --judge-scores validation_pack/private_review_runs/scribeval_scores.json --output-json validation_pack/private_review_runs/review_run_status.json --output-md validation_pack/private_review_runs/review_run_status.md --fail-on-not-ready"
+      ],
+      "exit_evidence": [
+        "clinician review readiness audit passes",
+        "review run status has no readiness issue counts"
+      ],
+      "public_outputs": [
+        "review_run_status.json"
+      ],
+      "private_outputs": [
+        "readiness_report.json",
+        "readiness_report.md"
+      ]
+    },
+    {
+      "stage_id": "estimate_reviewer_reliability",
+      "objective": "Measure independent clinician agreement before making judge-vs-clinician claims.",
+      "commands": [
+        "python scripts/summarize_reviewer_reliability.py --worksheet validation_pack/private_review_inputs/filled_worksheet.csv --reviewer-registry validation_pack/private_review_inputs/reviewer_registry.csv --output-json validation_pack/private_review_runs/reviewer_reliability.json --output-md validation_pack/private_review_runs/reviewer_reliability.md --fail-on-not-ready"
+      ],
+      "exit_evidence": [
+        "reviewer reliability report meets prespecified thresholds or documents the failed threshold"
+      ],
+      "public_outputs": [
+        "reviewer_reliability.json",
+        "reviewer_reliability.md"
+      ],
+      "private_outputs": []
+    },
+    {
+      "stage_id": "build_consensus_and_adjudicate",
+      "objective": "Build clinician consensus ratings and resolve required disagreements before validation claims.",
+      "commands": [
+        "python scripts/build_consensus_validation_ratings.py --worksheet validation_pack/private_review_inputs/filled_worksheet.csv --reviewer-registry validation_pack/private_review_inputs/reviewer_registry.csv --judge-scores validation_pack/private_review_runs/scribeval_scores.json --output validation_pack/private_review_runs/consensus_calibration_pairs.json --output-summary-json validation_pack/private_review_runs/consensus_summary.json --output-summary-md validation_pack/private_review_runs/consensus_summary.md",
+        "python scripts/build_adjudication_packets.py --consensus-pairs validation_pack/private_review_runs/consensus_calibration_pairs.json --output-dir validation_pack/private_review_runs/adjudication_packets",
+        "python scripts/import_adjudication_decisions.py --consensus-pairs validation_pack/private_review_runs/consensus_calibration_pairs.json --adjudication-worksheet validation_pack/private_review_inputs/filled_adjudication_worksheet.csv --reviewer-registry validation_pack/private_review_inputs/reviewer_registry.csv --adjudicator-id <adjudicator_reviewer_id> --require-qualified-adjudicator --output validation_pack/private_review_runs/adjudicated_consensus_calibration_pairs.json --output-summary-json validation_pack/private_review_runs/adjudicated_consensus_summary.json --output-summary-md validation_pack/private_review_runs/adjudicated_consensus_summary.md"
+      ],
+      "exit_evidence": [
+        "all adjudication-required rows resolved",
+        "adjudicator provenance is qualified and pseudonymous"
+      ],
+      "public_outputs": [
+        "adjudicated_consensus_calibration_pairs.json",
+        "adjudicated_consensus_summary.json",
+        "adjudicated_consensus_summary.md"
+      ],
+      "private_outputs": [
+        "filled_adjudication_worksheet.csv",
+        "adjudication_packets/"
+      ]
+    },
+    {
+      "stage_id": "build_public_evidence_bundle",
+      "objective": "Publish a versioned evidence bundle containing aggregate agreement artifacts and source hashes, not raw reviewer inputs.",
+      "commands": [
+        "python scripts/build_validation_evidence_bundle.py --run-id <review_run_id> --worksheet validation_pack/private_review_inputs/filled_worksheet.csv --reviewer-registry validation_pack/private_review_inputs/reviewer_registry.csv --judge-scores validation_pack/private_review_runs/scribeval_scores.json --reviewer-assignments-dir validation_pack/reviewer_assignments --adjudicated-consensus-pairs validation_pack/private_review_runs/adjudicated_consensus_calibration_pairs.json --output-dir validation_pack/evidence_runs"
+      ],
+      "exit_evidence": [
+        "evidence bundle contains evidence_manifest.json and validation_claim_readiness.json",
+        "raw worksheet, registry, and reviewer assignment CSV files are not copied into the public bundle"
+      ],
+      "public_outputs": [
+        "validation_pack/evidence_runs/<review_run_id>/"
+      ],
+      "private_outputs": []
+    },
+    {
+      "stage_id": "publish_evidence_index",
+      "objective": "Audit and index public evidence runs so readers can see claim readiness and failed checks.",
+      "commands": [
+        "python scripts/audit_validation_evidence_runs.py --evidence-runs validation_pack/evidence_runs",
+        "python scripts/index_validation_evidence_runs.py --evidence-runs validation_pack/evidence_runs --output-json validation_pack/evidence_runs/index.json --output-md validation_pack/evidence_runs/index.md"
+      ],
+      "exit_evidence": [
+        "evidence run audit passes",
+        "index exposes claim-ready run count and failed readiness checks"
+      ],
+      "public_outputs": [
+        "validation_pack/evidence_runs/index.json",
+        "validation_pack/evidence_runs/index.md"
+      ],
+      "private_outputs": []
+    },
+    {
+      "stage_id": "assess_goal_status",
+      "objective": "Refresh the public goal-status report after indexing evidence runs.",
+      "commands": [
+        "python scripts/summarize_validation_goal_status.py --output-json validation_pack/validation_goal_status.json --output-md validation_pack/validation_goal_status.md"
+      ],
+      "exit_evidence": [
+        "validation_goal_status.json reports independent_clinician_validation_claim_ready only when at least one independent clinician evidence run passes claim readiness"
+      ],
+      "public_outputs": [
+        "validation_pack/validation_goal_status.json",
+        "validation_pack/validation_goal_status.md"
+      ],
+      "private_outputs": []
+    }
+  ],
+  "claim_boundary": "This runbook supports reproducible evidence collection only. It is not validation evidence until a completed independent clinician evidence bundle passes validation-claim readiness."
+}

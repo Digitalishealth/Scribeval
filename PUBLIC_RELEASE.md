@@ -25,6 +25,9 @@ transcripts.
       severity, and dimension anchoring.
 - [x] Clinician reviewer training guide included for required training,
       anchor-case discussion, blinding, and public-record boundaries.
+- [x] Independent clinician review runbook included with private workspace
+      guardrails and command sequence from reviewer assignment to evidence
+      indexing.
 - [x] Full 20-case synthetic validation corpus included with traceable
       transcript/note packets.
 - [x] Full 20-case validation corpus can run directly through
@@ -43,6 +46,8 @@ transcripts.
       and blocking gaps without overstating synthetic evidence.
 - [x] Reviewer assignment builder creates balanced reviewer-specific
       worksheets for blinded case-submission collection.
+- [x] Generated reviewer assignment and private review-input workspaces are
+      ignored by Git to reduce accidental publication of raw collection inputs.
 - [x] Independent clinician review readiness audit checks two qualified
       reviewers plus overall and dimension ratings per blinded case-submission
       before calibration import.

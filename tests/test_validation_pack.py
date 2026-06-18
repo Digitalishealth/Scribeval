@@ -81,6 +81,24 @@ REQUIRED_REVIEWER_TRAINING_STEPS = {
     "read_scoring_guide",
     "review_score_and_severity_anchors",
 }
+REQUIRED_INDEPENDENT_REVIEW_RUNBOOK_STAGES = {
+    "assess_goal_status",
+    "build_consensus_and_adjudicate",
+    "build_public_evidence_bundle",
+    "check_review_readiness",
+    "collect_blinded_ratings",
+    "estimate_reviewer_reliability",
+    "export_judge_scores",
+    "generate_private_assignments",
+    "onboard_reviewers",
+    "prepare_public_materials",
+    "publish_evidence_index",
+}
+REQUIRED_IGNORED_PRIVATE_PATHS = {
+    "validation_pack/private_review_inputs/",
+    "validation_pack/private_review_runs/",
+    "validation_pack/reviewer_assignments/",
+}
 REQUIRED_SAP_PRIMARY_ENDPOINTS = {
     "clinician_reviewer_reliability_weighted_kappa",
     "judge_vs_clinician_consensus_weighted_kappa",
@@ -279,6 +297,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
         protocol["review_materials"]["reviewer_intake_checklist"]
         == "reviewer_intake_checklist.json"
     )
+    assert protocol["review_materials"]["independent_review_runbook"] == (
+        "independent_review_runbook.json"
+    )
     assert protocol["review_materials"]["reviewer_training_guide"] == (
         "reviewer_training_guide.json"
     )
@@ -377,6 +398,52 @@ def test_reviewer_training_guide_defines_required_training() -> None:
     assert "not itself validation evidence" in guide["claim_boundary"]
     assert "Required Training Steps" in guide_report
     assert "Claim Boundary" in guide_report
+
+
+def test_independent_review_runbook_defines_collection_workflow() -> None:
+    runbook = json.loads((VALIDATION_PACK / "independent_review_runbook.json").read_text())
+    runbook_report = (VALIDATION_PACK / "independent_review_runbook.md").read_text()
+    gitignore = (ROOT / ".gitignore").read_text()
+
+    assert runbook["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert runbook["runbook_id"] == "scribeval_independent_review_runbook_v1"
+    assert runbook["status"] == "ready_for_external_collection"
+    assert set(runbook["required_public_materials"]) >= {
+        "clinician_review_protocol.json",
+        "statistical_analysis_plan.json",
+        "reviewer_training_guide.json",
+        "reviewer_packets/",
+        "corpus/corpus_manifest.json",
+    }
+    assert {stage["stage_id"] for stage in runbook["stages"]} == (
+        REQUIRED_INDEPENDENT_REVIEW_RUNBOOK_STAGES
+    )
+    commands = "\n".join(
+        command for stage in runbook["stages"] for command in stage["commands"]
+    )
+    for script_name in (
+        "audit_clinician_review_readiness.py",
+        "summarize_validation_review_run.py",
+        "summarize_reviewer_reliability.py",
+        "build_validation_evidence_bundle.py",
+        "audit_validation_evidence_runs.py",
+        "summarize_validation_goal_status.py",
+    ):
+        assert script_name in commands
+
+    private_policy = runbook["private_input_policy"]
+    assert private_policy["retain_outside_public_repository"] is True
+    assert set(private_policy["ignored_workspace_paths"]) >= (
+        REQUIRED_IGNORED_PRIVATE_PATHS
+    )
+    assert {"raw filled reviewer worksheets", "reviewer-specific assignment worksheets"} <= (
+        set(private_policy["never_commit"])
+    )
+    for ignored_path in REQUIRED_IGNORED_PRIVATE_PATHS:
+        assert ignored_path in gitignore
+
+    assert "Private Input Policy" in runbook_report
+    assert "not validation evidence" in runbook["claim_boundary"]
 
 
 def test_statistical_analysis_plan_prespecifies_validation_claim() -> None:
@@ -502,6 +569,12 @@ def test_validation_goal_status_tracks_missing_independent_evidence() -> None:
     assert status["coverage"]["evidence_run_count"] == 1
     assert status["coverage"]["claim_ready_run_count"] == 0
     assert all(component["passed"] for component in status["prepared_components"].values())
+    assert status["prepared_components"]["independent_review_runbook_ready"][
+        "evidence"
+    ]["runbook_id"] == "scribeval_independent_review_runbook_v1"
+    assert status["source_files"]["independent_review_runbook"] == (
+        "validation_pack/independent_review_runbook.json"
+    )
     assert {gap["gap_id"] for gap in status["blocking_gaps"]} >= {
         "current_evidence_run_failed_checks",
         "no_claim_ready_independent_clinician_evidence_run",
@@ -1193,6 +1266,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["reviewer_assignments_manifest_source"] == "assignment_manifest.json"
     assert set(manifest["source_hashes"]) == {
         "corpus_manifest_sha256",
+        "independent_review_runbook_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
         "reviewer_intake_checklist_sha256",
@@ -1211,6 +1285,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_materials["reviewer_packet_manifest_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_packet_manifest_sha256"]
+    assert review_materials["independent_review_runbook_sha256"] == manifest[
+        "source_hashes"
+    ]["independent_review_runbook_sha256"]
     assert review_materials["reviewer_scoring_guide_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_scoring_guide_sha256"]
@@ -1225,6 +1302,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     ]["statistical_analysis_plan_sha256"]
     assert review_materials["reviewer_scoring_guide"].endswith(
         "validation_pack/reviewer_scoring_guide.md"
+    )
+    assert review_materials["independent_review_runbook"].endswith(
+        "validation_pack/independent_review_runbook.json"
     )
     assert review_materials["reviewer_intake_checklist"].endswith(
         "validation_pack/reviewer_intake_checklist.json"
@@ -1340,6 +1420,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
     assert set(manifest["source_hashes"]) == {
         "adjudicated_consensus_pairs_sha256",
         "corpus_manifest_sha256",
+        "independent_review_runbook_sha256",
         "judge_scores_sha256",
         "protocol_sha256",
         "reviewer_intake_checklist_sha256",

@@ -12,3 +12,6 @@ build/
 *.so
 .env
 output/
+validation_pack/reviewer_assignments/
+validation_pack/private_review_inputs/
+validation_pack/private_review_runs/
