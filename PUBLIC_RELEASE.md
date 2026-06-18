@@ -60,7 +60,8 @@ transcripts.
 - [x] Evidence-run index summarizes bundle coverage, claim readiness, and
       agreement minima for public review.
 - [x] Stratified validation evidence summary included across specialty, note
-      source, prompt strategy, and safety-critical failure mode.
+      source, prompt strategy, and safety-critical failure mode, including
+      kappa/ICC agreement metrics where enough pairs exist.
 - [x] Validation corpus audit verifies case packets and evidence references
       without API keys.
 - [x] JSON and Markdown outputs available for audit and governance review.

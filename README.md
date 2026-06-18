@@ -251,10 +251,11 @@ clinician ratings with `scripts/build_consensus_validation_ratings.py`, then run
 `--require-qualified-reviewers` so the calibration pairs carry reviewer
 eligibility provenance without exposing direct identifiers. The generated
 stratified summary shows whether agreement evidence spans specialties, note
-sources, prompting strategies, and safety-critical failure modes. The readiness
-audit checks that every blinded case-submission has two qualified reviewers and
-complete overall note-quality and required dimension ratings before calibration
-import.
+sources, prompting strategies, and safety-critical failure modes, including
+stratum-level weighted kappa, ICC(2,1), mean absolute difference, and severity
+agreement where enough pairs exist. The readiness audit checks that every
+blinded case-submission has two qualified reviewers and complete overall
+note-quality and required dimension ratings before calibration import.
 `scripts/summarize_validation_review_run.py` publishes an aggregate coordinator
 status report across assignments, worksheet completion, reviewer provenance, and
 judge-score availability without exposing reviewer identifiers, comments,

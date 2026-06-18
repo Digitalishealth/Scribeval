@@ -26,9 +26,7 @@ import math
 from dataclasses import dataclass
 from enum import StrEnum
 
-from scribeval.models.score import SeverityLevel
-
-SEVERITY_ORDER: list[str] = [s.value for s in SeverityLevel]
+SEVERITY_ORDER: list[str] = ["none", "low", "moderate", "high", "critical"]
 
 
 class WeightScheme(StrEnum):

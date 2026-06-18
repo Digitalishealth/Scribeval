@@ -4,14 +4,22 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from scribeval.calibration import RatingPair, compute_agreement  # noqa: E402
+
 DEFAULT_EVIDENCE_MANIFEST = ROOT / "validation_pack" / "evidence" / "evidence_manifest.json"
 
 STRATA = ("specialty", "note_source", "prompt_strategy", "failure_mode")
+MIN_AGREEMENT_PAIRS = 2
 
 
 def load_json(path: Path) -> Any:
@@ -26,7 +34,12 @@ def resolve_manifest_path(evidence_manifest: Path, manifest_value: str) -> Path:
 
 
 def round_metric(value: float) -> float:
-    return round(value, 4)
+    rounded = round(value, 4)
+    return 0.0 if rounded == 0 else rounded
+
+
+def clean_metric(value: float) -> float:
+    return 0.0 if value == 0 else value
 
 
 def display_path(path: Path) -> str:
@@ -44,6 +57,7 @@ class StratumAccumulator:
         self.pair_count = 0
         self.abs_difference_total = 0.0
         self.severity_match_count = 0
+        self.pairs: list[dict[str, Any]] = []
 
     def add(self, pair: dict[str, Any]) -> None:
         self.case_ids.add(pair["case_id"])
@@ -53,8 +67,10 @@ class StratumAccumulator:
         self.abs_difference_total += abs(float(pair["judge_score"]) - float(pair["human_score"]))
         if pair["judge_severity"] == pair["human_severity"]:
             self.severity_match_count += 1
+        self.pairs.append(pair)
 
     def as_dict(self, value: str) -> dict[str, Any]:
+        dimension_agreement = agreement_by_dimension(self.pairs)
         return {
             "value": value,
             "case_count": len(self.case_ids),
@@ -68,7 +84,53 @@ class StratumAccumulator:
             "severity_exact_agreement": round_metric(
                 self.severity_match_count / self.pair_count if self.pair_count else 0.0
             ),
+            "minimum_weighted_kappa": minimum_metric(
+                dimension_agreement,
+                "weighted_kappa",
+            ),
+            "minimum_icc_2_1": minimum_metric(dimension_agreement, "icc_2_1"),
+            "agreement_by_dimension": dimension_agreement,
         }
+
+
+def agreement_by_dimension(pairs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rating_pairs = [
+        RatingPair(
+            dimension=str(pair["dimension"]),
+            judge_score=float(pair["judge_score"]),
+            human_score=float(pair["human_score"]),
+            judge_severity=str(pair["judge_severity"]),
+            human_severity=str(pair["human_severity"]),
+        )
+        for pair in pairs
+    ]
+    rows: list[dict[str, Any]] = []
+    for agreement in compute_agreement(rating_pairs):
+        enough_pairs = agreement.n_pairs >= MIN_AGREEMENT_PAIRS
+        rows.append(
+            {
+                "dimension": agreement.dimension,
+                "n_pairs": agreement.n_pairs,
+                "weighted_kappa": clean_metric(agreement.kappa) if enough_pairs else None,
+                "kappa_interpretation": (
+                    agreement.interpret_kappa() if enough_pairs else "insufficient_pairs"
+                ),
+                "icc_2_1": clean_metric(agreement.icc) if enough_pairs else None,
+                "mean_abs_difference": agreement.mean_abs_difference,
+                "judge_mean": clean_metric(agreement.judge_mean),
+                "human_mean": clean_metric(agreement.human_mean),
+            }
+        )
+    return rows
+
+
+def minimum_metric(rows: list[dict[str, Any]], field: str) -> float | None:
+    values = [row[field] for row in rows if isinstance(row.get(field), int | float)]
+    return min(values) if values else None
+
+
+def format_optional_metric(value: float | None) -> str:
+    return "n/a" if value is None else f"{value:.3f}"
 
 
 def load_corpus_index(corpus_manifest_path: Path) -> dict[str, Any]:
@@ -185,16 +247,26 @@ def report_markdown(summary: dict[str, Any]) -> str:
                 "",
                 (
                     "| Value | Cases | Submissions | Pairs | Dimensions | "
-                    "Mean abs diff | Severity exact agreement |"
+                    "Mean abs diff | Severity exact agreement | Min weighted kappa | "
+                    "Min ICC(2,1) |"
                 ),
-                "|---|---:|---:|---:|---:|---:|---:|",
+                "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
             ]
         )
         for row in rows:
             lines.append(
                 "| {value} | {case_count} | {submission_count} | {pair_count} | "
                 "{dimension_count} | {mean_abs_difference:.3f} | "
-                "{severity_exact_agreement:.3f} |".format(**row)
+                "{severity_exact_agreement:.3f} | {minimum_weighted_kappa} | "
+                "{minimum_icc_2_1} |".format(
+                    **{
+                        **row,
+                        "minimum_weighted_kappa": format_optional_metric(
+                            row["minimum_weighted_kappa"]
+                        ),
+                        "minimum_icc_2_1": format_optional_metric(row["minimum_icc_2_1"]),
+                    }
+                )
             )
         lines.append("")
     return "\n".join(lines).rstrip() + "\n"

@@ -436,6 +436,18 @@ def test_stratified_evidence_summary_covers_corpus_metadata() -> None:
     assert {row["value"] for row in summary["strata"]["note_source"]} == note_sources
     assert {row["value"] for row in summary["strata"]["prompt_strategy"]} == prompt_strategies
     assert {row["value"] for row in summary["strata"]["failure_mode"]} == failure_modes
+    for rows in summary["strata"].values():
+        for row in rows:
+            assert "minimum_weighted_kappa" in row
+            assert "minimum_icc_2_1" in row
+            assert row["agreement_by_dimension"]
+            assert {item["dimension"] for item in row["agreement_by_dimension"]} == set(
+                row["dimensions"]
+            )
+            assert all(
+                "weighted_kappa" in item and "icc_2_1" in item
+                for item in row["agreement_by_dimension"]
+            )
     assert all(row["pair_count"] > 0 for rows in summary["strata"].values() for row in rows)
 
 

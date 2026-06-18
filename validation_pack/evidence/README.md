@@ -12,6 +12,11 @@ The current `synthetic_agreement_v0` files are illustrative bootstrap data. They
 exercise the evidence format and calibration workflow, but they are not
 independent clinical validation.
 
+The stratified summary reports coverage plus stratum-level weighted kappa,
+ICC(2,1), mean absolute difference, and severity exact agreement by specialty,
+note source, prompt strategy, and safety-critical failure mode where enough
+pairs exist.
+
 For real clinician ratings, keep reviewer provenance outside the scoring
 worksheet by using `../reviewer_registry_template.csv`. Reviewer IDs should be
 pseudonymous and must not expose names, contact details, provider numbers, or

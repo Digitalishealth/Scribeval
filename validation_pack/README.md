@@ -261,6 +261,9 @@ Use agreement metrics as calibration evidence, not as a pass/fail device.
 - ICC(2,1) tests absolute agreement on continuous 0-1 scores.
 - Mean absolute difference shows the typical score gap between Scribeval and
   reviewers.
+- The stratified evidence summary reports these agreement metrics by
+  specialty, note source, prompt strategy, and safety-critical failure mode
+  where enough pairs exist.
 
 Review any dimension with low agreement before using it for procurement or
 governance decisions. Common next steps are rubric tightening, clearer reviewer

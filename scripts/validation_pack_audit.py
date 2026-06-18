@@ -266,6 +266,16 @@ def audit_stratified_summary(
         require(observed_values == values, f"summary {stratum} coverage drift")
         for row in rows:
             require(row.get("pair_count", 0) > 0, f"summary {stratum} row has no pairs")
+            dimension_rows = row.get("agreement_by_dimension")
+            require(
+                isinstance(dimension_rows, list) and dimension_rows,
+                f"summary {stratum} row missing dimension agreement",
+            )
+            require(
+                {item.get("dimension") for item in dimension_rows}
+                == set(row.get("dimensions", [])),
+                f"summary {stratum} row dimension agreement drift",
+            )
             require(
                 0 <= row.get("mean_abs_difference", -1) <= 1,
                 f"summary {stratum} row mean_abs_difference outside 0..1",
@@ -274,6 +284,27 @@ def audit_stratified_summary(
                 0 <= row.get("severity_exact_agreement", -1) <= 1,
                 f"summary {stratum} row severity agreement outside 0..1",
             )
+            for metric in ("minimum_weighted_kappa", "minimum_icc_2_1"):
+                value = row.get(metric)
+                require(
+                    value is None or -1 <= value <= 1,
+                    f"summary {stratum} row {metric} outside -1..1",
+                )
+            for item in dimension_rows:
+                require(
+                    item.get("n_pairs", 0) > 0,
+                    f"summary {stratum} dimension row has no pairs",
+                )
+                require(
+                    0 <= item.get("mean_abs_difference", -1) <= 1,
+                    f"summary {stratum} dimension mean_abs_difference outside 0..1",
+                )
+                for metric in ("weighted_kappa", "icc_2_1"):
+                    value = item.get(metric)
+                    require(
+                        value is None or -1 <= value <= 1,
+                        f"summary {stratum} dimension {metric} outside -1..1",
+                    )
 
 
 def audit_corpus_benchmark_manifest(corpus_refs: dict[str, set[str]]) -> None:
