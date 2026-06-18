@@ -452,6 +452,11 @@ def audit_clinician_review_protocol() -> None:
         "plan_validation_collection.py" in protocol.get("collection_plan_command", ""),
         "clinician review protocol missing collection plan command",
     )
+    require(
+        "summarize_validation_goal_status.py"
+        in protocol.get("validation_goal_status_command", ""),
+        "clinician review protocol missing validation goal status command",
+    )
     review_materials = protocol.get("review_materials", {})
     require(
         review_materials.get("reviewer_intake_checklist")
@@ -673,6 +678,54 @@ def audit_statistical_analysis_plan() -> None:
     )
 
 
+def audit_validation_goal_status(corpus_refs: dict[str, set[str]]) -> None:
+    status_path = PACK / "validation_goal_status.json"
+    report_path = PACK / "validation_goal_status.md"
+    require(status_path.exists(), "missing validation goal status JSON")
+    require(report_path.exists(), "missing validation goal status report")
+    status = load_json(status_path)
+    require(
+        status.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "validation goal status has invalid benchmark_unit",
+    )
+    require(
+        status.get("status_id") == "scribeval_validation_goal_status_v1",
+        "validation goal status has invalid status_id",
+    )
+    coverage = status.get("coverage", {})
+    require(
+        coverage.get("case_count") == len(corpus_refs["case_ids"]),
+        "validation goal status case_count drift",
+    )
+    require(
+        coverage.get("planned_case_submission_count") == len(corpus_refs["submission_refs"]),
+        "validation goal status planned submission count drift",
+    )
+    require(
+        status.get("current_status")
+        in {
+            "independent_clinician_validation_claim_ready",
+            "not_ready_for_independent_clinician_review",
+            "prepared_for_independent_clinician_review_not_validated",
+        },
+        "validation goal status has invalid current_status",
+    )
+    if status.get("current_status") != "independent_clinician_validation_claim_ready":
+        require(
+            status.get("is_ready_for_validation_claim") is False,
+            "validation goal status overclaims validation readiness",
+        )
+        gap_ids = {gap.get("gap_id") for gap in status.get("blocking_gaps", [])}
+        require(
+            "no_claim_ready_independent_clinician_evidence_run" in gap_ids,
+            "validation goal status must name missing independent evidence run",
+        )
+    require(
+        "not independent clinical validation" in status.get("claim_boundary", ""),
+        "validation goal status must preserve validation claim boundary",
+    )
+
+
 def audit_reviewer_intake_checklist() -> None:
     checklist = load_json(PACK / "reviewer_intake_checklist.json")
     require(
@@ -738,6 +791,7 @@ def main() -> int:
         audit_corpus_benchmark_manifest(corpus_refs)
         audit_collection_plan(corpus_refs)
         audit_statistical_analysis_plan()
+        audit_validation_goal_status(corpus_refs)
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
         audit_clinician_review_protocol()
@@ -752,6 +806,7 @@ def main() -> int:
     print(f"Reviewer packets: {packet_count}")
     print("Validation collection plan: ready")
     print("Statistical analysis plan: prespecified")
+    print("Validation goal status: tracked")
     print("Clinician review protocol: ready_for_independent_review")
     print("Reviewer intake checklist: ready_for_independent_review")
     print(f"Evidence pairs: {pair_count}")

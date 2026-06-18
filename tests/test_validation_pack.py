@@ -280,6 +280,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     )
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
     assert "plan_validation_collection.py" in protocol["collection_plan_command"]
+    assert "summarize_validation_goal_status.py" in protocol[
+        "validation_goal_status_command"
+    ]
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
     assert "summarize_validation_review_run.py" in protocol["review_run_status_command"]
@@ -443,6 +446,64 @@ def test_validation_collection_planner_reproduces_committed_plan(
         (VALIDATION_PACK / "collection_plan.json").read_text()
     )
     assert output_md.read_text() == (VALIDATION_PACK / "collection_plan.md").read_text()
+
+
+def test_validation_goal_status_tracks_missing_independent_evidence() -> None:
+    status = json.loads((VALIDATION_PACK / "validation_goal_status.json").read_text())
+    status_report = (VALIDATION_PACK / "validation_goal_status.md").read_text()
+
+    assert status["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert status["status_id"] == "scribeval_validation_goal_status_v1"
+    assert status["current_status"] == (
+        "prepared_for_independent_clinician_review_not_validated"
+    )
+    assert status["is_ready_for_validation_claim"] is False
+    assert status["coverage"]["case_count"] == 20
+    assert status["coverage"]["planned_case_submission_count"] == 100
+    assert status["coverage"]["planned_individual_calibration_pairs"] == 1400
+    assert status["coverage"]["planned_consensus_pairs"] == 700
+    assert status["coverage"]["evidence_run_count"] == 1
+    assert status["coverage"]["claim_ready_run_count"] == 0
+    assert all(component["passed"] for component in status["prepared_components"].values())
+    assert {gap["gap_id"] for gap in status["blocking_gaps"]} >= {
+        "current_evidence_run_failed_checks",
+        "no_claim_ready_independent_clinician_evidence_run",
+    }
+    assert "not independent clinical validation" in status["claim_boundary"]
+    assert "prepared_for_independent_clinician_review_not_validated" in status_report
+
+
+def test_validation_goal_status_summarizer_reproduces_committed_status(
+    tmp_path: Path,
+) -> None:
+    output_json = tmp_path / "validation_goal_status.json"
+    output_md = tmp_path / "validation_goal_status.md"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/summarize_validation_goal_status.py",
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert (
+        "Current status: prepared_for_independent_clinician_review_not_validated"
+        in result.stdout
+    )
+    assert "Claim-ready runs: 0" in result.stdout
+    assert json.loads(output_json.read_text()) == json.loads(
+        (VALIDATION_PACK / "validation_goal_status.json").read_text()
+    )
+    assert output_md.read_text() == (
+        VALIDATION_PACK / "validation_goal_status.md"
+    ).read_text()
 
 
 def test_example_calibration_pairs_are_computable() -> None:

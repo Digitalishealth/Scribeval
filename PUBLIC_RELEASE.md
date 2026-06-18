@@ -37,6 +37,8 @@ transcripts.
       calibration-pair, and stratum coverage before clinician recruitment.
 - [x] Statistical analysis plan included with pre-specified endpoints,
       thresholds, handling rules, and validation-claim boundary.
+- [x] Validation goal status report included to state current claim-readiness
+      and blocking gaps without overstating synthetic evidence.
 - [x] Reviewer assignment builder creates balanced reviewer-specific
       worksheets for blinded case-submission collection.
 - [x] Independent clinician review readiness audit checks two qualified

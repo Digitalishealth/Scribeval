@@ -180,6 +180,9 @@ python scripts/plan_validation_collection.py \
     --output-json validation_pack/collection_plan.json \
     --output-md validation_pack/collection_plan.md \
     --fail-on-underpowered
+python scripts/summarize_validation_goal_status.py \
+    --output-json validation_pack/validation_goal_status.json \
+    --output-md validation_pack/validation_goal_status.md
 python scripts/import_validation_ratings.py \
     --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv \
     --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json \
@@ -255,6 +258,8 @@ check `validation_pack/collection_plan.json` for planned coverage across
 specialty, note source, prompt strategy, and safety-critical failure mode,
 preserve `validation_pack/statistical_analysis_plan.json` as the pre-specified
 interpretation contract,
+check `validation_pack/validation_goal_status.json` for the current
+claim-readiness boundary,
 run `scripts/audit_clinician_review_readiness.py`, export Scribeval scores with
 `scripts/export_validation_judge_scores.py`, check clinician inter-rater
 agreement with `scripts/summarize_reviewer_reliability.py`, build consensus

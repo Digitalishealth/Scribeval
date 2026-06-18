@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "status_id": "scribeval_validation_goal_status_v1",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "current_status": "prepared_for_independent_clinician_review_not_validated",
+  "is_ready_for_validation_claim": false,
+  "prepared_components": {
+    "corpus_complete": {
+      "passed": true,
+      "evidence": {
+        "current_case_count": 20,
+        "target_case_count": 20
+      },
+      "note": "Synthetic validation corpus reaches the planned case count."
+    },
+    "collection_plan_complete": {
+      "passed": true,
+      "evidence": {
+        "planned_consensus_pairs": 700,
+        "underpowered_stratum_values": 0
+      },
+      "note": "Reviewer collection plan has no underpowered required strata."
+    },
+    "statistical_analysis_plan_prespecified": {
+      "passed": true,
+      "evidence": {
+        "plan_id": "scribeval_statistical_analysis_plan_v1",
+        "status": "prespecified_for_independent_clinician_review"
+      },
+      "note": "Analysis plan is fixed before independent clinician evidence is collected."
+    },
+    "reviewer_intake_ready": {
+      "passed": true,
+      "evidence": {
+        "checklist_id": "scribeval_reviewer_intake_checklist_v1",
+        "status": "ready_for_independent_review"
+      },
+      "note": "Reviewer intake and public/private evidence boundaries are defined."
+    },
+    "evidence_index_present": {
+      "passed": true,
+      "evidence": {
+        "run_count": 1,
+        "claim_ready_run_count": 0
+      },
+      "note": "Evidence-run index is publishable and reproducible."
+    }
+  },
+  "coverage": {
+    "case_count": 20,
+    "planned_case_submission_count": 100,
+    "planned_individual_calibration_pairs": 1400,
+    "planned_consensus_pairs": 700,
+    "evidence_run_count": 1,
+    "claim_ready_run_count": 0
+  },
+  "evidence_runs": [
+    {
+      "evidence_id": "synthetic_bootstrap_v1",
+      "status": "synthetic_bootstrap",
+      "bundle_path": "validation_pack/evidence_runs/synthetic_bootstrap_v1",
+      "benchmark_unit": "whole transcript -> final note quality score",
+      "is_ready_for_validation_claim": false,
+      "failed_check_count": 2,
+      "failed_checks": [
+        {
+          "id": "evidence_status",
+          "observed": "synthetic_bootstrap",
+          "threshold": "independent_clinician_review",
+          "message": "Evidence status supports independent clinician validation claims"
+        },
+        {
+          "id": "consensus_adjudication_required_count",
+          "observed": 47,
+          "threshold": "<= 0",
+          "message": "Consensus ratings have no unresolved adjudication burden"
+        }
+      ],
+      "case_count": 20,
+      "submission_count": 100,
+      "individual_calibration_pair_count": 1400,
+      "consensus_calibration_pair_count": 700,
+      "reviewer_reliability_pair_count": 700,
+      "adjudication_required_count": 47,
+      "min_reviewer_reliability_weighted_kappa": 0.8266,
+      "min_consensus_weighted_kappa": 0.8266
+    }
+  ],
+  "blocking_gaps": [
+    {
+      "gap_id": "no_claim_ready_independent_clinician_evidence_run",
+      "message": "No evidence run currently has independent clinician review status and passes validation-claim readiness."
+    },
+    {
+      "gap_id": "current_evidence_run_failed_checks",
+      "message": "At least one evidence run has failed validation readiness checks.",
+      "failed_checks": [
+        {
+          "evidence_id": "synthetic_bootstrap_v1",
+          "check_id": "evidence_status",
+          "observed": "synthetic_bootstrap",
+          "threshold": "independent_clinician_review"
+        },
+        {
+          "evidence_id": "synthetic_bootstrap_v1",
+          "check_id": "consensus_adjudication_required_count",
+          "observed": 47,
+          "threshold": "<= 0"
+        }
+      ]
+    }
+  ],
+  "next_required_actions": [
+    "Recruit qualified independent clinician reviewers and retain private eligibility records outside the public repository.",
+    "Collect complete blinded worksheet ratings for every case-submission from two qualified reviewers.",
+    "Export Scribeval judge scores for the same blinded submissions.",
+    "Resolve reviewer disagreement through qualified adjudication until no required adjudication remains.",
+    "Build a versioned independent_clinician_review evidence bundle and re-run validation-claim readiness.",
+    "Publish only aggregate, hashed, non-identifying evidence artifacts."
+  ],
+  "source_files": {
+    "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
+    "collection_plan": "validation_pack/collection_plan.json",
+    "clinician_review_protocol": "validation_pack/clinician_review_protocol.json",
+    "reviewer_intake_checklist": "validation_pack/reviewer_intake_checklist.json",
+    "statistical_analysis_plan": "validation_pack/statistical_analysis_plan.json",
+    "evidence_run_index": "validation_pack/evidence_runs/index.json"
+  },
+  "claim_boundary": "Prepared validation materials and synthetic bootstrap evidence are not independent clinical validation. A validation claim requires a claim-ready independent clinician evidence run."
+}

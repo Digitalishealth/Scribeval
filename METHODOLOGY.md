@@ -165,6 +165,9 @@ plan makes the expected reviewer-rating, calibration-pair, and stratum coverage
 explicit before clinicians are recruited. The statistical analysis plan
 pre-specifies the primary endpoints, kappa thresholds, secondary analyses,
 missing-data handling, adjudication rules, and validation-claim boundary. The
+validation goal status report makes the current boundary explicit: prepared
+materials and synthetic bootstrap evidence are not independent clinical
+validation until a claim-ready clinician evidence bundle exists. The
 intake checklist separates private coordinator records such as consent,
 registration verification, contact details, and training evidence from the
 publishable pseudonymous reviewer registry. It deliberately treats Nurse + CDSS,
