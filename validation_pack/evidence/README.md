@@ -95,9 +95,10 @@ IDs, reviewer comments, transcript text, candidate note text, raw judge
 responses, reasoning, and excerpts.
 
 For a completed independent clinician run, prefer the bundle builder because it
-keeps the readiness report, reviewer reliability report, individual and
-consensus calibration pairs, agreement reports, stratified summary, manifest,
-claim-readiness assessment, and source hashes together:
+keeps the aggregate review-run status, readiness report, reviewer reliability
+report, individual and consensus calibration pairs, agreement reports,
+stratified summary, manifest, claim-readiness assessment, and source hashes
+together:
 
 ```bash
 python scripts/build_validation_evidence_bundle.py \

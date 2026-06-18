@@ -210,6 +210,11 @@ python scripts/build_validation_evidence_bundle.py \
   --output-dir validation_pack/evidence_runs
 ```
 
+The bundle includes the aggregate review-run status report, readiness report,
+reviewer reliability report, individual and consensus calibration pairs,
+agreement reports, stratified summary, validation-claim readiness assessment,
+manifest, and source hashes.
+
 Audit generated evidence bundles before publishing or committing them:
 
 ```bash

@@ -26,6 +26,8 @@ BENCHMARK_UNIT = "whole transcript -> final note quality score"
 REQUIRED_MANIFEST_FILES = (
     "readiness_report",
     "readiness_report_markdown",
+    "review_run_status",
+    "review_run_status_report",
     "calibration_pairs",
     "calibration_report",
     "consensus_calibration_pairs",
@@ -172,6 +174,65 @@ def audit_readiness(
     )
 
 
+def audit_review_run_status(
+    bundle_name: str,
+    review_run_status_path: Path,
+    manifest: dict[str, Any],
+) -> None:
+    status = load_json(review_run_status_path)
+    coverage = status.get("coverage", {})
+    readiness = status.get("readiness", {})
+    manifest_coverage = manifest.get("coverage", {})
+    require(
+        status.get("benchmark_unit") == BENCHMARK_UNIT,
+        f"{bundle_name} review run status has invalid benchmark_unit",
+    )
+    require(
+        status.get("summary_id") == "scribeval_validation_review_run_status_v1",
+        f"{bundle_name} review run status has invalid summary_id",
+    )
+    require(
+        coverage.get("case_submission_count")
+        == manifest_coverage.get("case_submission_count"),
+        f"{bundle_name} review run status case_submission_count drift",
+    )
+    require(
+        coverage.get("complete_case_submission_count")
+        == manifest_coverage.get("complete_case_submission_count"),
+        f"{bundle_name} review run status complete_case_submission_count drift",
+    )
+    require(
+        coverage.get("qualified_reviewer_count")
+        == manifest_coverage.get("qualified_reviewer_count"),
+        f"{bundle_name} review run status qualified_reviewer_count drift",
+    )
+    require(
+        coverage.get("judge_score_count", 0) > 0,
+        f"{bundle_name} review run status has no judge scores",
+    )
+    require(
+        coverage.get("judge_score_count") == coverage.get("required_judge_score_count"),
+        f"{bundle_name} review run status judge score coverage incomplete",
+    )
+    require(
+        readiness.get("worksheet_ready_for_independent_validation") is True,
+        f"{bundle_name} review run status worksheet is not ready",
+    )
+    require(
+        readiness.get("judge_scores_ready") is True,
+        f"{bundle_name} review run status judge scores are not ready",
+    )
+    require(
+        readiness.get("ready_for_evidence_bundle") is True,
+        f"{bundle_name} review run status is not ready for evidence bundle",
+    )
+    privacy_note = status.get("privacy_note", "")
+    require(
+        isinstance(privacy_note, str) and "aggregate" in privacy_note.lower(),
+        f"{bundle_name} review run status missing aggregate privacy note",
+    )
+
+
 def audit_pairs_and_summary(
     bundle_name: str,
     pairs_path: Path,
@@ -287,6 +348,7 @@ def audit_bundle(bundle_dir: Path) -> int:
     audit_source_hashes(bundle_dir.name, manifest)
     paths = audit_referenced_files(bundle_dir, manifest)
     audit_readiness(bundle_dir.name, paths["readiness_report"], manifest)
+    audit_review_run_status(bundle_dir.name, paths["review_run_status"], manifest)
     return audit_pairs_and_summary(
         bundle_dir.name,
         paths["calibration_pairs"],

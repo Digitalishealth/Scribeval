@@ -834,6 +834,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     bundle_dir = output_dir / "qualified_fixture_v1"
     manifest = json.loads((bundle_dir / "evidence_manifest.json").read_text())
     readiness = json.loads((bundle_dir / "readiness_report.json").read_text())
+    review_run_status = json.loads((bundle_dir / "review_run_status.json").read_text())
     pairs = json.loads((bundle_dir / "calibration_pairs.json").read_text())
     consensus_pairs = json.loads((bundle_dir / "consensus_calibration_pairs.json").read_text())
     stratified = json.loads((bundle_dir / "stratified_summary.json").read_text())
@@ -851,6 +852,8 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert manifest["coverage"]["reviewer_reliability_pair_count"] == 600
     assert manifest["consensus_calibration_pairs"] == "consensus_calibration_pairs.json"
     assert manifest["consensus_calibration_report"] == "consensus_calibration_report.md"
+    assert manifest["review_run_status"] == "review_run_status.json"
+    assert manifest["review_run_status_report"] == "review_run_status.md"
     assert manifest["reviewer_reliability"] == "reviewer_reliability.json"
     assert manifest["reviewer_reliability_report"] == "reviewer_reliability.md"
     assert manifest["validation_claim_readiness"] == "validation_claim_readiness.json"
@@ -863,6 +866,12 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "reviewer_worksheet_sha256",
     }
     assert readiness["is_ready_for_independent_validation"] is True
+    assert review_run_status["readiness"]["ready_for_evidence_bundle"] is True
+    assert review_run_status["coverage"]["case_submission_count"] == 100
+    assert review_run_status["coverage"]["complete_case_submission_count"] == 100
+    assert review_run_status["coverage"]["complete_dimension_rating_count"] == 1200
+    assert review_run_status["coverage"]["judge_score_count"] == 600
+    assert review_run_status["coverage"]["required_judge_score_count"] == 600
     assert len(pairs) == 1200
     assert len(consensus_pairs) == 600
     assert all(not pair["adjudication_required"] for pair in consensus_pairs)
@@ -877,6 +886,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         bundle_dir / "consensus_calibration_report.md"
     ).read_text()
     assert "Status: ready" in (bundle_dir / "readiness_report.md").read_text()
+    assert "Validation Review Run Status" in (
+        bundle_dir / "review_run_status.md"
+    ).read_text()
     assert "Reviewer Reliability" in (bundle_dir / "reviewer_reliability.md").read_text()
     assert "Validation Claim Readiness" in (
         bundle_dir / "validation_claim_readiness.md"

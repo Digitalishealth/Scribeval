@@ -47,9 +47,9 @@ transcripts.
       qualified adjudicator provenance.
 - [x] Validation-claim readiness assessment applies protocol thresholds before
       treating a completed bundle as validation evidence.
-- [x] Versioned evidence bundle builder produces readiness, calibration,
-      agreement, stratified summary, manifest, and source-hash artifacts,
-      including adjudicated consensus source hashes when supplied.
+- [x] Versioned evidence bundle builder produces review-run status, readiness,
+      calibration, agreement, stratified summary, manifest, and source-hash
+      artifacts, including adjudicated consensus source hashes when supplied.
 - [x] Evidence-run audit verifies publishable bundles and rejects raw clinician
       CSV inputs.
 - [x] Evidence-run index summarizes bundle coverage, claim readiness, and

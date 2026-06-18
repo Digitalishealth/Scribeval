@@ -207,6 +207,8 @@ def bundle_manifest(
         ),
         "readiness_report": "readiness_report.json",
         "readiness_report_markdown": "readiness_report.md",
+        "review_run_status": "review_run_status.json",
+        "review_run_status_report": "review_run_status.md",
         "stratified_summary": "stratified_summary.json",
         "stratified_summary_report": "stratified_summary.md",
         "reviewer_reliability": "reviewer_reliability.json",
@@ -264,6 +266,8 @@ def build_bundle(
     from summarize_reviewer_reliability import summarize_reviewer_reliability
     from summarize_validation_evidence import report_markdown as stratified_report_markdown
     from summarize_validation_evidence import summarize
+    from summarize_validation_review_run import build_review_run_status
+    from summarize_validation_review_run import report_markdown as review_run_status_markdown
 
     validate_run_id(run_id)
     bundle_dir = output_dir / run_id
@@ -282,6 +286,14 @@ def build_bundle(
             "Clinician review inputs are not ready. See readiness_report.json in "
             f"{bundle_dir}"
         )
+    review_run_status = build_review_run_status(
+        reviewer_registry=reviewer_registry,
+        worksheet=worksheet,
+        judge_scores=judge_scores,
+        assignments_dir=None,
+        corpus_manifest=corpus_manifest,
+        protocol_path=protocol,
+    )
 
     registry = load_reviewer_registry(reviewer_registry)
     pairs = build_pairs(
@@ -334,6 +346,10 @@ def build_bundle(
 
     write_json(bundle_dir / "readiness_report.json", readiness)
     (bundle_dir / "readiness_report.md").write_text(report_markdown(readiness))
+    write_json(bundle_dir / "review_run_status.json", review_run_status)
+    (bundle_dir / "review_run_status.md").write_text(
+        review_run_status_markdown(review_run_status)
+    )
     write_json(bundle_dir / "calibration_pairs.json", pairs)
     (bundle_dir / "calibration_report.md").write_text(
         calibration_report_markdown(run_id=run_id, pairs=pairs)
