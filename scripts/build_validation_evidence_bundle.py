@@ -21,6 +21,9 @@ DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
 DEFAULT_REVIEWER_INTAKE_CHECKLIST = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_PACKETS = ROOT / "validation_pack" / "reviewer_packets"
 DEFAULT_REVIEWER_SCORING_GUIDE = ROOT / "validation_pack" / "reviewer_scoring_guide.md"
+DEFAULT_STATISTICAL_ANALYSIS_PLAN = (
+    ROOT / "validation_pack" / "statistical_analysis_plan.json"
+)
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,80}$")
 
 
@@ -162,6 +165,7 @@ def build_review_materials_provenance(
     reviewer_packets_dir: Path,
     reviewer_intake_checklist: Path,
     reviewer_scoring_guide: Path,
+    statistical_analysis_plan: Path,
     bundle_dir: Path,
 ) -> dict[str, Any]:
     manifest_path = reviewer_packets_dir / "reviewer_packet_manifest.json"
@@ -184,6 +188,10 @@ def build_review_materials_provenance(
         raise ValueError(f"Reviewer intake checklist is missing: {reviewer_intake_checklist}")
     if not reviewer_scoring_guide.exists():
         raise ValueError(f"Reviewer scoring guide is missing: {reviewer_scoring_guide}")
+    if not statistical_analysis_plan.exists():
+        raise ValueError(
+            f"Statistical analysis plan is missing: {statistical_analysis_plan}"
+        )
     return {
         "schema_version": "1.0.0",
         "provenance_id": "scribeval_review_materials_v1",
@@ -198,14 +206,19 @@ def build_review_materials_provenance(
         "reviewer_intake_checklist_sha256": sha256_file(reviewer_intake_checklist),
         "reviewer_scoring_guide": relative_to_base(reviewer_scoring_guide, bundle_dir),
         "reviewer_scoring_guide_sha256": sha256_file(reviewer_scoring_guide),
+        "statistical_analysis_plan": relative_to_base(
+            statistical_analysis_plan,
+            bundle_dir,
+        ),
+        "statistical_analysis_plan_sha256": sha256_file(statistical_analysis_plan),
         "reviewer_packet_count": len(packet_hashes),
         "packet_files_sha256": packet_hashes,
         "readme_sha256": sha256_file(readme_path) if readme_path.exists() else None,
         "privacy_note": (
             "Reviewer material hashes identify the blinded packet files, intake "
-            "checklist, and scoring guide used for clinician review. They do not "
-            "include reviewer identifiers, assignment worksheets, reviewer "
-            "comments, or completed ratings."
+            "checklist, scoring guide, and statistical analysis plan used for "
+            "clinician review. They do not include reviewer identifiers, "
+            "assignment worksheets, reviewer comments, or completed ratings."
         ),
     }
 
@@ -243,6 +256,9 @@ def bundle_manifest(
         ],
         "reviewer_scoring_guide_sha256": review_materials[
             "reviewer_scoring_guide_sha256"
+        ],
+        "statistical_analysis_plan_sha256": review_materials[
+            "statistical_analysis_plan_sha256"
         ],
     }
     if adjudicated_consensus_pairs is not None:
@@ -342,6 +358,7 @@ def build_bundle(
     reviewer_packets_dir: Path = DEFAULT_REVIEWER_PACKETS,
     reviewer_intake_checklist: Path = DEFAULT_REVIEWER_INTAKE_CHECKLIST,
     reviewer_scoring_guide: Path = DEFAULT_REVIEWER_SCORING_GUIDE,
+    statistical_analysis_plan: Path = DEFAULT_STATISTICAL_ANALYSIS_PLAN,
 ) -> Path:
     from assess_validation_claim_readiness import assess_claim_readiness
     from assess_validation_claim_readiness import report_markdown as claim_report_markdown
@@ -370,6 +387,7 @@ def build_bundle(
         reviewer_packets_dir=reviewer_packets_dir,
         reviewer_intake_checklist=reviewer_intake_checklist,
         reviewer_scoring_guide=reviewer_scoring_guide,
+        statistical_analysis_plan=statistical_analysis_plan,
         bundle_dir=bundle_dir,
     )
 
@@ -512,6 +530,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_REVIEWER_SCORING_GUIDE,
     )
     parser.add_argument(
+        "--statistical-analysis-plan",
+        type=Path,
+        default=DEFAULT_STATISTICAL_ANALYSIS_PLAN,
+    )
+    parser.add_argument(
         "--status",
         default="independent_clinician_review",
         help="Evidence status to write into evidence_manifest.json.",
@@ -554,6 +577,7 @@ def main() -> int:
             reviewer_packets_dir=args.reviewer_packets_dir,
             reviewer_intake_checklist=args.reviewer_intake_checklist,
             reviewer_scoring_guide=args.reviewer_scoring_guide,
+            statistical_analysis_plan=args.statistical_analysis_plan,
         )
     except ValueError as exc:
         print(f"Bundle build failed: {exc}", file=sys.stderr)

@@ -159,16 +159,19 @@ compares them with clinician ratings using:
 
 The validation pack in `validation_pack/` defines a synthetic 20-case pilot
 manifest, reviewer worksheet, reviewer intake checklist, collection plan,
-versioned corpus files, and an evidence trail that links case packets to
-blinded submissions and calibration pairs. The collection plan makes the
-expected reviewer-rating, calibration-pair, and stratum coverage explicit before
-clinicians are recruited. The intake checklist separates private coordinator
-records such as consent, registration verification, contact details, and
-training evidence from the publishable pseudonymous reviewer registry. It
-deliberately treats Nurse + CDSS, clinician notes, and model or scribe outputs
-as comparable submissions when they are passed through the same blinded review
-path. A GP or adjudicated reference note may still be supplied as optional
-context, but it is not the default gold standard.
+statistical analysis plan, versioned corpus files, and an evidence trail that
+links case packets to blinded submissions and calibration pairs. The collection
+plan makes the expected reviewer-rating, calibration-pair, and stratum coverage
+explicit before clinicians are recruited. The statistical analysis plan
+pre-specifies the primary endpoints, kappa thresholds, secondary analyses,
+missing-data handling, adjudication rules, and validation-claim boundary. The
+intake checklist separates private coordinator records such as consent,
+registration verification, contact details, and training evidence from the
+publishable pseudonymous reviewer registry. It deliberately treats Nurse + CDSS,
+clinician notes, and model or scribe outputs as comparable submissions when they
+are passed through the same blinded review path. A GP or adjudicated reference
+note may still be supplied as optional context, but it is not the default gold
+standard.
 
 Calibration results should be interpreted as benchmark-governance evidence, not
 as medical-device validation. Low-agreement dimensions require rubric review,

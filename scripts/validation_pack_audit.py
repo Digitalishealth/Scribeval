@@ -40,6 +40,7 @@ REQUIRED_CLINICIAN_REVIEW_DIMENSIONS = {
     "pdqi9",
     "qnote",
 }
+REQUIRED_STRATA = {"failure_mode", "note_source", "prompt_strategy", "specialty"}
 REQUIRED_REVIEWER_REGISTRY_FIELDS = {
     "conflict_of_interest",
     "country",
@@ -81,6 +82,16 @@ REQUIRED_REVIEWER_INTAKE_OUTPUTS = {
     "review_run_status.json",
     "reviewer_reliability.json",
     "validation_claim_readiness.json",
+}
+REQUIRED_SAP_PRIMARY_ENDPOINTS = {
+    "clinician_reviewer_reliability_weighted_kappa",
+    "judge_vs_clinician_consensus_weighted_kappa",
+}
+REQUIRED_SAP_SECONDARY_ENDPOINTS = {
+    "adjudication_burden",
+    "judge_vs_clinician_consensus_icc_2_1",
+    "mean_absolute_score_difference",
+    "severity_exact_agreement",
 }
 FORBIDDEN_REVIEWER_PACKET_TOKENS = {
     "cdss_checklist",
@@ -448,6 +459,11 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol missing reviewer intake checklist",
     )
     require(
+        review_materials.get("statistical_analysis_plan")
+        == "statistical_analysis_plan.json",
+        "clinician review protocol missing statistical analysis plan",
+    )
+    require(
         "export_validation_judge_scores.py" in protocol.get("judge_score_export_command", ""),
         "clinician review protocol missing judge score export command",
     )
@@ -597,6 +613,66 @@ def audit_collection_plan(corpus_refs: dict[str, set[str]]) -> None:
             )
 
 
+def audit_statistical_analysis_plan() -> None:
+    plan_path = PACK / "statistical_analysis_plan.json"
+    report_path = PACK / "statistical_analysis_plan.md"
+    require(plan_path.exists(), "missing statistical analysis plan JSON")
+    require(report_path.exists(), "missing statistical analysis plan report")
+    sap = load_json(plan_path)
+    require(
+        sap.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "statistical analysis plan has invalid benchmark_unit",
+    )
+    require(
+        sap.get("plan_id") == "scribeval_statistical_analysis_plan_v1",
+        "statistical analysis plan has invalid plan_id",
+    )
+    primary_endpoints = {
+        endpoint.get("endpoint_id") for endpoint in sap.get("primary_endpoints", [])
+    }
+    secondary_endpoints = {
+        endpoint.get("endpoint_id") for endpoint in sap.get("secondary_endpoints", [])
+    }
+    require(
+        primary_endpoints >= REQUIRED_SAP_PRIMARY_ENDPOINTS,
+        "statistical analysis plan missing primary endpoints",
+    )
+    require(
+        secondary_endpoints >= REQUIRED_SAP_SECONDARY_ENDPOINTS,
+        "statistical analysis plan missing secondary endpoints",
+    )
+    require(
+        set(sap.get("required_strata", [])) == REQUIRED_STRATA,
+        "statistical analysis plan required_strata drift",
+    )
+    minimum_coverage = sap.get("minimum_coverage", {})
+    require(
+        minimum_coverage.get("case_count") == 20,
+        "statistical analysis plan must require full corpus case count",
+    )
+    require(
+        minimum_coverage.get("submission_count") == 100,
+        "statistical analysis plan must require full corpus submission count",
+    )
+    require(
+        minimum_coverage.get("unresolved_adjudication_required_count") == 0,
+        "statistical analysis plan must require resolved adjudication",
+    )
+    claim_thresholds = sap.get("claim_thresholds", {})
+    require(
+        claim_thresholds.get("required_evidence_status") == "independent_clinician_review",
+        "statistical analysis plan must require independent clinician review status",
+    )
+    require(
+        claim_thresholds.get("minimum_consensus_weighted_kappa", 0) >= 0.6,
+        "statistical analysis plan consensus kappa threshold too low",
+    )
+    require(
+        "not validation evidence" in sap.get("publication_boundary", ""),
+        "statistical analysis plan must preserve validation evidence boundary",
+    )
+
+
 def audit_reviewer_intake_checklist() -> None:
     checklist = load_json(PACK / "reviewer_intake_checklist.json")
     require(
@@ -661,6 +737,7 @@ def main() -> int:
         corpus_refs = audit_corpus()
         audit_corpus_benchmark_manifest(corpus_refs)
         audit_collection_plan(corpus_refs)
+        audit_statistical_analysis_plan()
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
         audit_clinician_review_protocol()
@@ -674,6 +751,7 @@ def main() -> int:
     print(f"Submissions: {len(corpus_refs['submission_refs'])}")
     print(f"Reviewer packets: {packet_count}")
     print("Validation collection plan: ready")
+    print("Statistical analysis plan: prespecified")
     print("Clinician review protocol: ready_for_independent_review")
     print("Reviewer intake checklist: ready_for_independent_review")
     print(f"Evidence pairs: {pair_count}")

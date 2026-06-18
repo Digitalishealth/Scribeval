@@ -51,6 +51,7 @@ REQUIRED_SOURCE_HASHES = {
     "reviewer_scoring_guide_sha256",
     "reviewer_registry_sha256",
     "reviewer_worksheet_sha256",
+    "statistical_analysis_plan_sha256",
 }
 REQUIRED_STRATA = {"failure_mode", "note_source", "prompt_strategy", "specialty"}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -224,6 +225,11 @@ def audit_review_materials(
         f"{bundle_name} reviewer intake checklist hash drift",
     )
     require(
+        review_materials.get("statistical_analysis_plan_sha256")
+        == source_hashes.get("statistical_analysis_plan_sha256"),
+        f"{bundle_name} statistical analysis plan hash drift",
+    )
+    require(
         isinstance(review_materials.get("reviewer_scoring_guide"), str)
         and review_materials.get("reviewer_scoring_guide"),
         f"{bundle_name} review materials missing scoring guide path",
@@ -232,6 +238,11 @@ def audit_review_materials(
         isinstance(review_materials.get("reviewer_intake_checklist"), str)
         and review_materials.get("reviewer_intake_checklist"),
         f"{bundle_name} review materials missing intake checklist path",
+    )
+    require(
+        isinstance(review_materials.get("statistical_analysis_plan"), str)
+        and review_materials.get("statistical_analysis_plan"),
+        f"{bundle_name} review materials missing statistical analysis plan path",
     )
     require(
         isinstance(packet_hashes, dict) and packet_hashes,

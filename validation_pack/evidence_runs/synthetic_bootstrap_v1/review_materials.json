@@ -9,6 +9,8 @@
   "reviewer_intake_checklist_sha256": "682c9de6d9cce5288b3a1c32843ecd691d7d41579c8efeb4c3594825c8c3220e",
   "reviewer_scoring_guide": "../../reviewer_scoring_guide.md",
   "reviewer_scoring_guide_sha256": "b41be7ff7108c35f7e7bc35be1a812751eb891d4e89e5cdf1a20b6ff3d82955e",
+  "statistical_analysis_plan": "../../statistical_analysis_plan.json",
+  "statistical_analysis_plan_sha256": "0882349ddc58f4f28ac92087d77a5acb55bceab7c4a073faaeecccf6bafaab40",
   "reviewer_packet_count": 20,
   "packet_files_sha256": {
     "cases/val_gp_respiratory_001.md": "98ee4c93e1e12e67802499d1707da95db533929bb646d30d6596bf2ca3850ca2",
@@ -33,5 +35,5 @@
     "cases/val_results_followup_020.md": "e6c5646424f0a16e11871a5c6bd671b536699b64a8fbc9d3fb4bb365fa1d470b"
   },
   "readme_sha256": "9af59997f86963a3b82121617a9bf7e4d449b06900b976cd379f651ab0aca9e6",
-  "privacy_note": "Reviewer material hashes identify the blinded packet files, intake checklist, and scoring guide used for clinician review. They do not include reviewer identifiers, assignment worksheets, reviewer comments, or completed ratings."
+  "privacy_note": "Reviewer material hashes identify the blinded packet files, intake checklist, scoring guide, and statistical analysis plan used for clinician review. They do not include reviewer identifiers, assignment worksheets, reviewer comments, or completed ratings."
 }

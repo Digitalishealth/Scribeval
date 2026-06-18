@@ -74,6 +74,16 @@ REQUIRED_REVIEWER_INTAKE_OUTPUTS = {
     "reviewer_reliability.json",
     "validation_claim_readiness.json",
 }
+REQUIRED_SAP_PRIMARY_ENDPOINTS = {
+    "clinician_reviewer_reliability_weighted_kappa",
+    "judge_vs_clinician_consensus_weighted_kappa",
+}
+REQUIRED_SAP_SECONDARY_ENDPOINTS = {
+    "adjudication_burden",
+    "judge_vs_clinician_consensus_icc_2_1",
+    "mean_absolute_score_difference",
+    "severity_exact_agreement",
+}
 REQUIRED_CLINICIAN_REVIEW_DIMENSIONS = (
     "omission",
     "hallucination",
@@ -265,6 +275,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert protocol["review_materials"]["reviewer_scoring_guide"] == (
         "reviewer_scoring_guide.md"
     )
+    assert protocol["review_materials"]["statistical_analysis_plan"] == (
+        "statistical_analysis_plan.json"
+    )
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
     assert "plan_validation_collection.py" in protocol["collection_plan_command"]
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
@@ -324,6 +337,40 @@ def test_reviewer_intake_checklist_defines_publication_boundaries() -> None:
         "retain_outside_public_repository"
     ] is True
     assert "not itself clinical validation evidence" in checklist["claim_boundary"]
+
+
+def test_statistical_analysis_plan_prespecifies_validation_claim() -> None:
+    sap = json.loads((VALIDATION_PACK / "statistical_analysis_plan.json").read_text())
+    sap_report = (VALIDATION_PACK / "statistical_analysis_plan.md").read_text()
+
+    assert sap["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert sap["plan_id"] == "scribeval_statistical_analysis_plan_v1"
+    assert sap["status"] == "prespecified_for_independent_clinician_review"
+    assert {endpoint["endpoint_id"] for endpoint in sap["primary_endpoints"]} >= (
+        REQUIRED_SAP_PRIMARY_ENDPOINTS
+    )
+    assert {endpoint["endpoint_id"] for endpoint in sap["secondary_endpoints"]} >= (
+        REQUIRED_SAP_SECONDARY_ENDPOINTS
+    )
+    assert set(sap["required_strata"]) == {
+        "failure_mode",
+        "note_source",
+        "prompt_strategy",
+        "specialty",
+    }
+    assert sap["minimum_coverage"]["case_count"] == 20
+    assert sap["minimum_coverage"]["submission_count"] == 100
+    assert sap["minimum_coverage"]["qualified_reviewers"] == 2
+    assert sap["minimum_coverage"]["reviewers_per_case_submission"] == 2
+    assert sap["minimum_coverage"]["minimum_pairs_per_stratum_value"] >= 2
+    assert sap["minimum_coverage"]["unresolved_adjudication_required_count"] == 0
+    assert sap["claim_thresholds"]["required_evidence_status"] == (
+        "independent_clinician_review"
+    )
+    assert sap["claim_thresholds"]["minimum_consensus_weighted_kappa"] >= 0.6
+    assert "not validation evidence" in sap["publication_boundary"]
+    assert "Primary Endpoints" in sap_report
+    assert "Claim Boundary" in sap_report
 
 
 def test_validation_collection_plan_covers_corpus_strata() -> None:
@@ -1056,6 +1103,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "reviewer_assignments_manifest_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
+        "statistical_analysis_plan_sha256",
     }
     assert readiness["is_ready_for_independent_validation"] is True
     assert review_materials["provenance_id"] == "scribeval_review_materials_v1"
@@ -1070,11 +1118,17 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_materials["reviewer_intake_checklist_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_intake_checklist_sha256"]
+    assert review_materials["statistical_analysis_plan_sha256"] == manifest[
+        "source_hashes"
+    ]["statistical_analysis_plan_sha256"]
     assert review_materials["reviewer_scoring_guide"].endswith(
         "validation_pack/reviewer_scoring_guide.md"
     )
     assert review_materials["reviewer_intake_checklist"].endswith(
         "validation_pack/reviewer_intake_checklist.json"
+    )
+    assert review_materials["statistical_analysis_plan"].endswith(
+        "validation_pack/statistical_analysis_plan.json"
     )
     assert review_run_status["readiness"]["ready_for_evidence_bundle"] is True
     assert review_run_status["coverage"]["case_submission_count"] == 100
@@ -1188,6 +1242,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "reviewer_scoring_guide_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
+        "statistical_analysis_plan_sha256",
     }
     assert manifest["coverage"]["consensus_adjudication_required_count"] == 0
     assert adjudication_burden["coverage"]["adjudication_required_count"] == 0

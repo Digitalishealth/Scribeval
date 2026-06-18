@@ -8,6 +8,8 @@
     "scoring_guide": "reviewer_scoring_guide.md",
     "reviewer_scoring_guide": "reviewer_scoring_guide.md",
     "reviewer_intake_checklist": "reviewer_intake_checklist.json",
+    "statistical_analysis_plan": "statistical_analysis_plan.json",
+    "statistical_analysis_plan_report": "statistical_analysis_plan.md",
     "worksheet_template": "reviewer_worksheet.csv",
     "reviewer_registry_template": "reviewer_registry_template.csv"
   },

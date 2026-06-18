@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0",
+  "plan_id": "scribeval_statistical_analysis_plan_v1",
+  "status": "prespecified_for_independent_clinician_review",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "purpose": "Pre-specify how independent clinician ratings will be compared with Scribeval transcript-to-note scores before any validation claim is made.",
+  "analysis_population": {
+    "included_units": "Every blinded case-submission with complete required clinician ratings, exported Scribeval judge scores, and qualified reviewer provenance.",
+    "excluded_units": [
+      "case-submissions missing any required dimension rating",
+      "case-submissions without the required overall note-quality rating",
+      "ratings from reviewers who fail eligibility, conflict, or training checks",
+      "consensus rows with unresolved adjudication_required=true"
+    ],
+    "unit_of_analysis": "case transcript + blinded final note + dimension"
+  },
+  "primary_endpoints": [
+    {
+      "endpoint_id": "judge_vs_clinician_consensus_weighted_kappa",
+      "metric": "Cohen weighted kappa",
+      "target": "Scribeval severity rating versus adjudicated clinician consensus severity",
+      "minimum_threshold": 0.6,
+      "required_dimensions": [
+        "omission",
+        "hallucination",
+        "medicolegal",
+        "ahpra",
+        "pdqi9",
+        "qnote",
+        "overall"
+      ]
+    },
+    {
+      "endpoint_id": "clinician_reviewer_reliability_weighted_kappa",
+      "metric": "Cohen weighted kappa",
+      "target": "independent clinician reviewer severity agreement",
+      "minimum_threshold": 0.6,
+      "required_dimensions": [
+        "omission",
+        "hallucination",
+        "medicolegal",
+        "ahpra",
+        "pdqi9",
+        "qnote",
+        "overall"
+      ]
+    }
+  ],
+  "secondary_endpoints": [
+    {
+      "endpoint_id": "judge_vs_clinician_consensus_icc_2_1",
+      "metric": "ICC(2,1)",
+      "target": "absolute agreement between 0-1 Scribeval scores and clinician consensus scores"
+    },
+    {
+      "endpoint_id": "mean_absolute_score_difference",
+      "metric": "mean absolute difference",
+      "target": "typical absolute score gap between Scribeval and clinician consensus"
+    },
+    {
+      "endpoint_id": "severity_exact_agreement",
+      "metric": "proportion exact agreement",
+      "target": "exact match between Scribeval and clinician consensus severity categories"
+    },
+    {
+      "endpoint_id": "adjudication_burden",
+      "metric": "count and proportion of consensus rows requiring adjudication",
+      "target": "reviewer disagreement burden by dimension and stratum"
+    }
+  ],
+  "required_strata": [
+    "specialty",
+    "note_source",
+    "prompt_strategy",
+    "failure_mode"
+  ],
+  "minimum_coverage": {
+    "case_count": 20,
+    "submission_count": 100,
+    "qualified_reviewers": 2,
+    "reviewers_per_case_submission": 2,
+    "minimum_pairs_per_stratum_value": 2,
+    "unresolved_adjudication_required_count": 0
+  },
+  "handling_rules": {
+    "missing_ratings": "Do not impute missing clinician ratings. Exclude incomplete units from calibration pairs and fail readiness when required coverage is incomplete.",
+    "reviewer_disagreement": "Build consensus ratings from qualified reviewers. Flag score or severity disagreement for adjudication before validation claims.",
+    "adjudication": "Validation claims require all required adjudication to be resolved by a qualified adjudicator.",
+    "multiple_scribeval_runs": "If multiple Scribeval runs are used, analyze exported aggregate judge scores and retain run metadata in the judge-score export.",
+    "optional_amt_dimension": "AMT medication terminology may be reported as an optional secondary dimension but is not required for the primary validation claim."
+  },
+  "claim_thresholds": {
+    "required_evidence_status": "independent_clinician_review",
+    "minimum_consensus_weighted_kappa": 0.6,
+    "minimum_reviewer_reliability_weighted_kappa": 0.6,
+    "maximum_unresolved_adjudication_required_count": 0
+  },
+  "sensitivity_analyses": [
+    "Report agreement by specialty, note source, prompt strategy, and safety-critical failure mode.",
+    "Inspect dimensions with low kappa or high mean absolute difference before governance or procurement use.",
+    "Repeat interpretation excluding optional AMT medication terminology when it is not collected.",
+    "Review adjudication burden by stratum to identify ambiguous rubric instructions or clinically contentious cases."
+  ],
+  "publication_boundary": "This statistical analysis plan is not validation evidence. It defines how a completed independent clinician evidence bundle will be interpreted and should be hashed into the evidence trail before public claims are made."
+}

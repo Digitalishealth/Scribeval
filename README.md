@@ -171,8 +171,8 @@ includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
 20-case synthetic corpus of complete transcript/note packets, generated blinded
 reviewer packets, a clinician reviewer scoring guide, a pseudonymous reviewer
 registry template, a reviewer intake checklist for public/private evidence
-boundaries, a collection plan for planned stratum coverage, and example
-calibration inputs/results for:
+boundaries, a collection plan for planned stratum coverage, a pre-specified
+statistical analysis plan, and example calibration inputs/results for:
 
 ```bash
 python scripts/build_reviewer_packets.py
@@ -253,6 +253,8 @@ validation evidence. For independent clinician ratings, run
 complete the coordinator-side `validation_pack/reviewer_intake_checklist.json`,
 check `validation_pack/collection_plan.json` for planned coverage across
 specialty, note source, prompt strategy, and safety-critical failure mode,
+preserve `validation_pack/statistical_analysis_plan.json` as the pre-specified
+interpretation contract,
 run `scripts/audit_clinician_review_readiness.py`, export Scribeval scores with
 `scripts/export_validation_judge_scores.py`, check clinician inter-rater
 agreement with `scripts/summarize_reviewer_reliability.py`, build consensus
