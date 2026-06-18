@@ -21,12 +21,13 @@ For real clinician ratings, follow `../independent_review_runbook.json` and
 keep reviewer provenance outside the scoring worksheet by using
 `../reviewer_registry_template.csv`. Reviewer IDs should be pseudonymous and
 must not expose names, contact details, provider numbers, or registration
-numbers. Use `../reviewer_attestation_template.json` for the private consent,
-registration, conflict, blinding, no-identifier comment, and
-independent-judgement records that support the pseudonymous registry. Store
-filled reviewer inputs and reviewer-specific assignments in the ignored private
-workspaces described by the runbook. First generate reviewer-specific
-assignment worksheets:
+numbers. Use `../reviewer_recruitment_plan.json` to set reviewer panel and
+adjudicator targets before recruitment, and
+`../reviewer_attestation_template.json` for the private consent, registration,
+conflict, blinding, no-identifier comment, and independent-judgement records
+that support the pseudonymous registry. Store filled reviewer inputs and
+reviewer-specific assignments in the ignored private workspaces described by
+the runbook. First generate reviewer-specific assignment worksheets:
 
 ```bash
 python scripts/build_reviewer_assignments.py \

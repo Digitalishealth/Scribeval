@@ -53,6 +53,16 @@
       },
       "note": "Reviewer intake and public/private evidence boundaries are defined."
     },
+    "reviewer_recruitment_plan_ready": {
+      "passed": true,
+      "evidence": {
+        "plan_id": "scribeval_reviewer_recruitment_plan_v1",
+        "status": "ready_for_reviewer_recruitment",
+        "minimum_total_qualified_reviewers": 3,
+        "specialty_count": 8
+      },
+      "note": "Reviewer recruitment targets are defined from the corpus and protocol."
+    },
     "reviewer_training_defined": {
       "passed": true,
       "evidence": {
@@ -149,6 +159,7 @@
     "clinician_review_protocol": "validation_pack/clinician_review_protocol.json",
     "reviewer_attestation_template": "validation_pack/reviewer_attestation_template.json",
     "reviewer_intake_checklist": "validation_pack/reviewer_intake_checklist.json",
+    "reviewer_recruitment_plan": "validation_pack/reviewer_recruitment_plan.json",
     "reviewer_training_guide": "validation_pack/reviewer_training_guide.json",
     "statistical_analysis_plan": "validation_pack/statistical_analysis_plan.json",
     "evidence_run_index": "validation_pack/evidence_runs/index.json"

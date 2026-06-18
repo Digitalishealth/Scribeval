@@ -16,6 +16,7 @@ Prepared validation materials and synthetic bootstrap evidence are not independe
 | independent_review_runbook_ready | pass | `{"runbook_id": "scribeval_independent_review_runbook_v1", "status": "ready_for_external_collection"}` |
 | reviewer_attestation_template_defined | pass | `{"status": "required_private_record_before_scoring", "template_id": "scribeval_reviewer_attestation_template_v1"}` |
 | reviewer_intake_ready | pass | `{"checklist_id": "scribeval_reviewer_intake_checklist_v1", "status": "ready_for_independent_review"}` |
+| reviewer_recruitment_plan_ready | pass | `{"minimum_total_qualified_reviewers": 3, "plan_id": "scribeval_reviewer_recruitment_plan_v1", "specialty_count": 8, "status": "ready_for_reviewer_recruitment"}` |
 | reviewer_training_defined | pass | `{"status": "required_before_independent_scoring", "training_id": "scribeval_clinician_reviewer_training_v1"}` |
 | evidence_index_present | pass | `{"claim_ready_run_count": 0, "run_count": 1}` |
 

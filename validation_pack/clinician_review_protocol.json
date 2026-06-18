@@ -9,6 +9,8 @@
     "independent_review_runbook_report": "independent_review_runbook.md",
     "reviewer_attestation_template": "reviewer_attestation_template.json",
     "reviewer_attestation_template_report": "reviewer_attestation_template.md",
+    "reviewer_recruitment_plan": "reviewer_recruitment_plan.json",
+    "reviewer_recruitment_plan_report": "reviewer_recruitment_plan.md",
     "scoring_guide": "reviewer_scoring_guide.md",
     "reviewer_scoring_guide": "reviewer_scoring_guide.md",
     "reviewer_training_guide": "reviewer_training_guide.json",
@@ -71,6 +73,7 @@
     ]
   },
   "collection_plan_command": "python scripts/plan_validation_collection.py --output-json validation_pack/collection_plan.json --output-md validation_pack/collection_plan.md --fail-on-underpowered",
+  "reviewer_recruitment_plan_command": "python scripts/plan_reviewer_recruitment.py --output-json validation_pack/reviewer_recruitment_plan.json --output-md validation_pack/reviewer_recruitment_plan.md --fail-on-incomplete",
   "validation_goal_status_command": "python scripts/summarize_validation_goal_status.py --output-json validation_pack/validation_goal_status.json --output-md validation_pack/validation_goal_status.md",
   "assignment_builder_command": "python scripts/build_reviewer_assignments.py --reviewer-registry <reviewer_registry.csv> --output-dir <reviewer_assignments_dir>",
   "readiness_audit_command": "python scripts/audit_clinician_review_readiness.py --worksheet <filled_worksheet.csv> --reviewer-registry <reviewer_registry.csv> --output-json <readiness_report.json> --output-md <readiness_report.md> --fail-on-not-ready",

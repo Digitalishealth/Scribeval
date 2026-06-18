@@ -6,11 +6,13 @@
   "reviewer_packet_manifest": "../../reviewer_packets/reviewer_packet_manifest.json",
   "reviewer_packet_manifest_sha256": "9a0411ec2983747de5634a01710e94dd32fea864818fe359a69f408a8c0d1ae0",
   "independent_review_runbook": "../../independent_review_runbook.json",
-  "independent_review_runbook_sha256": "255c1efa45c968c0ce93646551dcb761dd58d244230bf63f46348a814208be7f",
+  "independent_review_runbook_sha256": "cb7603cf8fa0083b08aa02229c5bacdf2d33a3da192cd5993616ec748b2e7493",
   "reviewer_attestation_template": "../../reviewer_attestation_template.json",
   "reviewer_attestation_template_sha256": "be412eaa3102137853daf66f13013a3080419c6e6220e5192b87f57b04c7b376",
   "reviewer_intake_checklist": "../../reviewer_intake_checklist.json",
   "reviewer_intake_checklist_sha256": "eb22b12cd6a564d5932d6e968db8f434e596e37cab52a869c69524f893be9cc1",
+  "reviewer_recruitment_plan": "../../reviewer_recruitment_plan.json",
+  "reviewer_recruitment_plan_sha256": "f488714d975b335ad5c1d3ce703e7e35226db0587913f95d99ff50afa625af42",
   "reviewer_scoring_guide": "../../reviewer_scoring_guide.md",
   "reviewer_scoring_guide_sha256": "b41be7ff7108c35f7e7bc35be1a812751eb891d4e89e5cdf1a20b6ff3d82955e",
   "reviewer_training_guide": "../../reviewer_training_guide.json",
@@ -41,5 +43,5 @@
     "cases/val_results_followup_020.md": "e6c5646424f0a16e11871a5c6bd671b536699b64a8fbc9d3fb4bb365fa1d470b"
   },
   "readme_sha256": "9af59997f86963a3b82121617a9bf7e4d449b06900b976cd379f651ab0aca9e6",
-  "privacy_note": "Reviewer material hashes identify the blinded packet files, intake checklist, scoring guide, training guide, independent review runbook, reviewer attestation template, and statistical analysis plan used for clinician review. They do not include reviewer identifiers, completed attestations, assignment worksheets, reviewer comments, or completed ratings."
+  "privacy_note": "Reviewer material hashes identify the blinded packet files, intake checklist, scoring guide, training guide, independent review runbook, reviewer attestation template, reviewer recruitment plan, and statistical analysis plan used for clinician review. They do not include reviewer identifiers, completed attestations, assignment worksheets, reviewer comments, or completed ratings."
 }

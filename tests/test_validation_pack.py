@@ -314,6 +314,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert protocol["review_materials"]["reviewer_attestation_template"] == (
         "reviewer_attestation_template.json"
     )
+    assert protocol["review_materials"]["reviewer_recruitment_plan"] == (
+        "reviewer_recruitment_plan.json"
+    )
     assert protocol["review_materials"]["reviewer_training_guide"] == (
         "reviewer_training_guide.json"
     )
@@ -325,6 +328,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     )
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
     assert "plan_validation_collection.py" in protocol["collection_plan_command"]
+    assert "plan_reviewer_recruitment.py" in protocol[
+        "reviewer_recruitment_plan_command"
+    ]
     assert "summarize_validation_goal_status.py" in protocol[
         "validation_goal_status_command"
     ]
@@ -454,6 +460,7 @@ def test_independent_review_runbook_defines_collection_workflow() -> None:
     assert runbook["status"] == "ready_for_external_collection"
     assert set(runbook["required_public_materials"]) >= {
         "clinician_review_protocol.json",
+        "reviewer_recruitment_plan.json",
         "statistical_analysis_plan.json",
         "reviewer_attestation_template.json",
         "reviewer_training_guide.json",
@@ -568,6 +575,73 @@ def test_validation_collection_plan_covers_corpus_strata() -> None:
     )
 
 
+def test_reviewer_recruitment_plan_covers_corpus_specialties() -> None:
+    corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
+    plan = json.loads((VALIDATION_PACK / "reviewer_recruitment_plan.json").read_text())
+
+    specialties: set[str] = set()
+    case_ids: set[str] = set()
+    submission_refs: set[str] = set()
+    for rel_path in corpus_manifest["case_files"]:
+        case = json.loads((CORPUS / rel_path).read_text())
+        case_ids.add(case["case_id"])
+        specialties.add(case["specialty"])
+        for note in case["candidate_notes"]:
+            submission_refs.add(f"{case['case_id']}:{note['submission_id']}")
+
+    assert plan["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert plan["plan_id"] == "scribeval_reviewer_recruitment_plan_v1"
+    assert plan["status"] == "ready_for_reviewer_recruitment"
+    assert plan["coverage"]["case_count"] == len(case_ids)
+    assert plan["coverage"]["case_submission_count"] == len(submission_refs)
+    assert plan["coverage"]["specialty_count"] == len(specialties)
+    assert plan["recruitment_targets"]["minimum_primary_secondary_reviewers"] == 2
+    assert plan["recruitment_targets"]["minimum_adjudicators"] == 1
+    assert plan["recruitment_targets"]["minimum_total_qualified_reviewers"] >= 3
+    assert plan["recruitment_targets"]["eligible_registration_status"] == "current"
+    assert plan["recruitment_targets"]["conflict_of_interest"] == "none"
+    assert {
+        row["specialty"] for row in plan["specialty_familiarity_targets"]
+    } == specialties
+    assert plan["privacy_and_publication_controls"]["public_registry_only"] is True
+    assert plan["privacy_and_publication_controls"][
+        "completed_attestations_must_not_be_committed"
+    ] is True
+    assert plan["is_recruitment_plan_complete"] is True
+    assert "not validation evidence" in plan["claim_boundary"]
+
+
+def test_reviewer_recruitment_planner_reproduces_committed_plan(
+    tmp_path: Path,
+) -> None:
+    output_json = tmp_path / "reviewer_recruitment_plan.json"
+    output_md = tmp_path / "reviewer_recruitment_plan.md"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/plan_reviewer_recruitment.py",
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+            "--fail-on-incomplete",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Minimum total qualified reviewers: 3" in result.stdout
+    assert "Specialty targets: 8" in result.stdout
+    assert json.loads(output_json.read_text()) == json.loads(
+        (VALIDATION_PACK / "reviewer_recruitment_plan.json").read_text()
+    )
+    assert output_md.read_text() == (
+        VALIDATION_PACK / "reviewer_recruitment_plan.md"
+    ).read_text()
+
+
 def test_validation_collection_planner_reproduces_committed_plan(
     tmp_path: Path,
 ) -> None:
@@ -620,11 +694,17 @@ def test_validation_goal_status_tracks_missing_independent_evidence() -> None:
     assert status["prepared_components"]["reviewer_attestation_template_defined"][
         "evidence"
     ]["template_id"] == "scribeval_reviewer_attestation_template_v1"
+    assert status["prepared_components"]["reviewer_recruitment_plan_ready"][
+        "evidence"
+    ]["plan_id"] == "scribeval_reviewer_recruitment_plan_v1"
     assert status["source_files"]["independent_review_runbook"] == (
         "validation_pack/independent_review_runbook.json"
     )
     assert status["source_files"]["reviewer_attestation_template"] == (
         "validation_pack/reviewer_attestation_template.json"
+    )
+    assert status["source_files"]["reviewer_recruitment_plan"] == (
+        "validation_pack/reviewer_recruitment_plan.json"
     )
     assert {gap["gap_id"] for gap in status["blocking_gaps"]} >= {
         "current_evidence_run_failed_checks",
@@ -1323,6 +1403,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "reviewer_attestation_template_sha256",
         "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
+        "reviewer_recruitment_plan_sha256",
         "reviewer_scoring_guide_sha256",
         "reviewer_training_guide_sha256",
         "reviewer_assignments_manifest_sha256",
@@ -1343,6 +1424,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_materials["reviewer_attestation_template_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_attestation_template_sha256"]
+    assert review_materials["reviewer_recruitment_plan_sha256"] == manifest[
+        "source_hashes"
+    ]["reviewer_recruitment_plan_sha256"]
     assert review_materials["reviewer_scoring_guide_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_scoring_guide_sha256"]
@@ -1363,6 +1447,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     )
     assert review_materials["reviewer_attestation_template"].endswith(
         "validation_pack/reviewer_attestation_template.json"
+    )
+    assert review_materials["reviewer_recruitment_plan"].endswith(
+        "validation_pack/reviewer_recruitment_plan.json"
     )
     assert review_materials["reviewer_intake_checklist"].endswith(
         "validation_pack/reviewer_intake_checklist.json"
@@ -1484,6 +1571,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "reviewer_attestation_template_sha256",
         "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
+        "reviewer_recruitment_plan_sha256",
         "reviewer_scoring_guide_sha256",
         "reviewer_training_guide_sha256",
         "reviewer_registry_sha256",

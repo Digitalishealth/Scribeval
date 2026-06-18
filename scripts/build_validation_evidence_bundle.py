@@ -26,6 +26,7 @@ DEFAULT_REVIEWER_ATTESTATION_TEMPLATE = (
 )
 DEFAULT_REVIEWER_INTAKE_CHECKLIST = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_PACKETS = ROOT / "validation_pack" / "reviewer_packets"
+DEFAULT_REVIEWER_RECRUITMENT_PLAN = ROOT / "validation_pack" / "reviewer_recruitment_plan.json"
 DEFAULT_REVIEWER_SCORING_GUIDE = ROOT / "validation_pack" / "reviewer_scoring_guide.md"
 DEFAULT_REVIEWER_TRAINING_GUIDE = ROOT / "validation_pack" / "reviewer_training_guide.json"
 DEFAULT_STATISTICAL_ANALYSIS_PLAN = (
@@ -173,6 +174,7 @@ def build_review_materials_provenance(
     independent_review_runbook: Path,
     reviewer_attestation_template: Path,
     reviewer_intake_checklist: Path,
+    reviewer_recruitment_plan: Path,
     reviewer_scoring_guide: Path,
     reviewer_training_guide: Path,
     statistical_analysis_plan: Path,
@@ -204,6 +206,8 @@ def build_review_materials_provenance(
         )
     if not reviewer_intake_checklist.exists():
         raise ValueError(f"Reviewer intake checklist is missing: {reviewer_intake_checklist}")
+    if not reviewer_recruitment_plan.exists():
+        raise ValueError(f"Reviewer recruitment plan is missing: {reviewer_recruitment_plan}")
     if not reviewer_scoring_guide.exists():
         raise ValueError(f"Reviewer scoring guide is missing: {reviewer_scoring_guide}")
     if not reviewer_training_guide.exists():
@@ -236,6 +240,11 @@ def build_review_materials_provenance(
             bundle_dir,
         ),
         "reviewer_intake_checklist_sha256": sha256_file(reviewer_intake_checklist),
+        "reviewer_recruitment_plan": relative_to_base(
+            reviewer_recruitment_plan,
+            bundle_dir,
+        ),
+        "reviewer_recruitment_plan_sha256": sha256_file(reviewer_recruitment_plan),
         "reviewer_scoring_guide": relative_to_base(reviewer_scoring_guide, bundle_dir),
         "reviewer_scoring_guide_sha256": sha256_file(reviewer_scoring_guide),
         "reviewer_training_guide": relative_to_base(reviewer_training_guide, bundle_dir),
@@ -251,10 +260,10 @@ def build_review_materials_provenance(
         "privacy_note": (
             "Reviewer material hashes identify the blinded packet files, intake "
             "checklist, scoring guide, training guide, independent review runbook, "
-            "reviewer attestation template, and statistical analysis plan used for "
-            "clinician review. They do not include reviewer identifiers, completed "
-            "attestations, assignment worksheets, reviewer comments, or completed "
-            "ratings."
+            "reviewer attestation template, reviewer recruitment plan, and "
+            "statistical analysis plan used for clinician review. They do not "
+            "include reviewer identifiers, completed attestations, assignment "
+            "worksheets, reviewer comments, or completed ratings."
         ),
     }
 
@@ -289,6 +298,9 @@ def bundle_manifest(
         ],
         "reviewer_attestation_template_sha256": review_materials[
             "reviewer_attestation_template_sha256"
+        ],
+        "reviewer_recruitment_plan_sha256": review_materials[
+            "reviewer_recruitment_plan_sha256"
         ],
         "reviewer_packet_manifest_sha256": review_materials[
             "reviewer_packet_manifest_sha256"
@@ -404,6 +416,7 @@ def build_bundle(
     independent_review_runbook: Path = DEFAULT_INDEPENDENT_REVIEW_RUNBOOK,
     reviewer_attestation_template: Path = DEFAULT_REVIEWER_ATTESTATION_TEMPLATE,
     reviewer_intake_checklist: Path = DEFAULT_REVIEWER_INTAKE_CHECKLIST,
+    reviewer_recruitment_plan: Path = DEFAULT_REVIEWER_RECRUITMENT_PLAN,
     reviewer_scoring_guide: Path = DEFAULT_REVIEWER_SCORING_GUIDE,
     reviewer_training_guide: Path = DEFAULT_REVIEWER_TRAINING_GUIDE,
     statistical_analysis_plan: Path = DEFAULT_STATISTICAL_ANALYSIS_PLAN,
@@ -436,6 +449,7 @@ def build_bundle(
         independent_review_runbook=independent_review_runbook,
         reviewer_attestation_template=reviewer_attestation_template,
         reviewer_intake_checklist=reviewer_intake_checklist,
+        reviewer_recruitment_plan=reviewer_recruitment_plan,
         reviewer_scoring_guide=reviewer_scoring_guide,
         reviewer_training_guide=reviewer_training_guide,
         statistical_analysis_plan=statistical_analysis_plan,
@@ -586,6 +600,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_REVIEWER_INTAKE_CHECKLIST,
     )
     parser.add_argument(
+        "--reviewer-recruitment-plan",
+        type=Path,
+        default=DEFAULT_REVIEWER_RECRUITMENT_PLAN,
+    )
+    parser.add_argument(
         "--reviewer-scoring-guide",
         type=Path,
         default=DEFAULT_REVIEWER_SCORING_GUIDE,
@@ -644,6 +663,7 @@ def main() -> int:
             independent_review_runbook=args.independent_review_runbook,
             reviewer_attestation_template=args.reviewer_attestation_template,
             reviewer_intake_checklist=args.reviewer_intake_checklist,
+            reviewer_recruitment_plan=args.reviewer_recruitment_plan,
             reviewer_scoring_guide=args.reviewer_scoring_guide,
             reviewer_training_guide=args.reviewer_training_guide,
             statistical_analysis_plan=args.statistical_analysis_plan,

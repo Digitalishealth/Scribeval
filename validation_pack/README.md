@@ -68,7 +68,18 @@ python scripts/build_reviewer_packets.py
    `reviewer_attestation_template.md` for the private consent, registration,
    conflict, blinding, no-identifier comment, and independent-judgement
    attestations that support those registry fields.
-7. Review or regenerate the collection plan to confirm planned case,
+7. Review or regenerate the reviewer recruitment plan to confirm
+   primary/secondary reviewer, adjudicator, privacy, and corpus-specialty
+   familiarity targets:
+
+```bash
+python scripts/plan_reviewer_recruitment.py \
+  --output-json validation_pack/reviewer_recruitment_plan.json \
+  --output-md validation_pack/reviewer_recruitment_plan.md \
+  --fail-on-incomplete
+```
+
+8. Review or regenerate the collection plan to confirm planned case,
    submission, reviewer-rating, calibration-pair, and stratum coverage:
 
 ```bash
@@ -78,20 +89,20 @@ python scripts/plan_validation_collection.py \
   --fail-on-underpowered
 ```
 
-8. Preserve the pre-specified analysis contract in
+9. Preserve the pre-specified analysis contract in
    `statistical_analysis_plan.json` and `statistical_analysis_plan.md`. Evidence
    bundles hash this plan so judge-vs-clinician agreement is interpreted
    against public thresholds instead of post-hoc criteria.
-9. Complete reviewer training using `reviewer_training_guide.json` and
+10. Complete reviewer training using `reviewer_training_guide.json` and
    `reviewer_training_guide.md` before setting `training_completed=yes` in the
    pseudonymous registry. Keep named attendance records, signed attestations,
    and anchor-case discussion notes outside the public repository.
-10. Use `independent_review_runbook.json` and
+11. Use `independent_review_runbook.json` and
    `independent_review_runbook.md` as the coordinator checklist for private
    collection paths, command order, publishable outputs, and claim boundaries.
    The default private workspaces `reviewer_assignments/`,
    `private_review_inputs/`, and `private_review_runs/` are ignored by Git.
-11. Publish the current validation-goal status so governance reviewers can see
+12. Publish the current validation-goal status so governance reviewers can see
    whether the repository is prepared, blocked, or claim-ready:
 
 ```bash
@@ -100,7 +111,7 @@ python scripts/summarize_validation_goal_status.py \
   --output-md validation_pack/validation_goal_status.md
 ```
 
-12. Generate reviewer-specific assignment worksheets:
+13. Generate reviewer-specific assignment worksheets:
 
 ```bash
 python scripts/build_reviewer_assignments.py \
@@ -108,7 +119,7 @@ python scripts/build_reviewer_assignments.py \
   --output-dir <reviewer_assignments_dir>
 ```
 
-13. Audit the filled worksheet and reviewer registry before treating it as
+14. Audit the filled worksheet and reviewer registry before treating it as
    independent clinician evidence. The audit requires both overall note-quality
    ratings and complete required dimension ratings for each assigned
    case-submission:
@@ -122,8 +133,8 @@ python scripts/audit_clinician_review_readiness.py \
   --fail-on-not-ready
 ```
 
-14. Run Scribeval on the same blinded submissions.
-15. Export Scribeval scores in the shape consumed by the calibration importer:
+15. Run Scribeval on the same blinded submissions.
+16. Export Scribeval scores in the shape consumed by the calibration importer:
 
 ```bash
 python scripts/export_validation_judge_scores.py \
@@ -135,7 +146,7 @@ python scripts/export_validation_judge_scores.py \
    intentionally omits transcript text, note text, raw judge responses,
    reasoning, and excerpts.
 
-16. Summarise inter-rater reliability between clinician reviewers:
+17. Summarise inter-rater reliability between clinician reviewers:
 
 Before reliability and consensus analysis, publish an aggregate collection
 status report if coordinators need to track whether assignments, completed
@@ -169,7 +180,7 @@ python scripts/summarize_reviewer_reliability.py \
    claims and should trigger rubric clarification, reviewer retraining, or
    adjudication.
 
-17. Build consensus clinician ratings for judge-vs-consensus reporting:
+18. Build consensus clinician ratings for judge-vs-consensus reporting:
 
 ```bash
 python scripts/build_consensus_validation_ratings.py \
@@ -185,7 +196,7 @@ python scripts/build_consensus_validation_ratings.py \
    severity label. Rows with score or severity disagreement are flagged for
    adjudication before strong validation claims are made.
 
-18. Build focused adjudication packets if consensus rows are disputed:
+19. Build focused adjudication packets if consensus rows are disputed:
 
 ```bash
 python scripts/build_adjudication_packets.py \
@@ -198,7 +209,7 @@ python scripts/build_adjudication_packets.py \
    They omit reviewer IDs, source labels, prompt strategies, and seeded failure
    metadata.
 
-19. Import adjudicator decisions back into consensus evidence:
+20. Import adjudicator decisions back into consensus evidence:
 
 ```bash
 python scripts/import_adjudication_decisions.py \
@@ -215,7 +226,7 @@ python scripts/import_adjudication_decisions.py \
    This resolves disputed consensus rows only after a qualified adjudicator has
    supplied a complete score and severity decision.
 
-20. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
+21. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -275,7 +286,7 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-21. Index generated evidence runs for public review:
+22. Index generated evidence runs for public review:
 
 ```bash
 python scripts/index_validation_evidence_runs.py \
@@ -284,7 +295,7 @@ python scripts/index_validation_evidence_runs.py \
   --output-md validation_pack/evidence_runs/index.md
 ```
 
-22. Assess whether the bundle is ready for validation claims:
+23. Assess whether the bundle is ready for validation claims:
 
 ```bash
 python scripts/assess_validation_claim_readiness.py \
@@ -294,7 +305,7 @@ python scripts/assess_validation_claim_readiness.py \
   --fail-on-not-ready
 ```
 
-23. Run:
+24. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -326,6 +337,7 @@ instructions, more cases, or adjudication by a second clinician.
 | `statistical_analysis_plan.json` / `statistical_analysis_plan.md` | Pre-specified validation endpoints, thresholds, handling rules, and claim boundary |
 | `validation_goal_status.json` / `validation_goal_status.md` | Current prepared/claim-ready status and blocking validation gaps |
 | `independent_review_runbook.json` / `independent_review_runbook.md` | Coordinator workflow for private collection, public outputs, and claim boundaries |
+| `reviewer_recruitment_plan.json` / `reviewer_recruitment_plan.md` | Reviewer panel, adjudicator, privacy, and corpus-specialty familiarity targets |
 | `reviewer_attestation_template.json` / `reviewer_attestation_template.md` | Private reviewer consent, eligibility, blinding, and independence attestation template |
 | `reviewer_training_guide.json` / `reviewer_training_guide.md` | Minimum reviewer training, anchor-case, and public-record requirements |
 | `reviewer_intake_checklist.json` | Coordinator intake controls and public/private evidence boundaries |

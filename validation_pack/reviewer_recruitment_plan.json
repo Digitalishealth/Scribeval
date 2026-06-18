@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "plan_id": "scribeval_reviewer_recruitment_plan_v1",
+  "status": "ready_for_reviewer_recruitment",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "source_files": {
+    "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
+    "clinician_review_protocol": "validation_pack/clinician_review_protocol.json"
+  },
+  "coverage": {
+    "case_count": 20,
+    "case_submission_count": 100,
+    "specialty_count": 8
+  },
+  "recruitment_targets": {
+    "reviewers_per_case_submission": 2,
+    "minimum_primary_secondary_reviewers": 2,
+    "minimum_adjudicators": 1,
+    "minimum_total_qualified_reviewers": 3,
+    "minimum_claim_qualified_reviewers": 2,
+    "eligible_registration_status": "current",
+    "minimum_years_post_registration": 1,
+    "required_training_completed": true,
+    "allowed_review_roles": [
+      "primary_reviewer",
+      "secondary_reviewer",
+      "adjudicator"
+    ],
+    "conflict_of_interest": "none"
+  },
+  "specialty_familiarity_targets": [
+    {
+      "specialty": "aged_care",
+      "case_count": 2,
+      "case_submission_count": 10,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    },
+    {
+      "specialty": "chronic_disease",
+      "case_count": 2,
+      "case_submission_count": 10,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    },
+    {
+      "specialty": "general_practice",
+      "case_count": 9,
+      "case_submission_count": 45,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    },
+    {
+      "specialty": "mental_health",
+      "case_count": 1,
+      "case_submission_count": 5,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    },
+    {
+      "specialty": "paediatrics",
+      "case_count": 2,
+      "case_submission_count": 10,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    },
+    {
+      "specialty": "palliative_care",
+      "case_count": 1,
+      "case_submission_count": 5,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    },
+    {
+      "specialty": "telehealth",
+      "case_count": 1,
+      "case_submission_count": 5,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    },
+    {
+      "specialty": "urgent_care",
+      "case_count": 2,
+      "case_submission_count": 10,
+      "recruitment_target": "At least one recruited reviewer or adjudicator should declare familiarity with this clinical area, or the coordinator must document why generalist review is sufficient."
+    }
+  ],
+  "privacy_and_publication_controls": {
+    "public_registry_only": true,
+    "retain_names_contact_registration_and_attestations_privately": true,
+    "completed_attestations_must_not_be_committed": true,
+    "public_reviewer_fields": [
+      "reviewer_id",
+      "profession",
+      "country",
+      "registration_status",
+      "years_post_registration",
+      "specialty",
+      "review_role",
+      "conflict_of_interest",
+      "training_completed"
+    ]
+  },
+  "is_recruitment_plan_complete": true,
+  "claim_boundary": "This recruitment plan supports reviewer sourcing and governance only. It is not validation evidence; validation claims require completed independent clinician ratings, reliability analysis, adjudicated consensus, and claim-readiness checks."
+}

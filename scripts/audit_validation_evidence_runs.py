@@ -50,6 +50,7 @@ REQUIRED_SOURCE_HASHES = {
     "reviewer_attestation_template_sha256",
     "reviewer_intake_checklist_sha256",
     "reviewer_packet_manifest_sha256",
+    "reviewer_recruitment_plan_sha256",
     "reviewer_scoring_guide_sha256",
     "reviewer_training_guide_sha256",
     "reviewer_registry_sha256",
@@ -228,6 +229,11 @@ def audit_review_materials(
         f"{bundle_name} reviewer attestation template hash drift",
     )
     require(
+        review_materials.get("reviewer_recruitment_plan_sha256")
+        == source_hashes.get("reviewer_recruitment_plan_sha256"),
+        f"{bundle_name} reviewer recruitment plan hash drift",
+    )
+    require(
         review_materials.get("reviewer_scoring_guide_sha256")
         == source_hashes.get("reviewer_scoring_guide_sha256"),
         f"{bundle_name} reviewer scoring guide hash drift",
@@ -261,6 +267,11 @@ def audit_review_materials(
         isinstance(review_materials.get("reviewer_attestation_template"), str)
         and review_materials.get("reviewer_attestation_template"),
         f"{bundle_name} review materials missing reviewer attestation template path",
+    )
+    require(
+        isinstance(review_materials.get("reviewer_recruitment_plan"), str)
+        and review_materials.get("reviewer_recruitment_plan"),
+        f"{bundle_name} review materials missing reviewer recruitment plan path",
     )
     require(
         isinstance(review_materials.get("reviewer_intake_checklist"), str)

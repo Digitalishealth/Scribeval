@@ -489,6 +489,11 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol missing collection plan command",
     )
     require(
+        "plan_reviewer_recruitment.py"
+        in protocol.get("reviewer_recruitment_plan_command", ""),
+        "clinician review protocol missing reviewer recruitment plan command",
+    )
+    require(
         "summarize_validation_goal_status.py"
         in protocol.get("validation_goal_status_command", ""),
         "clinician review protocol missing validation goal status command",
@@ -508,6 +513,11 @@ def audit_clinician_review_protocol() -> None:
         review_materials.get("reviewer_attestation_template")
         == "reviewer_attestation_template.json",
         "clinician review protocol missing reviewer attestation template",
+    )
+    require(
+        review_materials.get("reviewer_recruitment_plan")
+        == "reviewer_recruitment_plan.json",
+        "clinician review protocol missing reviewer recruitment plan",
     )
     require(
         review_materials.get("reviewer_training_guide")
@@ -667,6 +677,80 @@ def audit_collection_plan(corpus_refs: dict[str, set[str]]) -> None:
                 row.get("meets_minimum_pair_threshold") is True,
                 f"collection plan underpowers {stratum}={row.get('value')}",
             )
+
+
+def audit_reviewer_recruitment_plan(corpus_refs: dict[str, set[str]]) -> None:
+    plan_path = PACK / "reviewer_recruitment_plan.json"
+    report_path = PACK / "reviewer_recruitment_plan.md"
+    require(plan_path.exists(), "missing reviewer recruitment plan JSON")
+    require(report_path.exists(), "missing reviewer recruitment plan report")
+    plan = load_json(plan_path)
+    require(
+        plan.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "reviewer recruitment plan has invalid benchmark_unit",
+    )
+    require(
+        plan.get("plan_id") == "scribeval_reviewer_recruitment_plan_v1",
+        "reviewer recruitment plan has invalid plan_id",
+    )
+    require(
+        plan.get("status") == "ready_for_reviewer_recruitment",
+        "reviewer recruitment plan status drift",
+    )
+    require(
+        plan.get("is_recruitment_plan_complete") is True,
+        "reviewer recruitment plan is incomplete",
+    )
+    coverage = plan.get("coverage", {})
+    require(
+        coverage.get("case_count") == len(corpus_refs["case_ids"]),
+        "reviewer recruitment plan case_count drift",
+    )
+    require(
+        coverage.get("case_submission_count") == len(corpus_refs["submission_refs"]),
+        "reviewer recruitment plan case_submission_count drift",
+    )
+    require(
+        coverage.get("specialty_count") == len(corpus_refs["specialties"]),
+        "reviewer recruitment plan specialty_count drift",
+    )
+    targets = plan.get("recruitment_targets", {})
+    require(
+        targets.get("minimum_primary_secondary_reviewers", 0) >= 2,
+        "reviewer recruitment plan needs at least two primary/secondary reviewers",
+    )
+    require(
+        targets.get("minimum_adjudicators", 0) >= 1,
+        "reviewer recruitment plan needs at least one adjudicator",
+    )
+    require(
+        targets.get("minimum_total_qualified_reviewers", 0) >= 3,
+        "reviewer recruitment plan needs at least three qualified reviewers",
+    )
+    observed_specialties = {
+        row.get("specialty") for row in plan.get("specialty_familiarity_targets", [])
+    }
+    require(
+        observed_specialties == corpus_refs["specialties"],
+        "reviewer recruitment plan specialty targets drift",
+    )
+    controls = plan.get("privacy_and_publication_controls", {})
+    require(
+        controls.get("public_registry_only") is True,
+        "reviewer recruitment plan must publish only pseudonymous registry fields",
+    )
+    require(
+        controls.get("completed_attestations_must_not_be_committed") is True,
+        "reviewer recruitment plan must keep completed attestations private",
+    )
+    require(
+        "not validation evidence" in plan.get("claim_boundary", ""),
+        "reviewer recruitment plan must preserve validation claim boundary",
+    )
+    require(
+        "Reviewer Recruitment Plan" in report_path.read_text(),
+        "reviewer recruitment plan report missing title",
+    )
 
 
 def audit_statistical_analysis_plan() -> None:
@@ -861,6 +945,7 @@ def audit_independent_review_runbook() -> None:
         materials
         >= {
             "clinician_review_protocol.json",
+            "reviewer_recruitment_plan.json",
             "statistical_analysis_plan.json",
             "reviewer_attestation_template.json",
             "reviewer_training_guide.json",
@@ -972,6 +1057,10 @@ def audit_validation_goal_status(corpus_refs: dict[str, set[str]]) -> None:
         components.get("reviewer_attestation_template_defined", {}).get("passed") is True,
         "validation goal status missing reviewer attestation component",
     )
+    require(
+        components.get("reviewer_recruitment_plan_ready", {}).get("passed") is True,
+        "validation goal status missing reviewer recruitment component",
+    )
     source_files = status.get("source_files", {})
     require(
         source_files.get("independent_review_runbook")
@@ -982,6 +1071,11 @@ def audit_validation_goal_status(corpus_refs: dict[str, set[str]]) -> None:
         source_files.get("reviewer_attestation_template")
         == "validation_pack/reviewer_attestation_template.json",
         "validation goal status missing reviewer attestation template source",
+    )
+    require(
+        source_files.get("reviewer_recruitment_plan")
+        == "validation_pack/reviewer_recruitment_plan.json",
+        "validation goal status missing reviewer recruitment plan source",
     )
     require(
         "not independent clinical validation" in status.get("claim_boundary", ""),
@@ -1052,6 +1146,7 @@ def main() -> int:
     try:
         corpus_refs = audit_corpus()
         audit_corpus_benchmark_manifest(corpus_refs)
+        audit_reviewer_recruitment_plan(corpus_refs)
         audit_collection_plan(corpus_refs)
         audit_statistical_analysis_plan()
         audit_reviewer_attestation_template()
@@ -1070,6 +1165,7 @@ def main() -> int:
     print(f"Cases: {len(corpus_refs['case_ids'])}")
     print(f"Submissions: {len(corpus_refs['submission_refs'])}")
     print(f"Reviewer packets: {packet_count}")
+    print("Reviewer recruitment plan: ready_for_reviewer_recruitment")
     print("Validation collection plan: ready")
     print("Statistical analysis plan: prespecified")
     print("Reviewer attestation template: required_private_record_before_scoring")

@@ -34,7 +34,7 @@ evidence-run indexes.
 
 | Stage | Exit Evidence |
 |---|---|
-| prepare public materials | `validation_pack_audit.py` passes and the collection plan has no underpowered stratum values |
+| prepare public materials | `validation_pack_audit.py` passes, the reviewer recruitment plan is complete, and the collection plan has no underpowered stratum values |
 | onboard reviewers | reviewer intake, attestation, and training are complete, with private eligibility records retained outside the public repository |
 | generate private assignments | `assignment_manifest.json` records two qualified reviewers per case-submission in an ignored private path |
 | collect blinded ratings | all assigned worksheets are returned with overall and required dimension ratings complete |
@@ -50,6 +50,10 @@ evidence-run indexes.
 
 ```bash
 python scripts/build_reviewer_packets.py
+python scripts/plan_reviewer_recruitment.py \
+  --output-json validation_pack/reviewer_recruitment_plan.json \
+  --output-md validation_pack/reviewer_recruitment_plan.md \
+  --fail-on-incomplete
 python scripts/plan_validation_collection.py \
   --output-json validation_pack/collection_plan.json \
   --output-md validation_pack/collection_plan.md \

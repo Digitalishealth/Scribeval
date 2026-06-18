@@ -16,6 +16,7 @@ DEFAULT_INDEPENDENT_REVIEW_RUNBOOK = (
 DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
 DEFAULT_REVIEWER_ATTESTATION = ROOT / "validation_pack" / "reviewer_attestation_template.json"
 DEFAULT_REVIEWER_INTAKE = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
+DEFAULT_REVIEWER_RECRUITMENT = ROOT / "validation_pack" / "reviewer_recruitment_plan.json"
 DEFAULT_REVIEWER_TRAINING = ROOT / "validation_pack" / "reviewer_training_guide.json"
 DEFAULT_SAP = ROOT / "validation_pack" / "statistical_analysis_plan.json"
 DEFAULT_EVIDENCE_INDEX = ROOT / "validation_pack" / "evidence_runs" / "index.json"
@@ -54,6 +55,7 @@ def summarize_goal_status(
     protocol: Path,
     reviewer_attestation: Path,
     reviewer_intake: Path,
+    reviewer_recruitment: Path,
     reviewer_training: Path,
     statistical_analysis_plan: Path,
     evidence_index: Path,
@@ -64,6 +66,7 @@ def summarize_goal_status(
     review_protocol = load_json(protocol)
     attestation = load_json(reviewer_attestation)
     intake = load_json(reviewer_intake)
+    recruitment = load_json(reviewer_recruitment)
     training = load_json(reviewer_training)
     sap = load_json(statistical_analysis_plan)
     index = load_json(evidence_index)
@@ -134,6 +137,20 @@ def summarize_goal_status(
             passed=intake.get("status") == "ready_for_independent_review",
             evidence={"checklist_id": intake.get("checklist_id"), "status": intake.get("status")},
             note="Reviewer intake and public/private evidence boundaries are defined.",
+        ),
+        "reviewer_recruitment_plan_ready": component_status(
+            passed=recruitment.get("status") == "ready_for_reviewer_recruitment"
+            and recruitment.get("is_recruitment_plan_complete") is True,
+            evidence={
+                "plan_id": recruitment.get("plan_id"),
+                "status": recruitment.get("status"),
+                "minimum_total_qualified_reviewers": recruitment.get(
+                    "recruitment_targets",
+                    {},
+                ).get("minimum_total_qualified_reviewers"),
+                "specialty_count": recruitment.get("coverage", {}).get("specialty_count"),
+            },
+            note="Reviewer recruitment targets are defined from the corpus and protocol.",
         ),
         "reviewer_training_defined": component_status(
             passed=training.get("status") == "required_before_independent_scoring",
@@ -233,6 +250,7 @@ def summarize_goal_status(
             "clinician_review_protocol": display_path(protocol),
             "reviewer_attestation_template": display_path(reviewer_attestation),
             "reviewer_intake_checklist": display_path(reviewer_intake),
+            "reviewer_recruitment_plan": display_path(reviewer_recruitment),
             "reviewer_training_guide": display_path(reviewer_training),
             "statistical_analysis_plan": display_path(statistical_analysis_plan),
             "evidence_run_index": display_path(evidence_index),
@@ -317,6 +335,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_REVIEWER_ATTESTATION,
     )
     parser.add_argument("--reviewer-intake", type=Path, default=DEFAULT_REVIEWER_INTAKE)
+    parser.add_argument(
+        "--reviewer-recruitment",
+        type=Path,
+        default=DEFAULT_REVIEWER_RECRUITMENT,
+    )
     parser.add_argument("--reviewer-training", type=Path, default=DEFAULT_REVIEWER_TRAINING)
     parser.add_argument(
         "--statistical-analysis-plan",
@@ -339,6 +362,7 @@ def main() -> int:
             protocol=args.protocol,
             reviewer_attestation=args.reviewer_attestation,
             reviewer_intake=args.reviewer_intake,
+            reviewer_recruitment=args.reviewer_recruitment,
             reviewer_training=args.reviewer_training,
             statistical_analysis_plan=args.statistical_analysis_plan,
             evidence_index=args.evidence_index,

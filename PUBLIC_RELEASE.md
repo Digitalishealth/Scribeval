@@ -40,6 +40,8 @@ transcripts.
       eligibility records from publishable pseudonymous evidence artifacts.
 - [x] Reviewer attestation template included for private consent,
       registration, conflict, blinding, and independent-judgement records.
+- [x] Reviewer recruitment plan included to define primary/secondary reviewer,
+      adjudicator, privacy, and corpus-specialty familiarity targets.
 - [x] Validation collection plan included to show planned reviewer-rating,
       calibration-pair, and stratum coverage before clinician recruitment.
 - [x] Statistical analysis plan included with pre-specified endpoints,

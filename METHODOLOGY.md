@@ -158,10 +158,13 @@ compares them with clinician ratings using:
 - mean absolute score difference for operational interpretability
 
 The validation pack in `validation_pack/` defines a synthetic 20-case pilot
-manifest, reviewer worksheet, reviewer intake checklist, reviewer attestation
-template, reviewer training guide, independent-review runbook, collection plan,
-statistical analysis plan, versioned corpus files, and an evidence trail that
-links case packets to blinded submissions and calibration pairs. The collection plan makes the
+manifest, reviewer worksheet, reviewer intake checklist, reviewer recruitment
+plan, reviewer attestation template, reviewer training guide,
+independent-review runbook, collection plan, statistical analysis plan,
+versioned corpus files, and an evidence trail that links case packets to
+blinded submissions and calibration pairs. The reviewer recruitment plan defines
+the minimum primary/secondary reviewer and adjudicator targets from the corpus
+specialties before clinicians are approached. The collection plan makes the
 expected reviewer-rating, calibration-pair, and stratum coverage explicit before
 clinicians are recruited. The reviewer training guide defines the minimum
 scoring-guide review, anchor-case discussion, blinding, comment-safety, and

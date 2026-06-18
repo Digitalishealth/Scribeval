@@ -7,6 +7,7 @@
   "required_public_materials": [
     "clinician_review_protocol.json",
     "collection_plan.json",
+    "reviewer_recruitment_plan.json",
     "statistical_analysis_plan.json",
     "reviewer_intake_checklist.json",
     "reviewer_attestation_template.json",
@@ -49,15 +50,19 @@
       "objective": "Verify that the public corpus, reviewer packets, collection plan, training guide, and statistical analysis plan are internally consistent before recruitment.",
       "commands": [
         "python scripts/build_reviewer_packets.py",
+        "python scripts/plan_reviewer_recruitment.py --output-json validation_pack/reviewer_recruitment_plan.json --output-md validation_pack/reviewer_recruitment_plan.md --fail-on-incomplete",
         "python scripts/plan_validation_collection.py --output-json validation_pack/collection_plan.json --output-md validation_pack/collection_plan.md --fail-on-underpowered",
         "python scripts/validation_pack_audit.py"
       ],
       "exit_evidence": [
         "validation_pack_audit.py passes",
+        "reviewer_recruitment_plan.json has complete specialty targets",
         "collection_plan.json reports no underpowered stratum values"
       ],
       "public_outputs": [
         "reviewer_packets/",
+        "reviewer_recruitment_plan.json",
+        "reviewer_recruitment_plan.md",
         "collection_plan.json",
         "collection_plan.md"
       ],
