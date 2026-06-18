@@ -74,6 +74,13 @@ REQUIRED_REVIEWER_INTAKE_OUTPUTS = {
     "reviewer_reliability.json",
     "validation_claim_readiness.json",
 }
+REQUIRED_REVIEWER_TRAINING_STEPS = {
+    "complete_anchor_case_discussion",
+    "confirm_blinding_and_comment_policy",
+    "confirm_conflict_and_eligibility_screening",
+    "read_scoring_guide",
+    "review_score_and_severity_anchors",
+}
 REQUIRED_SAP_PRIMARY_ENDPOINTS = {
     "clinician_reviewer_reliability_weighted_kappa",
     "judge_vs_clinician_consensus_weighted_kappa",
@@ -272,6 +279,9 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
         protocol["review_materials"]["reviewer_intake_checklist"]
         == "reviewer_intake_checklist.json"
     )
+    assert protocol["review_materials"]["reviewer_training_guide"] == (
+        "reviewer_training_guide.json"
+    )
     assert protocol["review_materials"]["reviewer_scoring_guide"] == (
         "reviewer_scoring_guide.md"
     )
@@ -340,6 +350,33 @@ def test_reviewer_intake_checklist_defines_publication_boundaries() -> None:
         "retain_outside_public_repository"
     ] is True
     assert "not itself clinical validation evidence" in checklist["claim_boundary"]
+
+
+def test_reviewer_training_guide_defines_required_training() -> None:
+    guide = json.loads((VALIDATION_PACK / "reviewer_training_guide.json").read_text())
+    guide_report = (VALIDATION_PACK / "reviewer_training_guide.md").read_text()
+
+    assert guide["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert guide["training_id"] == "scribeval_clinician_reviewer_training_v1"
+    assert guide["status"] == "required_before_independent_scoring"
+    assert set(guide["required_materials"]) >= {
+        "reviewer_scoring_guide.md",
+        "statistical_analysis_plan.json",
+    }
+    assert {step["step_id"] for step in guide["required_training_steps"]} == (
+        REQUIRED_REVIEWER_TRAINING_STEPS
+    )
+    assert guide["anchor_case_requirements"]["minimum_anchor_cases"] >= 2
+    assert "clinically_significant_omission" in guide["anchor_case_requirements"][
+        "must_include_failure_examples"
+    ]
+    assert guide["public_record_policy"]["publish_training_completed_flag_only"] is True
+    assert guide["public_record_policy"]["private_records_location"] == (
+        "outside_public_repository"
+    )
+    assert "not itself validation evidence" in guide["claim_boundary"]
+    assert "Required Training Steps" in guide_report
+    assert "Claim Boundary" in guide_report
 
 
 def test_statistical_analysis_plan_prespecifies_validation_claim() -> None:
@@ -1161,6 +1198,7 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
         "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
         "reviewer_scoring_guide_sha256",
+        "reviewer_training_guide_sha256",
         "reviewer_assignments_manifest_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
@@ -1179,6 +1217,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     assert review_materials["reviewer_intake_checklist_sha256"] == manifest[
         "source_hashes"
     ]["reviewer_intake_checklist_sha256"]
+    assert review_materials["reviewer_training_guide_sha256"] == manifest[
+        "source_hashes"
+    ]["reviewer_training_guide_sha256"]
     assert review_materials["statistical_analysis_plan_sha256"] == manifest[
         "source_hashes"
     ]["statistical_analysis_plan_sha256"]
@@ -1187,6 +1228,9 @@ def test_validation_evidence_bundle_builder_creates_reproducible_run(
     )
     assert review_materials["reviewer_intake_checklist"].endswith(
         "validation_pack/reviewer_intake_checklist.json"
+    )
+    assert review_materials["reviewer_training_guide"].endswith(
+        "validation_pack/reviewer_training_guide.json"
     )
     assert review_materials["statistical_analysis_plan"].endswith(
         "validation_pack/statistical_analysis_plan.json"
@@ -1301,6 +1345,7 @@ def test_validation_evidence_bundle_builder_accepts_adjudicated_consensus(
         "reviewer_intake_checklist_sha256",
         "reviewer_packet_manifest_sha256",
         "reviewer_scoring_guide_sha256",
+        "reviewer_training_guide_sha256",
         "reviewer_registry_sha256",
         "reviewer_worksheet_sha256",
         "statistical_analysis_plan_sha256",

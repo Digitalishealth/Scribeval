@@ -21,6 +21,7 @@ DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
 DEFAULT_REVIEWER_INTAKE_CHECKLIST = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
 DEFAULT_REVIEWER_PACKETS = ROOT / "validation_pack" / "reviewer_packets"
 DEFAULT_REVIEWER_SCORING_GUIDE = ROOT / "validation_pack" / "reviewer_scoring_guide.md"
+DEFAULT_REVIEWER_TRAINING_GUIDE = ROOT / "validation_pack" / "reviewer_training_guide.json"
 DEFAULT_STATISTICAL_ANALYSIS_PLAN = (
     ROOT / "validation_pack" / "statistical_analysis_plan.json"
 )
@@ -165,6 +166,7 @@ def build_review_materials_provenance(
     reviewer_packets_dir: Path,
     reviewer_intake_checklist: Path,
     reviewer_scoring_guide: Path,
+    reviewer_training_guide: Path,
     statistical_analysis_plan: Path,
     bundle_dir: Path,
 ) -> dict[str, Any]:
@@ -188,6 +190,8 @@ def build_review_materials_provenance(
         raise ValueError(f"Reviewer intake checklist is missing: {reviewer_intake_checklist}")
     if not reviewer_scoring_guide.exists():
         raise ValueError(f"Reviewer scoring guide is missing: {reviewer_scoring_guide}")
+    if not reviewer_training_guide.exists():
+        raise ValueError(f"Reviewer training guide is missing: {reviewer_training_guide}")
     if not statistical_analysis_plan.exists():
         raise ValueError(
             f"Statistical analysis plan is missing: {statistical_analysis_plan}"
@@ -206,6 +210,8 @@ def build_review_materials_provenance(
         "reviewer_intake_checklist_sha256": sha256_file(reviewer_intake_checklist),
         "reviewer_scoring_guide": relative_to_base(reviewer_scoring_guide, bundle_dir),
         "reviewer_scoring_guide_sha256": sha256_file(reviewer_scoring_guide),
+        "reviewer_training_guide": relative_to_base(reviewer_training_guide, bundle_dir),
+        "reviewer_training_guide_sha256": sha256_file(reviewer_training_guide),
         "statistical_analysis_plan": relative_to_base(
             statistical_analysis_plan,
             bundle_dir,
@@ -216,9 +222,10 @@ def build_review_materials_provenance(
         "readme_sha256": sha256_file(readme_path) if readme_path.exists() else None,
         "privacy_note": (
             "Reviewer material hashes identify the blinded packet files, intake "
-            "checklist, scoring guide, and statistical analysis plan used for "
-            "clinician review. They do not include reviewer identifiers, "
-            "assignment worksheets, reviewer comments, or completed ratings."
+            "checklist, scoring guide, training guide, and statistical analysis "
+            "plan used for clinician review. They do not include reviewer "
+            "identifiers, assignment worksheets, reviewer comments, or completed "
+            "ratings."
         ),
     }
 
@@ -256,6 +263,9 @@ def bundle_manifest(
         ],
         "reviewer_scoring_guide_sha256": review_materials[
             "reviewer_scoring_guide_sha256"
+        ],
+        "reviewer_training_guide_sha256": review_materials[
+            "reviewer_training_guide_sha256"
         ],
         "statistical_analysis_plan_sha256": review_materials[
             "statistical_analysis_plan_sha256"
@@ -358,6 +368,7 @@ def build_bundle(
     reviewer_packets_dir: Path = DEFAULT_REVIEWER_PACKETS,
     reviewer_intake_checklist: Path = DEFAULT_REVIEWER_INTAKE_CHECKLIST,
     reviewer_scoring_guide: Path = DEFAULT_REVIEWER_SCORING_GUIDE,
+    reviewer_training_guide: Path = DEFAULT_REVIEWER_TRAINING_GUIDE,
     statistical_analysis_plan: Path = DEFAULT_STATISTICAL_ANALYSIS_PLAN,
 ) -> Path:
     from assess_validation_claim_readiness import assess_claim_readiness
@@ -387,6 +398,7 @@ def build_bundle(
         reviewer_packets_dir=reviewer_packets_dir,
         reviewer_intake_checklist=reviewer_intake_checklist,
         reviewer_scoring_guide=reviewer_scoring_guide,
+        reviewer_training_guide=reviewer_training_guide,
         statistical_analysis_plan=statistical_analysis_plan,
         bundle_dir=bundle_dir,
     )
@@ -530,6 +542,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_REVIEWER_SCORING_GUIDE,
     )
     parser.add_argument(
+        "--reviewer-training-guide",
+        type=Path,
+        default=DEFAULT_REVIEWER_TRAINING_GUIDE,
+    )
+    parser.add_argument(
         "--statistical-analysis-plan",
         type=Path,
         default=DEFAULT_STATISTICAL_ANALYSIS_PLAN,
@@ -577,6 +594,7 @@ def main() -> int:
             reviewer_packets_dir=args.reviewer_packets_dir,
             reviewer_intake_checklist=args.reviewer_intake_checklist,
             reviewer_scoring_guide=args.reviewer_scoring_guide,
+            reviewer_training_guide=args.reviewer_training_guide,
             statistical_analysis_plan=args.statistical_analysis_plan,
         )
     except ValueError as exc:

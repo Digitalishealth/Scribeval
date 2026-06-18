@@ -12,6 +12,7 @@ DEFAULT_CORPUS_MANIFEST = ROOT / "validation_pack" / "corpus" / "corpus_manifest
 DEFAULT_COLLECTION_PLAN = ROOT / "validation_pack" / "collection_plan.json"
 DEFAULT_PROTOCOL = ROOT / "validation_pack" / "clinician_review_protocol.json"
 DEFAULT_REVIEWER_INTAKE = ROOT / "validation_pack" / "reviewer_intake_checklist.json"
+DEFAULT_REVIEWER_TRAINING = ROOT / "validation_pack" / "reviewer_training_guide.json"
 DEFAULT_SAP = ROOT / "validation_pack" / "statistical_analysis_plan.json"
 DEFAULT_EVIDENCE_INDEX = ROOT / "validation_pack" / "evidence_runs" / "index.json"
 DEFAULT_OUTPUT_JSON = ROOT / "validation_pack" / "validation_goal_status.json"
@@ -47,6 +48,7 @@ def summarize_goal_status(
     collection_plan: Path,
     protocol: Path,
     reviewer_intake: Path,
+    reviewer_training: Path,
     statistical_analysis_plan: Path,
     evidence_index: Path,
 ) -> dict[str, Any]:
@@ -54,6 +56,7 @@ def summarize_goal_status(
     collection = load_json(collection_plan)
     review_protocol = load_json(protocol)
     intake = load_json(reviewer_intake)
+    training = load_json(reviewer_training)
     sap = load_json(statistical_analysis_plan)
     index = load_json(evidence_index)
 
@@ -107,6 +110,14 @@ def summarize_goal_status(
             passed=intake.get("status") == "ready_for_independent_review",
             evidence={"checklist_id": intake.get("checklist_id"), "status": intake.get("status")},
             note="Reviewer intake and public/private evidence boundaries are defined.",
+        ),
+        "reviewer_training_defined": component_status(
+            passed=training.get("status") == "required_before_independent_scoring",
+            evidence={
+                "training_id": training.get("training_id"),
+                "status": training.get("status"),
+            },
+            note="Reviewer training and anchor-case requirements are defined.",
         ),
         "evidence_index_present": component_status(
             passed=index.get("index_id") == "validation_evidence_runs_index_v1",
@@ -196,6 +207,7 @@ def summarize_goal_status(
             "collection_plan": display_path(collection_plan),
             "clinician_review_protocol": display_path(protocol),
             "reviewer_intake_checklist": display_path(reviewer_intake),
+            "reviewer_training_guide": display_path(reviewer_training),
             "statistical_analysis_plan": display_path(statistical_analysis_plan),
             "evidence_run_index": display_path(evidence_index),
         },
@@ -269,6 +281,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--collection-plan", type=Path, default=DEFAULT_COLLECTION_PLAN)
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
     parser.add_argument("--reviewer-intake", type=Path, default=DEFAULT_REVIEWER_INTAKE)
+    parser.add_argument("--reviewer-training", type=Path, default=DEFAULT_REVIEWER_TRAINING)
     parser.add_argument(
         "--statistical-analysis-plan",
         type=Path,
@@ -288,6 +301,7 @@ def main() -> int:
             collection_plan=args.collection_plan,
             protocol=args.protocol,
             reviewer_intake=args.reviewer_intake,
+            reviewer_training=args.reviewer_training,
             statistical_analysis_plan=args.statistical_analysis_plan,
             evidence_index=args.evidence_index,
         )

@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "training_id": "scribeval_clinician_reviewer_training_v1",
+  "status": "required_before_independent_scoring",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "purpose": "Define the minimum reviewer training and anchoring requirements before clinician ratings are accepted into a validation evidence bundle.",
+  "required_materials": [
+    "reviewer_scoring_guide.md",
+    "reviewer_intake_checklist.json",
+    "statistical_analysis_plan.json",
+    "reviewer_packets/README.md"
+  ],
+  "learning_objectives": [
+    "Score each final note against the whole consultation transcript rather than another note.",
+    "Apply the 0-1 score scale and ordered severity scale consistently across all candidate note sources.",
+    "Identify clinically significant omissions, unsupported hallucinations, medicolegal gaps, AHPRA concerns, PDQI-9 quality issues, and QNOTE domain gaps.",
+    "Preserve blinding by ignoring submission order and avoiding source or prompt-strategy inference.",
+    "Avoid direct patient, clinician, reviewer, provider, registration, phone, and email identifiers in reviewer comments.",
+    "Escalate ambiguous or disputed ratings through the adjudication workflow rather than changing the protocol ad hoc."
+  ],
+  "required_training_steps": [
+    {
+      "step_id": "read_scoring_guide",
+      "evidence": "reviewer attests that the scoring guide was read before scoring"
+    },
+    {
+      "step_id": "review_score_and_severity_anchors",
+      "evidence": "reviewer attests that score bands and severity labels are understood"
+    },
+    {
+      "step_id": "complete_anchor_case_discussion",
+      "evidence": "coordinator records completion outside the public repository"
+    },
+    {
+      "step_id": "confirm_blinding_and_comment_policy",
+      "evidence": "reviewer attests to blinding and no-identifier comment rules"
+    },
+    {
+      "step_id": "confirm_conflict_and_eligibility_screening",
+      "evidence": "pseudonymous reviewer registry has current registration, no conflict, and training_completed=yes"
+    }
+  ],
+  "anchor_case_requirements": {
+    "minimum_anchor_cases": 2,
+    "must_include_dimensions": [
+      "omission",
+      "hallucination",
+      "medicolegal",
+      "ahpra",
+      "pdqi9",
+      "qnote",
+      "overall"
+    ],
+    "must_include_failure_examples": [
+      "clinically_significant_omission",
+      "unsupported_hallucination",
+      "medicolegal_followup_gap"
+    ],
+    "acceptance_rule": "Reviewer may proceed to independent scoring after coordinator confirms anchor-case discussion and training attestation."
+  },
+  "public_record_policy": {
+    "publish_training_completed_flag_only": true,
+    "public_fields": [
+      "reviewer_id",
+      "training_completed"
+    ],
+    "private_records": [
+      "named attendance records",
+      "signed training attestations",
+      "source registration verification",
+      "anchor-case discussion notes"
+    ],
+    "private_records_location": "outside_public_repository"
+  },
+  "claim_boundary": "Training completion improves reviewer consistency but is not itself validation evidence. Validation claims still require qualified independent clinician ratings, reviewer reliability, adjudicated consensus, and claim-readiness checks."
+}

@@ -83,6 +83,13 @@ REQUIRED_REVIEWER_INTAKE_OUTPUTS = {
     "reviewer_reliability.json",
     "validation_claim_readiness.json",
 }
+REQUIRED_REVIEWER_TRAINING_STEPS = {
+    "complete_anchor_case_discussion",
+    "confirm_blinding_and_comment_policy",
+    "confirm_conflict_and_eligibility_screening",
+    "read_scoring_guide",
+    "review_score_and_severity_anchors",
+}
 REQUIRED_SAP_PRIMARY_ENDPOINTS = {
     "clinician_reviewer_reliability_weighted_kappa",
     "judge_vs_clinician_consensus_weighted_kappa",
@@ -464,6 +471,11 @@ def audit_clinician_review_protocol() -> None:
         "clinician review protocol missing reviewer intake checklist",
     )
     require(
+        review_materials.get("reviewer_training_guide")
+        == "reviewer_training_guide.json",
+        "clinician review protocol missing reviewer training guide",
+    )
+    require(
         review_materials.get("statistical_analysis_plan")
         == "statistical_analysis_plan.json",
         "clinician review protocol missing statistical analysis plan",
@@ -678,6 +690,54 @@ def audit_statistical_analysis_plan() -> None:
     )
 
 
+def audit_reviewer_training_guide() -> None:
+    guide_path = PACK / "reviewer_training_guide.json"
+    report_path = PACK / "reviewer_training_guide.md"
+    require(guide_path.exists(), "missing reviewer training guide JSON")
+    require(report_path.exists(), "missing reviewer training guide report")
+    guide = load_json(guide_path)
+    require(
+        guide.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "reviewer training guide has invalid benchmark_unit",
+    )
+    require(
+        guide.get("training_id") == "scribeval_clinician_reviewer_training_v1",
+        "reviewer training guide has invalid training_id",
+    )
+    require(
+        guide.get("status") == "required_before_independent_scoring",
+        "reviewer training guide status drift",
+    )
+    materials = set(guide.get("required_materials", []))
+    require(
+        materials >= {"reviewer_scoring_guide.md", "statistical_analysis_plan.json"},
+        "reviewer training guide missing required materials",
+    )
+    step_ids = {step.get("step_id") for step in guide.get("required_training_steps", [])}
+    require(
+        step_ids == REQUIRED_REVIEWER_TRAINING_STEPS,
+        "reviewer training guide required steps drift",
+    )
+    anchor = guide.get("anchor_case_requirements", {})
+    require(
+        anchor.get("minimum_anchor_cases", 0) >= 2,
+        "reviewer training guide must require at least two anchor cases",
+    )
+    require(
+        "clinically_significant_omission" in set(anchor.get("must_include_failure_examples", [])),
+        "reviewer training guide must include omission anchor",
+    )
+    public_policy = guide.get("public_record_policy", {})
+    require(
+        public_policy.get("publish_training_completed_flag_only") is True,
+        "reviewer training guide must keep training records private",
+    )
+    require(
+        "not itself validation evidence" in guide.get("claim_boundary", ""),
+        "reviewer training guide must preserve validation claim boundary",
+    )
+
+
 def audit_validation_goal_status(corpus_refs: dict[str, set[str]]) -> None:
     status_path = PACK / "validation_goal_status.json"
     report_path = PACK / "validation_goal_status.md"
@@ -791,6 +851,7 @@ def main() -> int:
         audit_corpus_benchmark_manifest(corpus_refs)
         audit_collection_plan(corpus_refs)
         audit_statistical_analysis_plan()
+        audit_reviewer_training_guide()
         audit_validation_goal_status(corpus_refs)
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
@@ -806,6 +867,7 @@ def main() -> int:
     print(f"Reviewer packets: {packet_count}")
     print("Validation collection plan: ready")
     print("Statistical analysis plan: prespecified")
+    print("Reviewer training guide: required_before_independent_scoring")
     print("Validation goal status: tracked")
     print("Clinician review protocol: ready_for_independent_review")
     print("Reviewer intake checklist: ready_for_independent_review")

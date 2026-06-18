@@ -23,6 +23,8 @@ transcripts.
       and example calibration output.
 - [x] Clinician reviewer scoring guide included for transcript-to-note score,
       severity, and dimension anchoring.
+- [x] Clinician reviewer training guide included for required training,
+      anchor-case discussion, blinding, and public-record boundaries.
 - [x] Full 20-case synthetic validation corpus included with traceable
       transcript/note packets.
 - [x] Full 20-case validation corpus can run directly through

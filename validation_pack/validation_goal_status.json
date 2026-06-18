@@ -37,6 +37,14 @@
       },
       "note": "Reviewer intake and public/private evidence boundaries are defined."
     },
+    "reviewer_training_defined": {
+      "passed": true,
+      "evidence": {
+        "training_id": "scribeval_clinician_reviewer_training_v1",
+        "status": "required_before_independent_scoring"
+      },
+      "note": "Reviewer training and anchor-case requirements are defined."
+    },
     "evidence_index_present": {
       "passed": true,
       "evidence": {
@@ -123,6 +131,7 @@
     "collection_plan": "validation_pack/collection_plan.json",
     "clinician_review_protocol": "validation_pack/clinician_review_protocol.json",
     "reviewer_intake_checklist": "validation_pack/reviewer_intake_checklist.json",
+    "reviewer_training_guide": "validation_pack/reviewer_training_guide.json",
     "statistical_analysis_plan": "validation_pack/statistical_analysis_plan.json",
     "evidence_run_index": "validation_pack/evidence_runs/index.json"
   },
