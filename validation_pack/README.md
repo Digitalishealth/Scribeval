@@ -64,7 +64,17 @@ python scripts/build_reviewer_packets.py
    signed consent, source registration verification, contact details, payment
    details, and training records outside the public repository; only the
    pseudonymous registry fields belong in the publishable evidence trail.
-7. Generate reviewer-specific assignment worksheets:
+7. Review or regenerate the collection plan to confirm planned case,
+   submission, reviewer-rating, calibration-pair, and stratum coverage:
+
+```bash
+python scripts/plan_validation_collection.py \
+  --output-json validation_pack/collection_plan.json \
+  --output-md validation_pack/collection_plan.md \
+  --fail-on-underpowered
+```
+
+8. Generate reviewer-specific assignment worksheets:
 
 ```bash
 python scripts/build_reviewer_assignments.py \
@@ -72,7 +82,7 @@ python scripts/build_reviewer_assignments.py \
   --output-dir <reviewer_assignments_dir>
 ```
 
-8. Audit the filled worksheet and reviewer registry before treating it as
+9. Audit the filled worksheet and reviewer registry before treating it as
    independent clinician evidence. The audit requires both overall note-quality
    ratings and complete required dimension ratings for each assigned
    case-submission:
@@ -86,8 +96,8 @@ python scripts/audit_clinician_review_readiness.py \
   --fail-on-not-ready
 ```
 
-9. Run Scribeval on the same blinded submissions.
-10. Export Scribeval scores in the shape consumed by the calibration importer:
+10. Run Scribeval on the same blinded submissions.
+11. Export Scribeval scores in the shape consumed by the calibration importer:
 
 ```bash
 python scripts/export_validation_judge_scores.py \
@@ -99,7 +109,7 @@ python scripts/export_validation_judge_scores.py \
    intentionally omits transcript text, note text, raw judge responses,
    reasoning, and excerpts.
 
-11. Summarise inter-rater reliability between clinician reviewers:
+12. Summarise inter-rater reliability between clinician reviewers:
 
 Before reliability and consensus analysis, publish an aggregate collection
 status report if coordinators need to track whether assignments, completed
@@ -133,7 +143,7 @@ python scripts/summarize_reviewer_reliability.py \
    claims and should trigger rubric clarification, reviewer retraining, or
    adjudication.
 
-12. Build consensus clinician ratings for judge-vs-consensus reporting:
+13. Build consensus clinician ratings for judge-vs-consensus reporting:
 
 ```bash
 python scripts/build_consensus_validation_ratings.py \
@@ -149,7 +159,7 @@ python scripts/build_consensus_validation_ratings.py \
    severity label. Rows with score or severity disagreement are flagged for
    adjudication before strong validation claims are made.
 
-13. Build focused adjudication packets if consensus rows are disputed:
+14. Build focused adjudication packets if consensus rows are disputed:
 
 ```bash
 python scripts/build_adjudication_packets.py \
@@ -162,7 +172,7 @@ python scripts/build_adjudication_packets.py \
    They omit reviewer IDs, source labels, prompt strategies, and seeded failure
    metadata.
 
-14. Import adjudicator decisions back into consensus evidence:
+15. Import adjudicator decisions back into consensus evidence:
 
 ```bash
 python scripts/import_adjudication_decisions.py \
@@ -179,7 +189,7 @@ python scripts/import_adjudication_decisions.py \
    This resolves disputed consensus rows only after a qualified adjudicator has
    supplied a complete score and severity decision.
 
-15. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
+16. Convert individual reviewer ratings and Scribeval scores into calibration pairs:
 
 ```bash
 python scripts/import_validation_ratings.py \
@@ -239,7 +249,7 @@ python scripts/audit_validation_evidence_runs.py \
   --evidence-runs validation_pack/evidence_runs
 ```
 
-16. Index generated evidence runs for public review:
+17. Index generated evidence runs for public review:
 
 ```bash
 python scripts/index_validation_evidence_runs.py \
@@ -248,7 +258,7 @@ python scripts/index_validation_evidence_runs.py \
   --output-md validation_pack/evidence_runs/index.md
 ```
 
-17. Assess whether the bundle is ready for validation claims:
+18. Assess whether the bundle is ready for validation claims:
 
 ```bash
 python scripts/assess_validation_claim_readiness.py \
@@ -258,7 +268,7 @@ python scripts/assess_validation_claim_readiness.py \
   --fail-on-not-ready
 ```
 
-18. Run:
+19. Run:
 
 ```bash
 scribeval calibrate validation_pack/evidence/calibration_pairs_v0.json
@@ -286,6 +296,7 @@ instructions, more cases, or adjudication by a second clinician.
 |---|---|
 | `case_manifest.json` | 20-case synthetic validation design |
 | `clinician_review_protocol.json` | Minimum reviewer provenance and eligibility protocol |
+| `collection_plan.json` / `collection_plan.md` | Planned reviewer-rating, calibration-pair, and stratum coverage |
 | `reviewer_intake_checklist.json` | Coordinator intake controls and public/private evidence boundaries |
 | `reviewer_scoring_guide.md` | Clinician-facing score, severity, and dimension anchors |
 | `reviewer_registry_template.csv` | Pseudonymous reviewer eligibility template |

@@ -1,0 +1,413 @@
+{
+  "schema_version": "1.0.0",
+  "plan_id": "scribeval_validation_collection_plan_v1",
+  "benchmark_unit": "whole transcript -> final note quality score",
+  "source_files": {
+    "corpus_manifest": "validation_pack/corpus/corpus_manifest.json",
+    "clinician_review_protocol": "validation_pack/clinician_review_protocol.json"
+  },
+  "requirements": {
+    "reviewers_per_case_submission": 2,
+    "required_dimensions": [
+      "omission",
+      "hallucination",
+      "medicolegal",
+      "ahpra",
+      "pdqi9",
+      "qnote"
+    ],
+    "required_overall_rating": true,
+    "scored_dimensions": [
+      "omission",
+      "hallucination",
+      "medicolegal",
+      "ahpra",
+      "pdqi9",
+      "qnote",
+      "overall"
+    ],
+    "required_strata": [
+      "specialty",
+      "note_source",
+      "prompt_strategy",
+      "failure_mode"
+    ],
+    "minimum_pairs_per_stratum_value": 2
+  },
+  "coverage": {
+    "case_count": 20,
+    "case_submission_count": 100,
+    "reviewers_per_case_submission": 2,
+    "required_dimension_count": 6,
+    "scored_dimension_count": 7,
+    "planned_reviewer_rating_rows": 200,
+    "planned_required_dimension_ratings": 1200,
+    "planned_overall_ratings": 200,
+    "planned_individual_calibration_pairs": 1400,
+    "planned_consensus_pairs": 700
+  },
+  "strata": {
+    "specialty": [
+      {
+        "value": "aged_care",
+        "case_count": 2,
+        "case_submission_count": 10,
+        "planned_reviewer_rating_rows": 20,
+        "planned_individual_calibration_pairs": 140,
+        "planned_consensus_pairs": 70,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "chronic_disease",
+        "case_count": 2,
+        "case_submission_count": 10,
+        "planned_reviewer_rating_rows": 20,
+        "planned_individual_calibration_pairs": 140,
+        "planned_consensus_pairs": 70,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "general_practice",
+        "case_count": 9,
+        "case_submission_count": 45,
+        "planned_reviewer_rating_rows": 90,
+        "planned_individual_calibration_pairs": 630,
+        "planned_consensus_pairs": 315,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "mental_health",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "paediatrics",
+        "case_count": 2,
+        "case_submission_count": 10,
+        "planned_reviewer_rating_rows": 20,
+        "planned_individual_calibration_pairs": 140,
+        "planned_consensus_pairs": 70,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "palliative_care",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "telehealth",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "urgent_care",
+        "case_count": 2,
+        "case_submission_count": 10,
+        "planned_reviewer_rating_rows": 20,
+        "planned_individual_calibration_pairs": 140,
+        "planned_consensus_pairs": 70,
+        "meets_minimum_pair_threshold": true
+      }
+    ],
+    "note_source": [
+      {
+        "value": "model_candidate",
+        "case_count": 20,
+        "case_submission_count": 80,
+        "planned_reviewer_rating_rows": 160,
+        "planned_individual_calibration_pairs": 1120,
+        "planned_consensus_pairs": 560,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "nurse_cdss",
+        "case_count": 20,
+        "case_submission_count": 20,
+        "planned_reviewer_rating_rows": 40,
+        "planned_individual_calibration_pairs": 280,
+        "planned_consensus_pairs": 140,
+        "meets_minimum_pair_threshold": true
+      }
+    ],
+    "prompt_strategy": [
+      {
+        "value": "cdss_checklist",
+        "case_count": 20,
+        "case_submission_count": 20,
+        "planned_reviewer_rating_rows": 40,
+        "planned_individual_calibration_pairs": 280,
+        "planned_consensus_pairs": 140,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "cdss_informed",
+        "case_count": 20,
+        "case_submission_count": 20,
+        "planned_reviewer_rating_rows": 40,
+        "planned_individual_calibration_pairs": 280,
+        "planned_consensus_pairs": 140,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "safety_first",
+        "case_count": 20,
+        "case_submission_count": 20,
+        "planned_reviewer_rating_rows": 40,
+        "planned_individual_calibration_pairs": 280,
+        "planned_consensus_pairs": 140,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "standard",
+        "case_count": 20,
+        "case_submission_count": 20,
+        "planned_reviewer_rating_rows": 40,
+        "planned_individual_calibration_pairs": 280,
+        "planned_consensus_pairs": 140,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "structured_soap",
+        "case_count": 20,
+        "case_submission_count": 20,
+        "planned_reviewer_rating_rows": 40,
+        "planned_individual_calibration_pairs": 280,
+        "planned_consensus_pairs": 140,
+        "meets_minimum_pair_threshold": true
+      }
+    ],
+    "failure_mode": [
+      {
+        "value": "anticoagulant_head_injury_escalation_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "asthma_action_plan_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "clinically_significant_omission",
+        "case_count": 18,
+        "case_submission_count": 90,
+        "planned_reviewer_rating_rows": 180,
+        "planned_individual_calibration_pairs": 1260,
+        "planned_consensus_pairs": 630,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "confidentiality_documentation_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "contraception_contraindication_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "copd_escalation_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "culturally_safe_care_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "delirium_escalation_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "diabetes_safety_net_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "documentation_photo_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "ectopic_pregnancy_escalation_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "medication_adherence_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "medication_dosing_risk",
+        "case_count": 5,
+        "case_submission_count": 25,
+        "planned_reviewer_rating_rows": 50,
+        "planned_individual_calibration_pairs": 350,
+        "planned_consensus_pairs": 175,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "medicolegal_followup_gap",
+        "case_count": 9,
+        "case_submission_count": 29,
+        "planned_reviewer_rating_rows": 58,
+        "planned_individual_calibration_pairs": 406,
+        "planned_consensus_pairs": 203,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "opioid_safety_net_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "over_inference_from_uncertain_transcript",
+        "case_count": 2,
+        "case_submission_count": 10,
+        "planned_reviewer_rating_rows": 20,
+        "planned_individual_calibration_pairs": 140,
+        "planned_consensus_pairs": 70,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "preventive_care_followup_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "renal_medication_interaction",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "results_followup_ownership_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "skin_cancer_referral_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "suicide_risk_documentation_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "unsupported_hallucination",
+        "case_count": 11,
+        "case_submission_count": 39,
+        "planned_reviewer_rating_rows": 78,
+        "planned_individual_calibration_pairs": 546,
+        "planned_consensus_pairs": 273,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "withdrawal_risk_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      },
+      {
+        "value": "work_certificate_documentation_gap",
+        "case_count": 1,
+        "case_submission_count": 5,
+        "planned_reviewer_rating_rows": 10,
+        "planned_individual_calibration_pairs": 70,
+        "planned_consensus_pairs": 35,
+        "meets_minimum_pair_threshold": true
+      }
+    ]
+  },
+  "underpowered_stratum_values": [],
+  "is_collection_plan_complete": true,
+  "interpretation_note": "This plan describes expected collection coverage before clinician ratings are gathered. It is not validation evidence; it defines the rating volume and stratum coverage needed for the later evidence bundle."
+}

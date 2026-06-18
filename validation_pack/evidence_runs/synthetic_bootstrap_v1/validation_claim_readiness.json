@@ -12,6 +12,7 @@
     "maximum_consensus_adjudication_required_count": 0,
     "minimum_reviewer_reliability_weighted_kappa": 0.6,
     "minimum_consensus_weighted_kappa": 0.6,
+    "minimum_pairs_per_stratum_value": 2,
     "required_strata": [
       "specialty",
       "note_source",
@@ -190,11 +191,81 @@
       "message": "Stratified evidence includes specialty"
     },
     {
+      "id": "stratum_pair_count.specialty.aged_care",
+      "passed": true,
+      "observed": 140,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=aged_care"
+    },
+    {
+      "id": "stratum_pair_count.specialty.chronic_disease",
+      "passed": true,
+      "observed": 140,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=chronic_disease"
+    },
+    {
+      "id": "stratum_pair_count.specialty.general_practice",
+      "passed": true,
+      "observed": 630,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=general_practice"
+    },
+    {
+      "id": "stratum_pair_count.specialty.mental_health",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=mental_health"
+    },
+    {
+      "id": "stratum_pair_count.specialty.paediatrics",
+      "passed": true,
+      "observed": 140,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=paediatrics"
+    },
+    {
+      "id": "stratum_pair_count.specialty.palliative_care",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=palliative_care"
+    },
+    {
+      "id": "stratum_pair_count.specialty.telehealth",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=telehealth"
+    },
+    {
+      "id": "stratum_pair_count.specialty.urgent_care",
+      "passed": true,
+      "observed": 140,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for specialty=urgent_care"
+    },
+    {
       "id": "stratum.note_source",
       "passed": true,
       "observed": 2,
       "threshold": "> 0 rows",
       "message": "Stratified evidence includes note_source"
+    },
+    {
+      "id": "stratum_pair_count.note_source.model_candidate",
+      "passed": true,
+      "observed": 1120,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for note_source=model_candidate"
+    },
+    {
+      "id": "stratum_pair_count.note_source.nurse_cdss",
+      "passed": true,
+      "observed": 280,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for note_source=nurse_cdss"
     },
     {
       "id": "stratum.prompt_strategy",
@@ -204,11 +275,214 @@
       "message": "Stratified evidence includes prompt_strategy"
     },
     {
+      "id": "stratum_pair_count.prompt_strategy.cdss_checklist",
+      "passed": true,
+      "observed": 280,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for prompt_strategy=cdss_checklist"
+    },
+    {
+      "id": "stratum_pair_count.prompt_strategy.cdss_informed",
+      "passed": true,
+      "observed": 280,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for prompt_strategy=cdss_informed"
+    },
+    {
+      "id": "stratum_pair_count.prompt_strategy.safety_first",
+      "passed": true,
+      "observed": 280,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for prompt_strategy=safety_first"
+    },
+    {
+      "id": "stratum_pair_count.prompt_strategy.standard",
+      "passed": true,
+      "observed": 280,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for prompt_strategy=standard"
+    },
+    {
+      "id": "stratum_pair_count.prompt_strategy.structured_soap",
+      "passed": true,
+      "observed": 280,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for prompt_strategy=structured_soap"
+    },
+    {
       "id": "stratum.failure_mode",
       "passed": true,
       "observed": 24,
       "threshold": "> 0 rows",
       "message": "Stratified evidence includes failure_mode"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.anticoagulant_head_injury_escalation_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=anticoagulant_head_injury_escalation_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.asthma_action_plan_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=asthma_action_plan_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.clinically_significant_omission",
+      "passed": true,
+      "observed": 1260,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=clinically_significant_omission"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.confidentiality_documentation_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=confidentiality_documentation_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.contraception_contraindication_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=contraception_contraindication_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.copd_escalation_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=copd_escalation_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.culturally_safe_care_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=culturally_safe_care_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.delirium_escalation_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=delirium_escalation_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.diabetes_safety_net_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=diabetes_safety_net_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.documentation_photo_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=documentation_photo_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.ectopic_pregnancy_escalation_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=ectopic_pregnancy_escalation_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.medication_adherence_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=medication_adherence_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.medication_dosing_risk",
+      "passed": true,
+      "observed": 350,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=medication_dosing_risk"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.medicolegal_followup_gap",
+      "passed": true,
+      "observed": 406,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=medicolegal_followup_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.opioid_safety_net_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=opioid_safety_net_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.over_inference_from_uncertain_transcript",
+      "passed": true,
+      "observed": 140,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=over_inference_from_uncertain_transcript"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.preventive_care_followup_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=preventive_care_followup_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.renal_medication_interaction",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=renal_medication_interaction"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.results_followup_ownership_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=results_followup_ownership_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.skin_cancer_referral_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=skin_cancer_referral_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.suicide_risk_documentation_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=suicide_risk_documentation_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.unsupported_hallucination",
+      "passed": true,
+      "observed": 546,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=unsupported_hallucination"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.withdrawal_risk_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=withdrawal_risk_gap"
+    },
+    {
+      "id": "stratum_pair_count.failure_mode.work_certificate_documentation_gap",
+      "passed": true,
+      "observed": 70,
+      "threshold": ">= 2",
+      "message": "Stratified evidence has enough pairs for failure_mode=work_certificate_documentation_gap"
     }
   ],
   "failed_checks": [

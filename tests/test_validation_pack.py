@@ -266,6 +266,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
         "reviewer_scoring_guide.md"
     )
     assert "export_validation_judge_scores.py" in protocol["judge_score_export_command"]
+    assert "plan_validation_collection.py" in protocol["collection_plan_command"]
     assert "<scribeval_scores.json>" in protocol["judge_score_export_command"]
     assert "summarize_reviewer_reliability.py" in protocol["reviewer_reliability_command"]
     assert "summarize_validation_review_run.py" in protocol["review_run_status_command"]
@@ -279,6 +280,7 @@ def test_clinician_review_protocol_defines_reviewer_provenance() -> None:
     assert "--adjudicated-consensus-pairs" in protocol["evidence_bundle_command"]
     assert protocol["validation_claim_thresholds"]["minimum_case_count"] == 20
     assert protocol["validation_claim_thresholds"]["minimum_submission_count"] == 100
+    assert protocol["validation_claim_thresholds"]["minimum_pairs_per_stratum_value"] >= 2
     requirements = protocol["minimum_independent_review_requirements"]
     assert requirements["reviewers_per_case"] == 2
     assert requirements["reviewers_per_case_submission"] == 2
@@ -322,6 +324,78 @@ def test_reviewer_intake_checklist_defines_publication_boundaries() -> None:
         "retain_outside_public_repository"
     ] is True
     assert "not itself clinical validation evidence" in checklist["claim_boundary"]
+
+
+def test_validation_collection_plan_covers_corpus_strata() -> None:
+    corpus_manifest = json.loads((CORPUS / "corpus_manifest.json").read_text())
+    plan = json.loads((VALIDATION_PACK / "collection_plan.json").read_text())
+
+    specialties: set[str] = set()
+    note_sources: set[str] = set()
+    prompt_strategies: set[str] = set()
+    failure_modes: set[str] = set()
+    submission_refs: set[str] = set()
+    for rel_path in corpus_manifest["case_files"]:
+        case = json.loads((CORPUS / rel_path).read_text())
+        specialties.add(case["specialty"])
+        failure_modes.update(case["safety_failure_modes"])
+        for note in case["candidate_notes"]:
+            submission_refs.add(f"{case['case_id']}:{note['submission_id']}")
+            note_sources.add(note["note_source"])
+            prompt_strategies.add(note["prompt_strategy"])
+            failure_modes.update(note["seeded_failure_modes"])
+
+    assert plan["benchmark_unit"] == "whole transcript -> final note quality score"
+    assert plan["plan_id"] == "scribeval_validation_collection_plan_v1"
+    assert plan["coverage"]["case_count"] == 20
+    assert plan["coverage"]["case_submission_count"] == len(submission_refs)
+    assert plan["coverage"]["planned_reviewer_rating_rows"] == 200
+    assert plan["coverage"]["planned_required_dimension_ratings"] == 1200
+    assert plan["coverage"]["planned_overall_ratings"] == 200
+    assert plan["coverage"]["planned_individual_calibration_pairs"] == 1400
+    assert plan["coverage"]["planned_consensus_pairs"] == 700
+    assert plan["underpowered_stratum_values"] == []
+    assert plan["is_collection_plan_complete"] is True
+    assert {row["value"] for row in plan["strata"]["specialty"]} == specialties
+    assert {row["value"] for row in plan["strata"]["note_source"]} == note_sources
+    assert {row["value"] for row in plan["strata"]["prompt_strategy"]} == (
+        prompt_strategies
+    )
+    assert {row["value"] for row in plan["strata"]["failure_mode"]} == failure_modes
+    assert all(
+        row["meets_minimum_pair_threshold"]
+        for rows in plan["strata"].values()
+        for row in rows
+    )
+
+
+def test_validation_collection_planner_reproduces_committed_plan(
+    tmp_path: Path,
+) -> None:
+    output_json = tmp_path / "collection_plan.json"
+    output_md = tmp_path / "collection_plan.md"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/plan_validation_collection.py",
+            "--output-json",
+            str(output_json),
+            "--output-md",
+            str(output_md),
+            "--fail-on-underpowered",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Planned consensus pairs: 700" in result.stdout
+    assert "Underpowered stratum values: 0" in result.stdout
+    assert json.loads(output_json.read_text()) == json.loads(
+        (VALIDATION_PACK / "collection_plan.json").read_text()
+    )
+    assert output_md.read_text() == (VALIDATION_PACK / "collection_plan.md").read_text()
 
 
 def test_example_calibration_pairs_are_computable() -> None:

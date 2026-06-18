@@ -437,6 +437,10 @@ def audit_clinician_review_protocol() -> None:
         "build_reviewer_assignments.py" in protocol.get("assignment_builder_command", ""),
         "clinician review protocol missing assignment builder command",
     )
+    require(
+        "plan_validation_collection.py" in protocol.get("collection_plan_command", ""),
+        "clinician review protocol missing collection plan command",
+    )
     review_materials = protocol.get("review_materials", {})
     require(
         review_materials.get("reviewer_intake_checklist")
@@ -499,6 +503,10 @@ def audit_clinician_review_protocol() -> None:
         thresholds.get("minimum_case_count") == 20,
         "clinician review protocol validation claim thresholds missing full corpus case count",
     )
+    require(
+        thresholds.get("minimum_pairs_per_stratum_value", 0) >= 2,
+        "clinician review protocol must require at least two pairs per stratum value",
+    )
     requirements = protocol.get("minimum_independent_review_requirements", {})
     require(
         requirements.get("reviewers_per_case") >= 2,
@@ -537,6 +545,56 @@ def audit_clinician_review_protocol() -> None:
         not forbidden_fields,
         f"reviewer registry template includes direct identifiers {forbidden_fields}",
     )
+
+
+def audit_collection_plan(corpus_refs: dict[str, set[str]]) -> None:
+    plan_path = PACK / "collection_plan.json"
+    report_path = PACK / "collection_plan.md"
+    require(plan_path.exists(), "missing validation collection plan JSON")
+    require(report_path.exists(), "missing validation collection plan report")
+    plan = load_json(plan_path)
+    require(
+        plan.get("benchmark_unit") == "whole transcript -> final note quality score",
+        "validation collection plan has invalid benchmark_unit",
+    )
+    require(
+        plan.get("plan_id") == "scribeval_validation_collection_plan_v1",
+        "validation collection plan has invalid plan_id",
+    )
+    coverage = plan.get("coverage", {})
+    require(
+        coverage.get("case_count") == len(corpus_refs["case_ids"]),
+        "validation collection plan case_count drift",
+    )
+    require(
+        coverage.get("case_submission_count") == len(corpus_refs["submission_refs"]),
+        "validation collection plan case_submission_count drift",
+    )
+    require(
+        coverage.get("planned_consensus_pairs", 0) >= len(corpus_refs["submission_refs"]),
+        "validation collection plan consensus pair count is too low",
+    )
+    require(
+        not plan.get("underpowered_stratum_values"),
+        "validation collection plan has underpowered stratum values",
+    )
+    strata = plan.get("strata", {})
+    expected_values = {
+        "specialty": corpus_refs["specialties"],
+        "note_source": corpus_refs["note_sources"],
+        "prompt_strategy": corpus_refs["prompt_strategies"],
+        "failure_mode": corpus_refs["failure_modes"],
+    }
+    for stratum, values in expected_values.items():
+        rows = strata.get(stratum)
+        require(isinstance(rows, list) and rows, f"collection plan missing {stratum}")
+        observed_values = {row.get("value") for row in rows}
+        require(observed_values == values, f"collection plan {stratum} coverage drift")
+        for row in rows:
+            require(
+                row.get("meets_minimum_pair_threshold") is True,
+                f"collection plan underpowers {stratum}={row.get('value')}",
+            )
 
 
 def audit_reviewer_intake_checklist() -> None:
@@ -602,6 +660,7 @@ def main() -> int:
     try:
         corpus_refs = audit_corpus()
         audit_corpus_benchmark_manifest(corpus_refs)
+        audit_collection_plan(corpus_refs)
         pair_count = audit_evidence(corpus_refs)
         packet_count = audit_reviewer_packets(corpus_refs)
         audit_clinician_review_protocol()
@@ -614,6 +673,7 @@ def main() -> int:
     print(f"Cases: {len(corpus_refs['case_ids'])}")
     print(f"Submissions: {len(corpus_refs['submission_refs'])}")
     print(f"Reviewer packets: {packet_count}")
+    print("Validation collection plan: ready")
     print("Clinician review protocol: ready_for_independent_review")
     print("Reviewer intake checklist: ready_for_independent_review")
     print(f"Evidence pairs: {pair_count}")

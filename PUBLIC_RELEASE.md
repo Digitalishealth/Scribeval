@@ -33,6 +33,8 @@ transcripts.
       included for independent rating provenance.
 - [x] Reviewer intake checklist included to separate private coordinator
       eligibility records from publishable pseudonymous evidence artifacts.
+- [x] Validation collection plan included to show planned reviewer-rating,
+      calibration-pair, and stratum coverage before clinician recruitment.
 - [x] Reviewer assignment builder creates balanced reviewer-specific
       worksheets for blinded case-submission collection.
 - [x] Independent clinician review readiness audit checks two qualified

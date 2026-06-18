@@ -55,6 +55,7 @@ def default_thresholds(protocol: dict[str, Any]) -> dict[str, Any]:
         "maximum_consensus_adjudication_required_count": 0,
         "minimum_reviewer_reliability_weighted_kappa": 0.6,
         "minimum_consensus_weighted_kappa": 0.6,
+        "minimum_pairs_per_stratum_value": 2,
         "required_strata": ["specialty", "note_source", "prompt_strategy", "failure_mode"],
     }
 
@@ -234,6 +235,7 @@ def assess_claim_readiness(
         message_prefix="Scribeval judge vs clinician consensus",
     )
 
+    minimum_stratum_pairs = int(thresholds["minimum_pairs_per_stratum_value"])
     for stratum in thresholds["required_strata"]:
         rows = strata.get(stratum)
         check_item(
@@ -244,6 +246,19 @@ def assess_claim_readiness(
             threshold="> 0 rows",
             message=f"Stratified evidence includes {stratum}",
         )
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            value = row.get("value")
+            pair_count = int(row.get("pair_count", 0))
+            check_item(
+                checks,
+                check_id=f"stratum_pair_count.{stratum}.{value}",
+                passed=pair_count >= minimum_stratum_pairs,
+                observed=pair_count,
+                threshold=f">= {minimum_stratum_pairs}",
+                message=f"Stratified evidence has enough pairs for {stratum}={value}",
+            )
 
     is_ready = all(check["passed"] for check in checks)
     return {

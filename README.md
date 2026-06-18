@@ -171,10 +171,15 @@ includes a 20-case synthetic review manifest, a blinded reviewer worksheet, a
 20-case synthetic corpus of complete transcript/note packets, generated blinded
 reviewer packets, a clinician reviewer scoring guide, a pseudonymous reviewer
 registry template, a reviewer intake checklist for public/private evidence
-boundaries, and example calibration inputs/results for:
+boundaries, a collection plan for planned stratum coverage, and example
+calibration inputs/results for:
 
 ```bash
 python scripts/build_reviewer_packets.py
+python scripts/plan_validation_collection.py \
+    --output-json validation_pack/collection_plan.json \
+    --output-md validation_pack/collection_plan.md \
+    --fail-on-underpowered
 python scripts/import_validation_ratings.py \
     --worksheet validation_pack/evidence/synthetic_reviewer_worksheet_v0.csv \
     --judge-scores validation_pack/evidence/synthetic_scribeval_scores_v0.json \
@@ -246,6 +251,8 @@ included example data is synthetic and illustrative only; it is not clinical
 validation evidence. For independent clinician ratings, run
 `scripts/build_reviewer_assignments.py` to create reviewer-specific worksheets,
 complete the coordinator-side `validation_pack/reviewer_intake_checklist.json`,
+check `validation_pack/collection_plan.json` for planned coverage across
+specialty, note source, prompt strategy, and safety-critical failure mode,
 run `scripts/audit_clinician_review_readiness.py`, export Scribeval scores with
 `scripts/export_validation_judge_scores.py`, check clinician inter-rater
 agreement with `scripts/summarize_reviewer_reliability.py`, build consensus
