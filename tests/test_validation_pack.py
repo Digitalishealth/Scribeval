@@ -1760,6 +1760,7 @@ def test_evidence_run_indexer_summarizes_generated_bundle(tmp_path: Path) -> Non
     assert run["benchmark_unit"] == "whole transcript -> final note quality score"
     assert run["is_ready_for_validation_claim"] is True
     assert run["failed_check_count"] == 0
+    assert run["failed_checks"] == []
     assert run["case_count"] == 20
     assert run["submission_count"] == 100
     assert run["individual_calibration_pair_count"] == 1400
@@ -1811,6 +1812,12 @@ def test_synthetic_evidence_bundle_script_reproduces_public_bundle(
     assert claim_readiness["is_ready_for_validation_claim"] is False
     assert index["run_count"] == 1
     assert index["claim_ready_run_count"] == 0
+    run = index["runs"][0]
+    assert run["failed_check_count"] == 2
+    assert {check["id"] for check in run["failed_checks"]} == {
+        "evidence_status",
+        "consensus_adjudication_required_count",
+    }
     assert not any(path.suffix == ".csv" for path in output_dir.rglob("*"))
 
 

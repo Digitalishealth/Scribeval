@@ -12,6 +12,20 @@
       "benchmark_unit": "whole transcript -> final note quality score",
       "is_ready_for_validation_claim": false,
       "failed_check_count": 2,
+      "failed_checks": [
+        {
+          "id": "evidence_status",
+          "observed": "synthetic_bootstrap",
+          "threshold": "independent_clinician_review",
+          "message": "Evidence status supports independent clinician validation claims"
+        },
+        {
+          "id": "consensus_adjudication_required_count",
+          "observed": 47,
+          "threshold": "<= 0",
+          "message": "Consensus ratings have no unresolved adjudication burden"
+        }
+      ],
       "case_count": 20,
       "submission_count": 100,
       "individual_calibration_pair_count": 1400,

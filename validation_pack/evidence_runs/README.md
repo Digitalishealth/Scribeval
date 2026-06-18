@@ -17,3 +17,7 @@ bundle and index with:
 python scripts/build_synthetic_evidence_bundle.py
 python scripts/audit_validation_evidence_runs.py
 ```
+
+The run index includes failed claim-readiness check IDs and observed thresholds
+so readers can see why a bundle is not ready for validation claims without
+opening raw reviewer inputs.

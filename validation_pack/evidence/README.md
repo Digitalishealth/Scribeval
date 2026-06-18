@@ -129,7 +129,8 @@ python scripts/audit_validation_evidence_runs.py \
 ```
 
 Publish a compact index of generated evidence runs so readers can see coverage,
-claim-readiness status, and agreement minima across bundles:
+claim-readiness status, failed readiness checks, and agreement minima across
+bundles:
 
 ```bash
 python scripts/index_validation_evidence_runs.py \

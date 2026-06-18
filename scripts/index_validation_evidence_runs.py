@@ -76,6 +76,34 @@ def failed_check_count(claim_readiness: dict[str, Any] | None) -> int | None:
     return sum(1 for check in checks if check.get("passed") is not True)
 
 
+def failed_check_details(claim_readiness: dict[str, Any] | None) -> list[dict[str, Any]]:
+    if claim_readiness is None:
+        return []
+    failed_checks = claim_readiness.get("failed_checks")
+    if isinstance(failed_checks, list):
+        source_checks = failed_checks
+    else:
+        checks = claim_readiness.get("checks", [])
+        source_checks = [
+            check
+            for check in checks
+            if isinstance(check, dict) and check.get("passed") is not True
+        ]
+    details: list[dict[str, Any]] = []
+    for check in source_checks:
+        if not isinstance(check, dict):
+            continue
+        details.append(
+            {
+                "id": check.get("id"),
+                "observed": check.get("observed"),
+                "threshold": check.get("threshold"),
+                "message": check.get("message"),
+            }
+        )
+    return details
+
+
 def min_check_observed(
     claim_readiness: dict[str, Any] | None,
     check_prefix: str,
@@ -139,6 +167,7 @@ def index_bundle(bundle_dir: Path) -> dict[str, Any]:
         "benchmark_unit": manifest.get("benchmark_unit"),
         "is_ready_for_validation_claim": is_claim_ready,
         "failed_check_count": failed_check_count(claim_readiness),
+        "failed_checks": failed_check_details(claim_readiness),
         "case_count": coverage_value(
             claim_readiness=claim_readiness,
             manifest_coverage=manifest_coverage,
@@ -242,6 +271,31 @@ def report_markdown(index: dict[str, Any]) -> str:
             )
             + " |"
         )
+    failed_runs = [run for run in index["runs"] if run.get("failed_checks")]
+    if failed_runs:
+        lines.extend(
+            [
+                "",
+                "## Failed Claim-Readiness Checks",
+                "",
+                "| Evidence ID | Check | Observed | Threshold |",
+                "|---|---|---|---|",
+            ]
+        )
+        for run in failed_runs:
+            for check in run["failed_checks"]:
+                lines.append(
+                    "| "
+                    + " | ".join(
+                        [
+                            format_cell(run["evidence_id"]),
+                            format_cell(check.get("id")),
+                            format_cell(check.get("observed")),
+                            format_cell(check.get("threshold")),
+                        ]
+                    )
+                    + " |"
+                )
     return "\n".join(lines) + "\n"
 
 

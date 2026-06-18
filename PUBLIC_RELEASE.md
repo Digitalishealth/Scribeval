@@ -58,7 +58,7 @@ transcripts.
 - [x] Evidence-run audit verifies publishable bundles and rejects raw clinician
       CSV inputs.
 - [x] Evidence-run index summarizes bundle coverage, claim readiness, and
-      agreement minima for public review.
+      agreement minima plus failed readiness checks for public review.
 - [x] Synthetic evidence-run bundle committed as a reproducible workflow
       artifact with raw reviewer inputs excluded and claim-readiness set false.
 - [x] Evidence bundles include aggregate adjudication-burden summaries by
