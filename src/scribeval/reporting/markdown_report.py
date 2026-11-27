@@ -74,6 +74,12 @@ def render_markdown(
     lines.append(f"**Scribeval Version:** {report.scribeval_version}")
     lines.append("")
 
+    # Preserve the report model's use limitations in the human-readable export.
+    lines.append("## Use limitations")
+    lines.append("")
+    lines.append(report.notice)
+    lines.append("")
+
     # Overall score
     severity_label = SEVERITY_LABELS.get(
         report.overall_severity, report.overall_severity.value
@@ -109,6 +115,45 @@ def render_markdown(
     lines.append("")
     for ds in report.dimension_scores:
         lines.append(_render_dimension(ds))
+
+    # Export the existing provenance fields without raw judge responses.
+    lines.append("## Provenance and run configuration")
+    lines.append("")
+    if report.reproducibility is None:
+        lines.append(
+            "Reproducibility metadata was not recorded; input and "
+            "configuration identity is unverified."
+        )
+    else:
+        lines.append("```json")
+        lines.append(report.reproducibility.model_dump_json(indent=2))
+        lines.append("```")
+    lines.append("")
+
+    lines.append("## Repeated-run uncertainty")
+    lines.append("")
+    if report.run_statistics:
+        lines.append(
+            "These intervals describe repeated judge-run variability for this note; "
+            "they do not estimate population-level clinical performance."
+        )
+        lines.append("")
+        lines.append("| Dimension | Runs | Mean | Standard deviation | Reported 95% interval |")
+        lines.append("|-----------|------|------|--------------------|-----------------------|")
+        for stats in report.run_statistics:
+            if stats.run_count < 2:
+                lines.append(
+                    f"| {stats.dimension} | {stats.run_count} | {stats.mean_score:.4f} | "
+                    "Not estimable | Not estimable (fewer than two runs) |"
+                )
+            else:
+                lines.append(
+                    f"| {stats.dimension} | {stats.run_count} | {stats.mean_score:.4f} | "
+                    f"{stats.std_score:.4f} | [{stats.ci95_low:.4f}, {stats.ci95_high:.4f}] |"
+                )
+    else:
+        lines.append("Repeated-run uncertainty was not recorded.")
+    lines.append("")
 
     # Data flow disclosure
     lines.append("---")
