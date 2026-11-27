@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current strategy and execution baseline — 27 November 2026
+
+The [portfolio review](docs/strategy/PORTFOLIO_REVIEW_2026-11-27.md) is the current proposed strategy, 30/60/90-day roadmap and sequenced sprint baseline. **Prioritise independent validation and a small vendor-neutral evaluation offer test, not certification.** It supersedes conflicting dated priority, maturity and schedule assumptions below; historical rationale and existing safety, privacy, commercial and release authorities remain intact. The review does not mark unfinished work complete or authorise a release.
+
+---
+
 This document tracks deferred work and the status of the critique-defence
 tiers that shape Scribeval's development.
 
@@ -95,3 +101,4 @@ See `METHODOLOGY.md` for the full rationale. Briefly:
 - Contribute a synthetic case or a rubric review
 - Run a calibration study against your own clinicians and share the
   kappa/ICC results
+

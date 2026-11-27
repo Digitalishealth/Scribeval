@@ -7,6 +7,12 @@ review_horizon: 90 days
 
 # Scribeval — Strategic Direction and Sprint Plan
 
+## Current review — 27 November 2026
+
+The [current strategy, roadmap and sprint baseline](strategy/PORTFOLIO_REVIEW_2026-11-27.md) supersedes conflicting scope, status and dates in this earlier proposal. The original proposal below is retained as history; it does not establish delivery, approval or a current release.
+
+---
+
 ## Decision
 
 **Invest and keep Scribeval independent of any one scribe product.** Its strongest strategic role is as an Australian transcript-to-note evaluation and assurance harness that can support product selection, internal QA and research. The next milestone is independent clinician validation and reproducible public methodology, not more evaluator dimensions.
@@ -67,3 +73,4 @@ Package the benchmark for a clinical governance/procurement audience: fixed comp
 - reproducible run from pinned corpus/config;
 - zero product-specific scoring branches;
 - every externally visible performance claim linked to a validation bundle and limitations statement.
+
